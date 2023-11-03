@@ -9,8 +9,12 @@ if (import.meta.hot) {
   import('./contentScriptHMR')
 }
 
+if (__DEV__) {
+  void browser.runtime.openOptionsPage()
+}
+
 browser.runtime.onInstalled.addListener((): void => {
-  // eslint-disable-next-line no-console
+   
   console.log('Extension installed')
 })
 
@@ -33,7 +37,7 @@ browser.tabs.onActivated.addListener(async ({ tabId }) => {
     return
   }
 
-  // eslint-disable-next-line no-console
+   
   console.log('previous tab', tab)
   sendMessage('tab-prev', { title: tab.title }, { context: 'content-script', tabId })
 })
