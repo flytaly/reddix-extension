@@ -29,8 +29,7 @@ browser.tabs.onActivated.addListener(async ({ tabId }) => {
   try {
     tab = await browser.tabs.get(previousTabId)
     previousTabId = tabId
-  }
-  catch {
+  } catch {
     return
   }
 
@@ -45,8 +44,7 @@ onMessage('get-current-tab', async () => {
     return {
       title: tab?.title,
     }
-  }
-  catch {
+  } catch {
     return {
       title: undefined,
     }

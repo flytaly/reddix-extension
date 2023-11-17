@@ -13,9 +13,7 @@ const [show, toggle] = useToggle(false)
       transition="opacity duration-300"
       :class="show ? 'opacity-100' : 'opacity-0'"
     >
-      <h1 class="text-lg">
-        Vitesse WebExt
-      </h1>
+      <h1 class="text-lg">Vitesse WebExt</h1>
       <SharedSubtitle />
     </div>
     <button
