@@ -1,10 +1,12 @@
+import type { RedditError, RedditItemResponse} from './reddit-types';
+
 const baseUrl = 'https://www.reddit.com'
 
 const getSavedUrl = (user: string) => {
   return `${baseUrl}/user/${user}/saved.json`
 }
 
-function formatError(redditError: { message: string; error: string }) {
+function formatError(redditError: RedditError) {
   if (!redditError || !redditError.message) {
     return ''
   }
@@ -16,15 +18,22 @@ function formatError(redditError: { message: string; error: string }) {
   return err
 }
 
+function isListing(data: RedditItemResponse | RedditError): data is RedditItemResponse {
+  if (!data) {
+    return false
+  }
+  return (data as RedditItemResponse).kind === 'Listing'
+}
+
 export async function getPosts(username: string): Promise<[null, string] | ['ok', null]> {
   const url = getSavedUrl(username)
   try {
     const response = await fetch(url)
-    const data = await response.json()
-    if (response.status !== 200) {
-      return [null, formatError(data) || `${response.status} ${response.statusText}`]
+    const listing = (await response.json()) as RedditItemResponse | RedditError
+    if (response.status !== 200 || !isListing(listing)) {
+      return [null, formatError(listing as RedditError) || `${response.status} ${response.statusText}`]
     }
-    console.log('saved posts:', data)
+    console.log(listing)
   } catch (error) {
     return [null, (error as any as Error).message]
   }
