@@ -10,9 +10,6 @@ devDependencies:
   '@iconify/json':
     specifier: ^2.2.61
     version: 2.2.61
-  '@playwright/test':
-    specifier: ^1.33.0
-    version: 1.33.0
   '@types/fs-extra':
     specifier: ^11.0.1
     version: 11.0.1
@@ -722,17 +719,6 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
-
-  /@playwright/test@1.33.0:
-    resolution: {integrity: sha512-YunBa2mE7Hq4CfPkGzQRK916a4tuZoVx/EpLjeWlTVOnD4S2+fdaQZE0LJkbfhN5FTSKNLdcl7MoT5XB37bTkg==}
-    engines: {node: '>=14'}
-    hasBin: true
-    dependencies:
-      '@types/node': 18.16.5
-      playwright-core: 1.33.0
-    optionalDependencies:
-      fsevents: 2.3.2
-    dev: true
 
   /@pnpm/config.env-replace@1.1.0:
     resolution: {integrity: sha512-htyl8TWnKL7K/ESFa1oW2UB5lVDxuF5DpM7tBi6Hu2LNL3mWkIzNLG6N4zoCUP1lCKNxWy/3iu8mS8MvToGd6w==}
@@ -5296,12 +5282,6 @@ packages:
       jsonc-parser: 3.2.0
       mlly: 1.2.0
       pathe: 1.1.0
-    dev: true
-
-  /playwright-core@1.33.0:
-    resolution: {integrity: sha512-aizyPE1Cj62vAECdph1iaMILpT0WUDCq3E6rW6I+dleSbBoGbktvJtzS6VHkZ4DKNEOG9qJpiom/ZxO+S15LAw==}
-    engines: {node: '>=14'}
-    hasBin: true
     dev: true
 
   /pluralize@8.0.0:
