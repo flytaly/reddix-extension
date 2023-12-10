@@ -2,6 +2,7 @@
   "extends": ["@antfu", "prettier"],
   "rules": {
     "no-console": "off",
-    "@typescript-eslint/consistent-type-definitions": "off"
+    "@typescript-eslint/consistent-type-definitions": "off",
+    "@typescript-eslint/ban-ts-comment": "off"
   }
 }

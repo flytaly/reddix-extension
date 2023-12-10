@@ -1,4 +1,4 @@
-import type { RedditError, RedditItemResponse} from './reddit-types';
+import type { RedditError, RedditItemResponse } from './reddit-types'
 
 const baseUrl = 'https://www.reddit.com'
 
@@ -28,7 +28,7 @@ function isListing(data: RedditItemResponse | RedditError): data is RedditItemRe
 export async function getPosts(username: string): Promise<[null, string] | ['ok', null]> {
   const url = getSavedUrl(username)
   try {
-    const response = await fetch(url)
+    const response = await fetch(url, { cache: 'reload' })
     const listing = (await response.json()) as RedditItemResponse | RedditError
     if (response.status !== 200 || !isListing(listing)) {
       return [null, formatError(listing as RedditError) || `${response.status} ${response.statusText}`]

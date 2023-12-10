@@ -1,56 +1,45 @@
 import { onMessage, sendMessage } from 'webext-bridge/background'
-import type { Tabs } from 'webextension-polyfill'
+import devSetup from './dev-setup'
+import { getPosts } from '~/reddit'
 
-// only on dev mode
-if (import.meta.hot) {
-  // @ts-expect-error for background HMR
-  import('/@vite/client')
-  // load latest content script
-  import('./contentScriptHMR')
-}
-
-if (__DEV__) {
-  void browser.runtime.openOptionsPage()
-}
+devSetup()
 
 browser.runtime.onInstalled.addListener((): void => {
-   
   console.log('Extension installed')
 })
 
-let previousTabId = 0
+export type BgState = {
+  isFetching: boolean
+  fetchError: string | null
+}
 
-// communication example: send previous tab title from background page
-// see shim.d.ts for type declaration
-browser.tabs.onActivated.addListener(async ({ tabId }) => {
-  if (!previousTabId) {
-    previousTabId = tabId
+const state: BgState = {
+  isFetching: false,
+  fetchError: '',
+}
+
+function setStateAndNotify(updates: Partial<BgState>) {
+  Object.assign(state, updates)
+  sendMessage('state-update', state, { context: 'options', tabId: -1 })
+}
+
+async function fetchPosts(username: string) {
+  if (state.isFetching) {
     return
   }
-
-  let tab: Tabs.Tab
-
-  try {
-    tab = await browser.tabs.get(previousTabId)
-    previousTabId = tabId
-  } catch {
-    return
+  setStateAndNotify({ isFetching: true, fetchError: '' })
+  const [_, errMsg] = await getPosts(username)
+  if (errMsg) {
+    console.error(errMsg)
   }
+  setStateAndNotify({ isFetching: false, fetchError: errMsg })
+}
 
-   
-  console.log('previous tab', tab)
-  sendMessage('tab-prev', { title: tab.title }, { context: 'content-script', tabId })
+onMessage('fetch-saved', async (msg) => {
+  void fetchPosts(msg.data.username)
+  return state
 })
 
-onMessage('get-current-tab', async () => {
-  try {
-    const tab = await browser.tabs.get(previousTabId)
-    return {
-      title: tab?.title,
-    }
-  } catch {
-    return {
-      title: undefined,
-    }
-  }
+onMessage('get-state', async () => {
+  return state
 })
