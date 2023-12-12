@@ -1,6 +1,8 @@
 import { onMessage, sendMessage } from 'webext-bridge/background'
 import devSetup from './dev-setup'
 import { getPosts } from '~/reddit'
+import type { RedditItem, RedditItemResponse } from '~/reddit/reddit-types'
+import { db } from '~/db'
 
 devSetup()
 
@@ -23,16 +25,35 @@ function setStateAndNotify(updates: Partial<BgState>) {
   sendMessage('state-update', state, { context: 'options', tabId: -1 })
 }
 
+async function savePosts(listing: RedditItemResponse) {
+  if (!listing?.data) {
+    return
+  }
+
+  try {
+    const items = listing.data.children.map((itm) => itm.data) as RedditItem[]
+    const ids = await db.items.bulkAdd(items)
+    console.log('saved', ids)
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 async function fetchPosts(username: string) {
   if (state.isFetching) {
     return
   }
   setStateAndNotify({ isFetching: true, fetchError: '' })
-  const [_, errMsg] = await getPosts(username)
+  const [listing, errMsg] = await getPosts(username)
   if (errMsg) {
     console.error(errMsg)
   }
+
   setStateAndNotify({ isFetching: false, fetchError: errMsg })
+
+  if (listing) {
+    await savePosts(listing)
+  }
 }
 
 onMessage('fetch-saved', async (msg) => {

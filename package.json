@@ -30,6 +30,9 @@
     "postinstall": "simple-git-hooks",
     "typecheck": "tsc --noEmit"
   },
+  "dependencies": {
+    "dexie": "^3.2.4"
+  },
   "devDependencies": {
     "@antfu/eslint-config": "^0.36.0",
     "@ffflorian/jszip-cli": "^3.4.1",

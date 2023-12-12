@@ -125,7 +125,7 @@ export type RedditMessage = {
   data: RedditMessageData
 }
 
-export type RedditItem = RedditPost | RedditComment
+export type RedditItem = RedditCommentData | RedditPostData
 
 export type RedditListingResponse<T> = {
   kind: 'Listing'
