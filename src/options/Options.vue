@@ -2,10 +2,11 @@
 import { sendMessage } from 'webext-bridge/options'
 import { userName } from '~/logic/storage'
 import SharedSubtitle from '~/components/SharedSubtitle.vue'
-import PostList from '~/components/PostList.vue'
+import ItemList from '~/components/ItemList.vue'
 import { store } from '~/logic/store'
 
 const status = ref('')
+const title = ref('')
 
 watch(
   userName,
@@ -32,8 +33,14 @@ async function fetchPosts() {
       <div class="mt-2">{{ store.isFetching ? 'fetching...' : status }}</div>
       <div class="mt-2 text-red-600 whitespace-pre-wrap">{{ store.fetchError }}</div>
     </div>
+
     <div class="mt-4">
-      <PostList />
+      <b class="mr-2">Title:</b>
+      <input v-model="title" class="border border-gray-400 rounded px-2 py-1 mt-2" />
+    </div>
+
+    <div class="mt-4">
+      <ItemList :title="title" />
     </div>
   </main>
 </template>

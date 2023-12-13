@@ -41,7 +41,9 @@ export type RedditPostData = {
     }>
   }
   selftext?: string
+  selftext_html?: string
   subreddit: string
+  subreddit_name_prefixed: string
   title: string
   url: string
   is_gallery?: boolean
@@ -64,35 +66,7 @@ export type RedditCommentData = {
   over_18: boolean
   permalink: string
   subreddit: string
-}
-
-export type RedditMessageData = {
-  author: string
-  author_fullname: string
-  body: string
-  body_html: string
-  context?: string
-  created: number
-  created_utc: number
-  dest: string
-  id: string
-  link_title?: string
-  name: string
-  subject: string
-  subreddit?: string
-  type?: string
-  was_comment?: boolean
-}
-
-export type RedditAccountData = {
-  id: string
-  icon_img: string
-  total_karma: number
-  inbox_count: number
-  has_mail: boolean
-  name: string
-  created_utc: number
-  comment_karma: number
+  subreddit_name_prefixed: string
 }
 
 // https://www.reddit.com/dev/api/
@@ -118,11 +92,6 @@ export type RedditPostUnfiltered = RedditPost & {
 export type RedditComment = {
   kind: RedditObjectKind.comment
   data: RedditCommentData
-}
-
-export type RedditMessage = {
-  kind: RedditObjectKind.message
-  data: RedditMessageData
 }
 
 export type RedditItem = RedditCommentData | RedditPostData

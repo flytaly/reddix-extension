@@ -2,7 +2,7 @@ import { onMessage, sendMessage } from 'webext-bridge/background'
 import devSetup from './dev-setup'
 import { getPosts } from '~/reddit'
 import type { RedditItem, RedditItemResponse } from '~/reddit/reddit-types'
-import { db } from '~/db'
+import { type SavedRedditItem, db } from '~/db'
 
 devSetup()
 
@@ -32,8 +32,7 @@ async function savePosts(listing: RedditItemResponse) {
 
   try {
     const items = listing.data.children.map((itm) => itm.data) as RedditItem[]
-    const ids = await db.items.bulkAdd(items)
-    console.log('saved', ids)
+    await db.savedItems.bulkAdd(items as SavedRedditItem[])
   } catch (error) {
     console.error(error)
   }
