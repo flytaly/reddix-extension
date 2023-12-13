@@ -32,7 +32,7 @@ async function savePosts(listing: RedditItemResponse) {
 
   try {
     const items = listing.data.children.map((itm) => itm.data) as RedditItem[]
-    await db.savedItems.bulkAdd(items as SavedRedditItem[])
+    await db.savedItems.bulkPut(items as SavedRedditItem[])
   } catch (error) {
     console.error(error)
   }

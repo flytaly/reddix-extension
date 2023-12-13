@@ -31,21 +31,48 @@ function isComment(data: SavedRedditItem): data is SavedRedditComment {
 }
 
 // Add hooks that will index for full-text search:
-db.savedItems.hook('creating', (primKey, obj) => {
+db.savedItems.hook('creating', (_primKey, obj) => {
   if (isPost(obj) && typeof obj.title == 'string') {
-    obj.title_words = getAllWords(obj.title)
+    obj.title_words = tokenize(obj.title)
   }
   if (isPost(obj) && typeof obj.selftext == 'string') {
-    obj.body_words = getAllWords(obj.selftext)
+    obj.body_words = tokenize(obj.selftext)
   }
   if (isComment(obj) && typeof obj.body == 'string') {
-    obj.body_words = getAllWords(obj.body)
+    obj.body_words = tokenize(obj.body)
   }
 })
 
-// TODO: add updating hook
+db.savedItems.hook('updating', (mods, _primKey, obj, _trans): Partial<SavedRedditItem> | undefined => {
+  const updated = {} as Partial<SavedRedditItem>
 
-function getAllWords(text: string): string[] {
+  type P = Record<keyof SavedRedditPost, unknown>
+  type C = Record<keyof SavedRedditComment, unknown>
+  if (Object.prototype.hasOwnProperty.call(mods, 'title')) {
+    updated.title_words = tokenizeProp((mods as P).title)
+  }
+  if (Object.prototype.hasOwnProperty.call(mods, 'selftext')) {
+    updated.body_words = tokenizeProp((mods as P).selftext)
+  }
+  if (Object.prototype.hasOwnProperty.call(mods, 'body')) {
+    updated.body_words = tokenizeProp((mods as C).body)
+  }
+
+  return {
+    body_words: updated.body_words || obj.body_words,
+    title_words: updated.title_words || obj.title_words,
+  }
+})
+
+function tokenizeProp(property: unknown) {
+  if (typeof property == 'string') {
+    return tokenize(property)
+  }
+  //  property was deleted (typeof -> 'undefined') or changed to an unknown type. Remove indexes:
+  return []
+}
+
+function tokenize(text: string): string[] {
   const allWordsIncludingDups = text.split(' ')
   const wordSet = new Set(allWordsIncludingDups)
   return [...wordSet.keys()]
