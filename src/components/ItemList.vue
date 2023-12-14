@@ -1,51 +1,41 @@
 <script setup lang="ts">
-// import { liveQuery } from 'dexie'
-import { db } from '~/db'
+import { db, find } from '~/logic/db'
+import { store } from '~/logic/store'
 import type { RedditCommentData, RedditItem, RedditPostData } from '~/reddit/reddit-types'
 
 const props = defineProps({
-  title: String,
+  query: String,
 })
 
 const posts = ref<RedditItem[]>()
 
-db.savedItems.toArray().then((result) => {
-  posts.value = result
-})
-
-watch(props, async (newValue) => {
+async function getPostsFromDB(query?: string) {
   // TODO: handle errors
-  if (!newValue.title.trim()) {
+  if (!query) {
     db.savedItems.toArray().then((result) => {
       posts.value = result
     })
     return
   }
-  await db.savedItems
-    .where('title_words')
-    .startsWithIgnoreCase(newValue.title)
-    .distinct()
-    .toArray()
-    .then((result) => {
-      posts.value = result
-    })
+
+  const res = await find(query.split(' ').map((s) => s.toLowerCase().trim()))
+  posts.value = res
+}
+
+getPostsFromDB(props.query)
+
+watch(
+  () => store.isFetching,
+  (isFetching) => {
+    if (!isFetching) {
+      getPostsFromDB(props.query)
+    }
+  },
+)
+
+watch(props, async (newValue) => {
+  getPostsFromDB(newValue.query)
 })
-
-// watch(title, (newValue) => {
-//   console.log('query', newValue)
-// })
-
-// const obs = liveQuery(() => db.items.toArray())
-// const sub = obs.subscribe({
-//   next: (result) => {
-//     posts.value = result
-//   },
-//   error: (error) => console.error(error),
-// })
-//
-// onUnmounted(() => {
-//   sub.unsubscribe()
-// })
 
 function getTitle(post: RedditItem) {
   return (post as RedditPostData).title || (post as RedditCommentData).body

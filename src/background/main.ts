@@ -2,7 +2,7 @@ import { onMessage, sendMessage } from 'webext-bridge/background'
 import devSetup from './dev-setup'
 import { getPosts } from '~/reddit'
 import type { RedditItem, RedditItemResponse } from '~/reddit/reddit-types'
-import { type SavedRedditItem, db } from '~/db'
+import { type SavedRedditItem, db } from '~/logic/db'
 
 devSetup()
 
@@ -48,11 +48,10 @@ async function fetchPosts(username: string) {
     console.error(errMsg)
   }
 
-  setStateAndNotify({ isFetching: false, fetchError: errMsg })
-
   if (listing) {
     await savePosts(listing)
   }
+  setStateAndNotify({ isFetching: false, fetchError: errMsg })
 }
 
 onMessage('fetch-saved', async (msg) => {

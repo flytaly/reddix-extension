@@ -6,7 +6,7 @@ import ItemList from '~/components/ItemList.vue'
 import { store } from '~/logic/store'
 
 const status = ref('')
-const title = ref('')
+const query = ref('')
 
 watch(
   userName,
@@ -35,12 +35,12 @@ async function fetchPosts() {
     </div>
 
     <div class="mt-4">
-      <b class="mr-2">Title:</b>
-      <input v-model="title" class="border border-gray-400 rounded px-2 py-1 mt-2" />
+      <b class="mr-2">Search:</b>
+      <input v-model="query" class="border border-gray-400 rounded px-2 py-1 mt-2" />
     </div>
 
     <div class="mt-4">
-      <ItemList :title="title" />
+      <ItemList :query="query" />
     </div>
   </main>
 </template>

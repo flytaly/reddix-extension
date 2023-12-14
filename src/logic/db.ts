@@ -15,7 +15,8 @@ export class MySubClassedDexie extends Dexie {
   constructor() {
     super('saved-items')
     this.version(1).stores({
-      savedItems: '++name, author, subreddit, subreddit_name_prefixed, created_utc, *title_words, *body_words', // Primary key and indexed props
+      // Primary key and indexed props. 'name' is a reddit unique identifier startting with t1_, t2_, t3_...
+      savedItems: '++, &name, author, subreddit, subreddit_name_prefixed, created_utc, *title_words, *body_words',
     })
   }
 }
@@ -73,7 +74,26 @@ function tokenizeProp(property: unknown) {
 }
 
 function tokenize(text: string): string[] {
-  const allWordsIncludingDups = text.split(' ')
+  const allWordsIncludingDups = text.toLowerCase().split(' ')
   const wordSet = new Set(allWordsIncludingDups)
   return [...wordSet.keys()]
+}
+
+export function find(prefixes: string[]) {
+  return db.transaction('r', db.savedItems, async () => {
+    // Parallell search for all prefixes - just select resulting primary keys
+    const results = await Dexie.Promise.all(
+      prefixes.map((prefix) =>
+        db.savedItems.where('body_words').startsWith(prefix).or('title_words').startsWith(prefix).primaryKeys(),
+      ),
+    )
+
+    // Intersect result set of primary keys
+    const reduced = results.reduce((a, b) => {
+      const set = new Set(b)
+      return a.filter((k) => set.has(k))
+    })
+
+    return db.savedItems.where(':id').anyOf(reduced).toArray()
+  })
 }
