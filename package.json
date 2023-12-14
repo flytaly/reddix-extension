@@ -31,13 +31,15 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "dexie": "^3.2.4"
+    "dexie": "^3.2.4",
+    "lodash-es": "^4.17.21"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.36.0",
     "@ffflorian/jszip-cli": "^3.4.1",
     "@iconify/json": "^2.2.61",
     "@types/fs-extra": "^11.0.1",
+    "@types/lodash-es": "^4.17.12",
     "@types/node": "^18.16.5",
     "@types/webextension-polyfill": "^0.10.0",
     "@typescript-eslint/eslint-plugin": "^5.59.2",
