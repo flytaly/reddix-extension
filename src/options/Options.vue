@@ -2,7 +2,7 @@
 import { sendMessage } from 'webext-bridge/options'
 import { debounce } from 'lodash-es'
 import { userName } from '~/logic/storage'
-import ItemList from '~/components/ItemList.vue'
+import Items from '~/components/Items.vue'
 import { store } from '~/logic/store'
 
 const status = ref('')
@@ -44,7 +44,7 @@ async function fetchPosts() {
     </div>
 
     <div class="mt-4">
-      <ItemList :query="query" />
+      <Items :query="query" />
     </div>
   </main>
 </template>
