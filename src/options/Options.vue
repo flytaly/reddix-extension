@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { sendMessage } from 'webext-bridge/options'
 import { userName } from '~/logic/storage'
-import SharedSubtitle from '~/components/SharedSubtitle.vue'
 import ItemList from '~/components/ItemList.vue'
 import { store } from '~/logic/store'
 
@@ -24,7 +23,6 @@ async function fetchPosts() {
 
 <template>
   <main class="px-4 py-10 text-center text-gray-700">
-    <SharedSubtitle />
 
     <input v-model="userName" class="border border-gray-400 rounded px-2 py-1 mt-2" />
 
