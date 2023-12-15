@@ -1,8 +1,13 @@
 {
-  "extends": ["@antfu", "prettier"],
+  "extends": ["plugin:vue/vue3-recommended", "prettier"],
+  "parser": "vue-eslint-parser",
+  "parserOptions": {
+    "parser": "@typescript-eslint/parser",
+    "sourceType": "module"
+  },
   "rules": {
-    "no-console": "off",
-    "@typescript-eslint/consistent-type-definitions": "off",
-    "@typescript-eslint/ban-ts-comment": "off"
-  }
+    "@typescript-eslint/no-unused-vars": "off",
+    "vue/multi-word-component-names": "off"
+  },
+  "root": true
 }
