@@ -16,7 +16,7 @@ function itemType(post: RedditItem): string {
 </script>
 
 <template>
-  <ul class="gap-4 flex flex-col text-left whitespace-nowrap max-w-xs">
+  <ol class="gap-4 flex flex-col text-left whitespace-nowrap max-w-xs list-decimal list-inside">
     <li v-for="post in items" :key="post.id" class="text-ellipsis overflow-hidden max-w-full">
       <b>{{ itemType(post) }}</b>
       <span>: </span>
@@ -24,5 +24,5 @@ function itemType(post: RedditItem): string {
         {{ getTitle(post) }}
       </span>
     </li>
-  </ul>
+  </ol>
 </template>
