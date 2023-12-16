@@ -16,8 +16,8 @@ function itemType(post: RedditItem): string {
 </script>
 
 <template>
-  <ol class="gap-4 flex flex-col text-left whitespace-nowrap max-w-xs list-decimal list-inside">
-    <li v-for="post in items" :key="post.id" class="text-ellipsis overflow-hidden max-w-full">
+  <ol class="flex max-w-xs list-inside list-decimal flex-col gap-4 whitespace-nowrap text-left">
+    <li v-for="post in items" :key="post.id" class="max-w-full overflow-hidden text-ellipsis">
       <b>{{ itemType(post) }}</b>
       <span>: </span>
       <span>

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { sendMessage } from 'webext-bridge/options'
-import { debounce } from 'lodash-es'
 import { userName } from '~/logic/storage'
 import Items from '~/components/Items.vue'
 import { store } from '~/logic/store'
+import SearchItems from '~/components/SearchItems.vue'
 
 const status = ref('')
 const query = ref('')
@@ -16,10 +16,6 @@ watch(
   { immediate: true },
 )
 
-const update = debounce((e: Event) => {
-  query.value = (e.target as HTMLInputElement)?.value
-}, 100)
-
 async function fetchPosts() {
   if (userName.value) {
     const res = await sendMessage('fetch-saved', { username: userName.value }, 'background')
@@ -29,22 +25,20 @@ async function fetchPosts() {
 </script>
 
 <template>
-  <main class="px-4 py-10 text-center text-gray-700">
-    <input v-model="userName" class="border border-gray-400 rounded px-2 py-1 mt-2" />
-
-    <div class="mt-4">
-      <button class="text-sm px-4 py-1 border border-gray-800" @click="fetchPosts">Fetch</button>
-      <div class="mt-2">{{ store.isFetching ? 'fetching...' : status }}</div>
-      <div class="mt-2 text-red-600 whitespace-pre-wrap">{{ store.fetchError }}</div>
-    </div>
-
-    <div class="mt-4">
-      <b class="mr-2">Search:</b>
-      <input class="border border-gray-400 rounded px-2 py-1 mt-2" :value="query" @input="update" />
-    </div>
-
-    <div class="mt-4">
-      <Items :query="query" />
+  <main class="grid min-h-screen grid-cols-[auto_1fr] text-gray-700">
+    <aside class="mr-auto p-4">
+      <input v-model="userName" class="mt-2 w-40 rounded border border-gray-400 px-2 py-1" />
+      <div class="mt-2">
+        <button class="border border-gray-800 px-2 py-1 text-xs" @click="fetchPosts">Fetch saved items</button>
+        <div class="mt-2">{{ store.isFetching ? 'fetching...' : status }}</div>
+        <div class="mt-2 whitespace-pre-wrap text-red-600">{{ store.fetchError }}</div>
+      </div>
+    </aside>
+    <div class="flex flex-col items-center p-4">
+      <SearchItems v-model:query="query" />
+      <div class="mt-4">
+        <Items :query="query" />
+      </div>
     </div>
   </main>
 </template>
