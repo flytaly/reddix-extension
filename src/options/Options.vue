@@ -41,3 +41,11 @@ async function fetchPosts() {
     </div>
   </main>
 </template>
+
+<style lang="postcss">
+main {
+  /* Prevent layout shift caused by scrollbar */
+  margin-right: calc(-1 * (100vw - 100%));
+  overflow-x: hidden;
+}
+</style>
