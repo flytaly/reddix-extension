@@ -27,10 +27,11 @@ function isListing(data: RedditItemResponse | RedditError): data is RedditItemRe
 
 export async function getPosts(username: string): Promise<[RedditItemResponse | null, null] | [null, string]> {
   const url = getSavedUrl(username)
+  const urlWithParams = url + '?limit=100'
   let listing: RedditItemResponse
 
   try {
-    const response = await fetch(url, { cache: 'reload' })
+    const response = await fetch(urlWithParams, { cache: 'reload' })
     const jsonResponse = (await response.json()) as RedditItemResponse | RedditError
     if (response.status !== 200 || !isListing(jsonResponse)) {
       return [null, formatError(jsonResponse as RedditError) || `${response.status} ${response.statusText}`]
