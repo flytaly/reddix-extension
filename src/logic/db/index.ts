@@ -78,22 +78,3 @@ function tokenize(text: string): string[] {
   const wordSet = new Set(allWordsIncludingDups)
   return [...wordSet.keys()]
 }
-
-export function find(prefixes: string[], { offset = 0, limit = 100 }: { offset?: number; limit?: number } = {}) {
-  return db.transaction('r', db.savedItems, async () => {
-    // Parallell search for all prefixes - just select resulting primary keys
-    const results = await Dexie.Promise.all(
-      prefixes.map((prefix) =>
-        db.savedItems.where('body_words').startsWith(prefix).or('title_words').startsWith(prefix).primaryKeys(),
-      ),
-    )
-
-    // Intersect result set of primary keys
-    const reduced = results.reduce((a, b) => {
-      const set = new Set(b)
-      return a.filter((k) => set.has(k))
-    })
-
-    return db.savedItems.where(':id').anyOf(reduced).offset(offset).limit(limit).toArray()
-  })
-}

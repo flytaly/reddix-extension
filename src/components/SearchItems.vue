@@ -1,22 +1,28 @@
 <script setup lang="ts">
 import { debounce } from 'lodash-es'
 import { defineModel } from 'vue'
+import { search } from '~/logic/store'
 
-const query = defineModel<string>('query', { required: true })
 const postsOn = defineModel<boolean>('postsOn', { default: true })
 const commentsOn = defineModel<boolean>('commentsOn', { default: true })
 
-// TODO: use reactive local state to save query and other properties
-
 const update = debounce((e: Event) => {
-  query.value = (e.target as HTMLInputElement)?.value
-}, 100)
+  search.query = (e.target as HTMLInputElement)?.value
+}, 200)
 
 watch(postsOn, (on) => {
   if (!on && !commentsOn.value) commentsOn.value = true
+
+  search.hidePosts = !postsOn.value
+  search.hideComments = !commentsOn.value
 })
+
 watch(commentsOn, (on) => {
-  if (!on && !postsOn.value) postsOn.value = true
+  if (!on && !postsOn.value) {
+    postsOn.value = true
+  }
+  search.hidePosts = !postsOn.value
+  search.hideComments = !commentsOn.value
 })
 </script>
 
@@ -24,7 +30,7 @@ watch(commentsOn, (on) => {
   <div class="mt-4 w-full max-w-[40rem] p-2">
     <div class="flex flex-col">
       <b class="mr-2 text-xl font-semibold">Search</b>
-      <input class="mt-2 rounded border border-gray-400 px-2 py-1" :value="query" @input="update" />
+      <input class="mt-2 rounded border border-gray-400 px-2 py-1" :value="search.query" @input="update" />
       <div class="mt-2 flex items-center gap-2">
         <label :class="{ disabled: !postsOn }">
           <input v-model="postsOn" type="checkbox" class="h-0 w-0" />
@@ -48,12 +54,12 @@ label {
 
 label:hover,
 label:focus-within {
-  @apply text-white;
+  @apply bg-gray-500 text-white;
 }
 
 label.disabled:hover,
 label.disabled:focus-within {
-  @apply text-gray-700;
+  @apply bg-gray-100 text-gray-700;
 }
 
 .disabled {

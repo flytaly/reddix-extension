@@ -2,11 +2,10 @@
 import { sendMessage } from 'webext-bridge/options'
 import { userName } from '~/logic/storage'
 import Items from '~/components/Items.vue'
-import { store } from '~/logic/store'
+import { state } from '~/logic/store'
 import SearchItems from '~/components/SearchItems.vue'
 
 const status = ref('')
-const query = ref('')
 
 watch(
   userName,
@@ -19,7 +18,7 @@ watch(
 async function fetchPosts() {
   if (userName.value) {
     const res = await sendMessage('fetch-saved', { username: userName.value }, 'background')
-    store.isFetching = res.isFetching
+    state.isFetching = res.isFetching
   }
 }
 </script>
@@ -30,14 +29,14 @@ async function fetchPosts() {
       <input v-model="userName" class="mt-2 w-40 rounded border border-gray-400 px-2 py-1" />
       <div class="mt-2">
         <button class="border border-gray-800 px-2 py-1 text-xs" @click="fetchPosts">Fetch saved items</button>
-        <div class="mt-2">{{ store.isFetching ? 'fetching...' : status }}</div>
-        <div class="mt-2 whitespace-pre-wrap text-red-600">{{ store.fetchError }}</div>
+        <div class="mt-2">{{ state.isFetching ? 'fetching...' : status }}</div>
+        <div class="mt-2 whitespace-pre-wrap text-red-600">{{ state.fetchError }}</div>
       </div>
     </aside>
     <div class="flex flex-col items-center p-4">
-      <SearchItems v-model:query="query" />
+      <SearchItems />
       <div class="mt-4">
-        <Items :query="query" />
+        <Items />
       </div>
     </div>
   </main>

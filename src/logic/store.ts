@@ -1,20 +1,27 @@
 import { reactive } from 'vue'
 import { onMessage, sendMessage } from 'webext-bridge/options'
+import type { SearchQuery } from './db/queries'
 
-export const store = reactive({
+export const state = reactive({
   isFetching: false,
   fetchError: '',
 })
 
-export async function initiate() {
+export async function initiateMessageHandlers() {
   sendMessage('get-state', null) //
     .then((state) => {
-      Object.assign(store, state)
+      Object.assign(state, state)
     })
 
   onMessage('state-update', ({ data }) => {
-    Object.assign(store, data)
+    Object.assign(state, data)
   })
 }
 
-void initiate()
+void initiateMessageHandlers()
+
+export const search = reactive<SearchQuery>({
+  query: '',
+  hidePosts: false,
+  hideComments: false,
+})
