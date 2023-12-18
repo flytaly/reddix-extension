@@ -33,7 +33,8 @@
   },
   "dependencies": {
     "dexie": "^3.2.4",
-    "lodash-es": "^4.17.21"
+    "lodash-es": "^4.17.21",
+    "primevue": "^3.45.0"
   },
   "devDependencies": {
     "@ffflorian/jszip-cli": "^3.6.2",

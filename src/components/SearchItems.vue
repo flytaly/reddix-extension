@@ -2,6 +2,8 @@
 import { debounce } from 'lodash-es'
 import { defineModel } from 'vue'
 import { search } from '~/logic/store'
+import TextInput from 'primevue/inputtext'
+import Tag from 'primevue/tag'
 
 const postsOn = defineModel<boolean>('postsOn', { default: true })
 const commentsOn = defineModel<boolean>('commentsOn', { default: true })
@@ -29,14 +31,23 @@ watch(commentsOn, (on) => {
 <template>
   <div class="mt-4 w-full max-w-[40rem] p-2">
     <div class="flex flex-col">
-      <b class="mr-2 text-xl font-semibold">Search</b>
-      <input class="mt-2 rounded border border-gray-400 px-2 py-1" :value="search.query" @input="update" />
+      <label for="search-input">
+        <b class="mr-2 font-mono text-xl font-semibold text-primary-600 dark:text-primary-400">Search</b>
+      </label>
+      <TextInput
+        id="search-input"
+        :value="search.query"
+        placeholder="filter posts and comments"
+        autofocus
+        @input="update"
+      />
+      <!-- <input class="mt-2 rounded border border-gray-400 px-2 py-1" :value="search.query" @input="update" /> -->
       <div class="mt-2 flex items-center gap-2">
-        <label :class="{ disabled: !postsOn }">
+        <label class="tag-toggle" :class="{ 'tag-toggle-off': !postsOn }">
           <input v-model="postsOn" type="checkbox" class="h-0 w-0" />
           <span>Posts</span>
         </label>
-        <label :class="{ disabled: !commentsOn }">
+        <label class="tag-toggle" :class="{ 'tag-toggle-off': !commentsOn }">
           <input v-model="commentsOn" type="checkbox" class="h-0 w-0" />
           <span>Comments</span>
         </label>
@@ -44,25 +55,3 @@ watch(commentsOn, (on) => {
     </div>
   </div>
 </template>
-
-<style lang="postcss">
-label {
-  @apply rounded-md bg-gray-600 px-2 py-1 text-gray-100;
-
-  font-weight: 500;
-}
-
-label:hover,
-label:focus-within {
-  @apply bg-gray-500 text-white;
-}
-
-label.disabled:hover,
-label.disabled:focus-within {
-  @apply bg-gray-100 text-gray-700;
-}
-
-.disabled {
-  @apply bg-gray-50 text-gray-400;
-}
-</style>

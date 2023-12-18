@@ -60,7 +60,14 @@ watch(offset, () => addPosts(search, offset.value, ITEMS_ON_PAGE))
   <div class="flex flex-col items-center justify-center">
     <ItemList :items="items" />
     <div v-if="!isEnd">
-      <button ref="target" class="p-2 py-4" @click="offset += ITEMS_ON_PAGE">Load more</button>
+      <button
+        ref="target"
+        class="p-2 py-4 text-primary-700 dark:text-primary-400"
+        tabindex="-1"
+        @click="offset += ITEMS_ON_PAGE"
+      >
+        Load more
+      </button>
     </div>
   </div>
 </template>
