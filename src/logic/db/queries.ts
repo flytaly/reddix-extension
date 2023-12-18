@@ -1,4 +1,4 @@
-import Dexie, { Collection, IndexableType, Table } from 'dexie'
+import Dexie from 'dexie'
 import { ITEMS_ON_PAGE } from '~/constants'
 import { db } from '~/logic/db'
 import { RedditObjectKind } from '~/reddit/reddit-types'
@@ -8,39 +8,46 @@ export type SearchQuery = {
   hidePosts: boolean
   hideComments: boolean
 }
-
-export async function getPostsFromDB(queryDetails: SearchQuery, offset = 0, limit = ITEMS_ON_PAGE) {
+// with cursor based pagination
+// https://dexie.org/docs/Collection/Collection.offset()#a-better-paging-approach
+export async function getPostsFromDB(queryDetails: SearchQuery, lastId = 0, limit = ITEMS_ON_PAGE) {
   const { query } = queryDetails
   // TODO: handle errors
   if (!query) {
-    const collection = filterItemTypes(db.savedItems, queryDetails)
-    return collection.offset(offset).limit(limit).toArray()
+    return db.savedItems
+      .where('_id')
+      .above(lastId)
+      .filter(makeFilterFn(queryDetails)) //
+      .limit(limit)
+      .toArray()
   }
   const res = await find(
     query.split(' ').map((s) => s.toLowerCase().trim()),
     queryDetails,
-    { limit, offset },
+    { limit, lastId },
   )
   return res
 }
 
-function filterItemTypes<T>(table: Table<T, IndexableType>, details: SearchQuery): Collection<T, IndexableType> {
-  const { hidePosts, hideComments } = details
-  let collection: Collection<T, IndexableType> | undefined
-  if (hidePosts) {
-    collection = table.where('name').startsWith(RedditObjectKind.comment)
-  }
-  if (hideComments) {
-    collection = table.where('name').startsWith(RedditObjectKind.link)
-  }
+type RedditItemWithName = { name: string }
 
-  return collection || table.toCollection()
+function makeFilterFn(details: SearchQuery) {
+  return (item: RedditItemWithName) => {
+    if (details.hidePosts) {
+      return !item.name.startsWith(RedditObjectKind.link)
+    }
+    if (details.hideComments) {
+      return !item.name.startsWith(RedditObjectKind.comment)
+    }
+
+    return true
+  }
 }
 
 export function find(
   prefixes: string[],
   details: SearchQuery,
-  { offset = 0, limit = 100 }: { offset?: number; limit?: number } = {},
+  { lastId = 0, limit = ITEMS_ON_PAGE }: { lastId?: number; limit?: number } = {},
 ) {
   return db.transaction('r', db.savedItems, async () => {
     // Parallell search for all prefixes - just select resulting primary keys
@@ -66,10 +73,13 @@ export function find(
         if (details.hideComments) {
           return !item.name.startsWith(RedditObjectKind.comment)
         }
+        if (item._id <= lastId) {
+          return false
+        }
         return true
       })
-      .sortBy(':id')
+      .sortBy('_id')
 
-    return items.slice(offset, offset + limit)
+    return items.slice(0, limit)
   })
 }

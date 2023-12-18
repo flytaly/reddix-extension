@@ -1,25 +1,25 @@
 <script setup lang="ts">
 import { useIntersectionObserver } from '@vueuse/core'
 import { SavedRedditItem } from '~/logic/db'
-import { SearchQuery, getPostsFromDB } from '~/logic/db/queries'
+import { getPostsFromDB } from '~/logic/db/queries'
 import { state, search } from '~/logic/store'
-import { type RedditItem } from '~/reddit/reddit-types'
 import ItemList from '~/components/ItemList.vue'
 import { ITEMS_ON_PAGE } from '~/constants'
 
-const offset = ref(0)
+const lastId = ref(0)
 const isEnd = ref(false)
-const items = ref<RedditItem[]>()
+const items = ref<SavedRedditItem[]>()
 
 const target = ref(null)
 const targetIsVisible = ref(false)
 
-async function addPosts(searchDetails: SearchQuery, offset = 0, limit = ITEMS_ON_PAGE) {
-  const items = await getPostsFromDB(searchDetails, offset, limit)
-  onNewItems(items, offset, ITEMS_ON_PAGE)
-}
+onMounted(() => loadMore())
 
-onMounted(() => addPosts(search))
+async function loadMore() {
+  const id = lastId.value
+  const items = await getPostsFromDB(search, id, ITEMS_ON_PAGE)
+  onNewItems(items, id, ITEMS_ON_PAGE)
+}
 
 const { pause, resume } = useIntersectionObserver(
   target,
@@ -27,45 +27,42 @@ const { pause, resume } = useIntersectionObserver(
     targetIsVisible.value = isIntersecting
     if (!isIntersecting || isEnd.value || !items.value?.length) return
     pause()
-    offset.value += ITEMS_ON_PAGE
+    loadMore()
   },
   { rootMargin: '100px', immediate: false },
 )
 
-function onNewItems(incoming: SavedRedditItem[], offset: number, limit: number) {
+function onNewItems(incoming: SavedRedditItem[], prevLastId: number, limit: number) {
   isEnd.value = incoming.length < limit
+  console.log(`get ${incoming.length} items from db. After id ${prevLastId}`)
   nextTick(() => resume())
-  if (offset === 0 || !items.value?.length) {
+  if (prevLastId === 0 || !items.value?.length) {
     items.value = incoming
-    return
+  } else {
+    items.value = [...items.value, ...incoming]
   }
-  items.value = [...items.value, ...incoming]
+  lastId.value = items.value.at(-1)?._id || 0
 }
 
 watch(
   () => state.isFetching,
   (isFetching) => {
     if (isFetching) return
-    addPosts(search, offset.value)
+    lastId.value = 0
+    return loadMore()
   },
 )
-watch(search, async (newValue) => {
-  offset.value = 0
-  await addPosts(newValue, 0)
+watch(search, async () => {
+  lastId.value = 0
+  return loadMore()
 })
-watch(offset, () => addPosts(search, offset.value, ITEMS_ON_PAGE))
 </script>
 
 <template>
   <div class="flex flex-col items-center justify-center">
     <ItemList :items="items" />
     <div v-if="!isEnd">
-      <button
-        ref="target"
-        class="p-2 py-4 text-primary-700 dark:text-primary-400"
-        tabindex="-1"
-        @click="offset += ITEMS_ON_PAGE"
-      >
+      <button ref="target" class="p-2 py-4 text-primary-700 dark:text-primary-400" tabindex="-1" @click="loadMore">
         Load more
       </button>
     </div>

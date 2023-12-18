@@ -3,8 +3,8 @@ import Dexie, { type Table } from 'dexie'
 import type { RedditCommentData, RedditPostData } from '~/reddit/reddit-types'
 import { RedditObjectKind } from '~/reddit/reddit-types'
 
-export type SavedRedditPost = RedditPostData & { title_words: string[]; body_words: string[] }
-export type SavedRedditComment = RedditCommentData & { title_words: string[]; body_words: string[] }
+export type SavedRedditPost = RedditPostData & { title_words: string[]; body_words: string[]; _id: number }
+export type SavedRedditComment = RedditCommentData & { title_words: string[]; body_words: string[]; _id: number }
 export type SavedRedditItem = SavedRedditPost | SavedRedditComment
 
 export class MySubClassedDexie extends Dexie {
@@ -16,7 +16,7 @@ export class MySubClassedDexie extends Dexie {
     super('saved-items')
     this.version(1).stores({
       // Primary key and indexed props. 'name' is a reddit unique identifier startting with t1_, t2_, t3_...
-      savedItems: '++, &name, author, subreddit, subreddit_name_prefixed, created_utc, *title_words, *body_words',
+      savedItems: '++_id, &name, author, subreddit, subreddit_name_prefixed, created_utc, *title_words, *body_words',
     })
   }
 }
