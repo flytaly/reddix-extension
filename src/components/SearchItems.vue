@@ -3,7 +3,6 @@ import { debounce } from 'lodash-es'
 import { defineModel } from 'vue'
 import { search } from '~/logic/store'
 import TextInput from 'primevue/inputtext'
-import Tag from 'primevue/tag'
 
 const postsOn = defineModel<boolean>('postsOn', { default: true })
 const commentsOn = defineModel<boolean>('commentsOn', { default: true })
@@ -41,7 +40,6 @@ watch(commentsOn, (on) => {
         autofocus
         @input="update"
       />
-      <!-- <input class="mt-2 rounded border border-gray-400 px-2 py-1" :value="search.query" @input="update" /> -->
       <div class="mt-2 flex items-center gap-2">
         <label class="tag-toggle" :class="{ 'tag-toggle-off': !postsOn }">
           <input v-model="postsOn" type="checkbox" class="h-0 w-0" />

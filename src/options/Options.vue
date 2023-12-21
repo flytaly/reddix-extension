@@ -5,11 +5,14 @@ import Items from '~/components/Items.vue'
 import { state } from '~/logic/store'
 import SearchItems from '~/components/SearchItems.vue'
 import InputText from 'primevue/inputtext'
-import InlineMessage from 'primevue/inlinemessage'
 import Button from 'primevue/button'
 import { ref, watch } from 'vue'
+import { liveQuery } from 'dexie'
+import { db } from '~/logic/db'
 
 const status = ref('')
+
+const tags = ref<Record<string, number>>({})
 
 watch(
   userName,
@@ -25,13 +28,29 @@ async function fetchPosts() {
     state.isFetching = res.isFetching
   }
 }
+
 watch(userName, () => {
   if (state.fetchError) state.fetchError = ''
+})
+
+const tagsObs = liveQuery(() =>
+  db.savedItems.orderBy('_tags').keys((keys) => {
+    const count = {} as Record<string, number>
+    keys.forEach((key) => {
+      const k = key.toString()
+      count[k] = (count[k] || 0) + 1
+    })
+    return count
+  }),
+)
+
+tagsObs.subscribe((res) => {
+  tags.value = res
 })
 </script>
 
 <template>
-  <main class="text-dark grid min-h-screen grid-cols-[auto_1fr] bg-surface-50 dark:bg-surface-900 dark:text-light">
+  <main class="grid min-h-screen grid-cols-[auto_1fr] bg-surface-50 text-dark dark:bg-surface-900 dark:text-light">
     <aside class="mr-auto max-w-52 p-4">
       <div class="flex flex-col gap-2">
         <InputText
@@ -58,6 +77,12 @@ watch(userName, () => {
             <span>{{ state.isFetching ? 'fetching...' : 'Fetch saved items' }}</span>
           </div>
         </Button>
+      </div>
+      <div class="mt-8 flex flex-col gap-1 text-sm text-surface-500 dark:text-surface-400">
+        <h2>Tags:</h2>
+        <ul>
+          <li v-for="tag in Object.keys(tags)" :key="tag">#{{ tag }} - {{ tags[tag] }}</li>
+        </ul>
       </div>
     </aside>
     <div class="flex flex-col items-center p-4">

@@ -5,6 +5,9 @@ import { getPostsFromDB } from '~/logic/db/queries'
 import { state, search } from '~/logic/store'
 import ItemList from '~/components/ItemList.vue'
 import { ITEMS_ON_PAGE } from '~/constants'
+import OverlayPanel from 'primevue/overlaypanel'
+import AddTagsInput from '~/components/AddTagsInput.vue'
+import { ref, onMounted, nextTick } from 'vue'
 
 const lastId = ref(0)
 const isEnd = ref(false)
@@ -56,11 +59,22 @@ watch(search, async () => {
   lastId.value = 0
   return loadMore()
 })
+
+const redditId = ref('')
+const op = ref()
+const toggle = (event: Event & { currentTarget: HTMLElement }) => {
+  const li = event.currentTarget.closest('[data-reddit-name]') as HTMLElement | null
+  redditId.value = li?.dataset.redditName || ''
+  op.value.toggle(event)
+}
 </script>
 
 <template>
   <div class="flex flex-col items-center justify-center">
-    <ItemList :items="items" />
+    <OverlayPanel ref="op" class="px-0 py-0" :pt="{ content: 'p-2' }">
+      <AddTagsInput :reddit-id="redditId" />
+    </OverlayPanel>
+    <ItemList :items="items" :toggle="toggle" />
     <div v-if="!isEnd">
       <button ref="target" class="p-2 py-4 text-primary-700 dark:text-primary-400" tabindex="-1" @click="loadMore">
         Load more

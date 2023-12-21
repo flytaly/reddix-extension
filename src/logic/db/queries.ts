@@ -53,7 +53,7 @@ export function find(
     // Parallell search for all prefixes - just select resulting primary keys
     const results = await Dexie.Promise.all(
       prefixes.map((prefix) =>
-        db.savedItems.where('body_words').startsWith(prefix).or('title_words').startsWith(prefix).primaryKeys(),
+        db.savedItems.where('_body_words').startsWith(prefix).or('_title_words').startsWith(prefix).primaryKeys(),
       ),
     )
 
@@ -73,6 +73,7 @@ export function find(
         if (details.hideComments) {
           return !item.name.startsWith(RedditObjectKind.comment)
         }
+        // pagination
         if (item._id <= lastId) {
           return false
         }
