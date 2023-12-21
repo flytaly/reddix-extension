@@ -2,17 +2,59 @@
 import { ref, nextTick } from 'vue'
 import AutoComplete from 'primevue/autocomplete'
 import { SavedRedditItem, db } from '~/logic/db'
+import { getTagsArray, stats } from '~/logic/store'
 
 const props = defineProps<{
   redditId: string
 }>()
 
-type Itm = Array<[string, number]>
+type TagList = Array<[string, number]>
 
-const value = ref<Itm>([])
-const items = ref<Itm>([])
+const currentTags = ref<TagList>([])
+const allTags = ref<TagList>([])
+const completeItems = ref<TagList>([])
+
+const parts = ref<Record<string, TagList>>({})
+
+onMounted(async () => {
+  const item = await db.savedItems.where({ name: props.redditId }).first()
+  if (!item?._tags) return
+  currentTags.value = item._tags.map((tag) => [tag, 0])
+})
+
+watch(
+  () => stats.tags,
+  () => {
+    parts.value = {}
+    allTags.value = getTagsArray()
+    // split tag words
+    allTags.value.forEach(([tag, count]) => {
+      for (let i = 0; i < tag.length; i++) {
+        const substr = tag.slice(0, i + 1)
+        if (!parts.value[substr]) {
+          parts.value[substr] = []
+        }
+        if (parts.value[substr].length >= 10) {
+          continue
+        }
+        parts.value[substr] = [...parts.value[substr], [tag, count]]
+      }
+    })
+  },
+  { immediate: true },
+)
+
 const search = (event: { query: string }) => {
-  items.value = [...Array(10).keys()].map((item, i) => (!i ? [event.query, i] : [event.query + '-' + item, i]))
+  let tags = parts.value[event.query]
+  if (!tags) {
+    completeItems.value = !event.query ? allTags.value.slice(0, 30) : [[event.query, stats.tags[event.query]]]
+    return
+  }
+  if (!event.query || tags[0][0] == event.query) {
+    completeItems.value = tags
+    return
+  }
+  completeItems.value = [[event.query, stats.tags[event.query]], ...tags]
 }
 
 const target = ref()
@@ -25,10 +67,8 @@ onMounted(() => {
 })
 
 async function commit() {
-  // await db.savedItems.update({ name: props.redditId }, {})
-  await db.savedItems
-    .where({ name: props.redditId })
-    .modify({ _tags: value.value.map((v) => v[0]) } as Partial<SavedRedditItem>)
+  const set = new Set(currentTags.value.map((v) => v[0]))
+  await db.savedItems.where({ name: props.redditId }).modify({ _tags: Array.from(set) } as Partial<SavedRedditItem>)
 }
 </script>
 
@@ -37,19 +77,21 @@ async function commit() {
     <h2>Add tags to {{ redditId }}</h2>
     <div class="card flex justify-center">
       <AutoComplete
-        v-model="value"
+        v-model="currentTags"
         multiple
         dropdown
-        :suggestions="items"
+        :suggestions="completeItems"
         :complete-on-focus="true"
         :delay="200"
         @complete="search"
         @item-select="commit"
+        @item-unselect="commit"
       >
         <template #chip="slotProps"> #{{ slotProps.value[0] }} </template>
         <template #option="slotProps">
-          <div class="align-options-center flex">
-            <div>#{{ slotProps.option[0] }} -- ({{ slotProps.option[1] }})</div>
+          <div class="flex justify-between gap-2">
+            <div>#{{ slotProps.option[0] }}</div>
+            <div class="ml-auto text-surface-400 dark:text-surface-500">{{ slotProps.option[1] || 'new' }}</div>
           </div>
         </template>
       </AutoComplete>

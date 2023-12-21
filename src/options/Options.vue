@@ -7,12 +7,9 @@ import SearchItems from '~/components/SearchItems.vue'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 import { ref, watch } from 'vue'
-import { liveQuery } from 'dexie'
-import { db } from '~/logic/db'
+import { getTagsArray, setupStatsStore } from '~/logic/store'
 
 const status = ref('')
-
-const tags = ref<Record<string, number>>({})
 
 watch(
   userName,
@@ -33,19 +30,10 @@ watch(userName, () => {
   if (state.fetchError) state.fetchError = ''
 })
 
-const tagsObs = liveQuery(() =>
-  db.savedItems.orderBy('_tags').keys((keys) => {
-    const count = {} as Record<string, number>
-    keys.forEach((key) => {
-      const k = key.toString()
-      count[k] = (count[k] || 0) + 1
-    })
-    return count
-  }),
-)
+let subscription = setupStatsStore()
 
-tagsObs.subscribe((res) => {
-  tags.value = res
+onUnmounted(async () => {
+  ;(await subscription).unsubscribe()
 })
 </script>
 
@@ -79,9 +67,9 @@ tagsObs.subscribe((res) => {
         </Button>
       </div>
       <div class="mt-8 flex flex-col gap-1 text-sm text-surface-500 dark:text-surface-400">
-        <h2>Tags:</h2>
+        <h2 class="font-bold">Tags</h2>
         <ul>
-          <li v-for="tag in Object.keys(tags)" :key="tag">#{{ tag }} - {{ tags[tag] }}</li>
+          <li v-for="[tag, count] in getTagsArray()" :key="tag">#{{ tag }} - {{ count }}</li>
         </ul>
       </div>
     </aside>
