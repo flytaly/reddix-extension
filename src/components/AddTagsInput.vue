@@ -8,6 +8,10 @@ const props = defineProps<{
   redditId: string
 }>()
 
+const emit = defineEmits<{
+  exit: [tags: string[], redditId: string]
+}>()
+
 type TagList = Array<[string, number]>
 
 const currentTags = ref<TagList>([])
@@ -20,6 +24,14 @@ onMounted(async () => {
   const item = await db.savedItems.where({ name: props.redditId }).first()
   if (!item?._tags) return
   currentTags.value = item._tags.map((tag) => [tag, 0])
+})
+
+onUnmounted(() => {
+  emit(
+    'exit',
+    currentTags.value.map(([tag]) => tag),
+    props.redditId,
+  )
 })
 
 watch(

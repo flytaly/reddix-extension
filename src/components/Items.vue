@@ -67,14 +67,26 @@ const toggle = (event: Event & { currentTarget: HTMLElement }) => {
   redditId.value = li?.dataset.redditName || ''
   op.value.toggle(event)
 }
+
+const updateTags = (tags: string[], redditId: string) => {
+  if (!redditId) return
+  items.value = items.value?.map((item) => {
+    if (item.name === redditId) {
+      return { ...item, _tags: tags }
+    }
+    return item
+  })
+
+  console.log(tags, redditId)
+}
 </script>
 
 <template>
   <div class="flex flex-col items-center justify-center">
     <OverlayPanel ref="op" class="px-0 py-0" :pt="{ content: 'p-2' }">
-      <AddTagsInput :reddit-id="redditId" />
+      <AddTagsInput :reddit-id="redditId" @exit="updateTags" />
     </OverlayPanel>
-    <ItemList :items="items" :toggle="toggle" />
+    <ItemList :items="items" :add-tags="toggle" />
     <div v-if="!isEnd">
       <button ref="target" class="p-2 py-4 text-primary-700 dark:text-primary-400" tabindex="-1" @click="loadMore">
         Load more
