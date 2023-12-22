@@ -1,4 +1,4 @@
-import Dexie from 'dexie'
+import Dexie, { IndexableType, PromiseExtended } from 'dexie'
 import { ITEMS_ON_PAGE } from '~/constants'
 import { db } from '~/logic/db'
 import { RedditObjectKind } from '~/reddit/reddit-types'
@@ -7,6 +7,8 @@ export type SearchQuery = {
   query: string
   hidePosts: boolean
   hideComments: boolean
+  words: string[]
+  tags: string[]
 }
 // with cursor based pagination
 // https://dexie.org/docs/Collection/Collection.offset()#a-better-paging-approach
@@ -21,11 +23,7 @@ export async function getPostsFromDB(queryDetails: SearchQuery, lastId = 0, limi
       .limit(limit)
       .toArray()
   }
-  const res = await find(
-    query.split(' ').map((s) => s.toLowerCase().trim()),
-    queryDetails,
-    { limit, lastId },
-  )
+  const res = await find(queryDetails, { limit, lastId })
   return res
 }
 
@@ -45,17 +43,18 @@ function makeFilterFn(details: SearchQuery) {
 }
 
 export function find(
-  prefixes: string[],
   details: SearchQuery,
   { lastId = 0, limit = ITEMS_ON_PAGE }: { lastId?: number; limit?: number } = {},
 ) {
   return db.transaction('r', db.savedItems, async () => {
     // Parallell search for all prefixes - just select resulting primary keys
-    const results = await Dexie.Promise.all(
-      prefixes.map((prefix) =>
-        db.savedItems.where('_body_words').startsWith(prefix).or('_title_words').startsWith(prefix).primaryKeys(),
-      ),
+    let dbQueries = [] as PromiseExtended<IndexableType[]>[]
+    dbQueries = details.words.map((p) =>
+      db.savedItems.where('_body_words').startsWith(p).or('_title_words').startsWith(p).primaryKeys(),
     )
+    dbQueries.push(...details.tags.map((t) => db.savedItems.where('_tags').equals(t).primaryKeys()))
+
+    const results = await Dexie.Promise.all(dbQueries)
 
     // Intersect result set of primary keys
     const reduced = results.reduce((a, b) => {

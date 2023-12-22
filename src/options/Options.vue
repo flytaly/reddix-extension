@@ -7,7 +7,7 @@ import SearchItems from '~/components/SearchItems.vue'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 import { ref, watch } from 'vue'
-import { getTagsArray, setupStatsStore } from '~/logic/store'
+import { getTagsArray, setupStatsStore, setTag } from '~/logic/store'
 
 const status = ref('')
 
@@ -35,6 +35,12 @@ let subscription = setupStatsStore()
 onUnmounted(async () => {
   ;(await subscription).unsubscribe()
 })
+
+async function onTagClick(e: MouseEvent) {
+  const tag = (e.currentTarget as HTMLElement).dataset.tag
+  if (!tag) return
+  setTag(tag)
+}
 </script>
 
 <template>
@@ -66,10 +72,20 @@ onUnmounted(async () => {
           </div>
         </Button>
       </div>
-      <div class="mt-8 flex flex-col gap-1 text-sm text-surface-500 dark:text-surface-400">
+      <div class="mt-8 flex flex-col gap-1 text-sm">
         <h2 class="font-bold">Tags</h2>
         <ul>
-          <li v-for="[tag, count] in getTagsArray()" :key="tag">#{{ tag }} - {{ count }}</li>
+          <li v-for="[tag, count] in getTagsArray()" :key="tag">
+            <a
+              href="#"
+              class="flex justify-between gap-2 overflow-hidden text-ellipsis whitespace-pre text-surface-500 hover:text-primary-500 dark:text-surface-400 dark:hover:text-primary-400"
+              :data-tag="tag"
+              @click.prevent="onTagClick"
+            >
+              <span>#{{ tag }}</span>
+              <span>{{ count }}</span>
+            </a>
+          </li>
         </ul>
       </div>
     </aside>

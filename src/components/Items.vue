@@ -7,11 +7,11 @@ import ItemList from '~/components/ItemList.vue'
 import { ITEMS_ON_PAGE } from '~/constants'
 import OverlayPanel from 'primevue/overlaypanel'
 import AddTagsInput from '~/components/AddTagsInput.vue'
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, shallowRef, onMounted, nextTick } from 'vue'
 
 const lastId = ref(0)
 const isEnd = ref(false)
-const items = ref<SavedRedditItem[]>()
+const items = shallowRef<SavedRedditItem[]>()
 
 const target = ref(null)
 const targetIsVisible = ref(false)
@@ -76,8 +76,6 @@ const updateTags = (tags: string[], redditId: string) => {
     }
     return item
   })
-
-  console.log(tags, redditId)
 }
 </script>
 

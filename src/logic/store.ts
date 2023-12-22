@@ -26,7 +26,31 @@ export const search = reactive<SearchQuery>({
   query: '',
   hidePosts: false,
   hideComments: false,
+  tags: [],
+  words: [],
 })
+
+export function setSearchQuery(query: string) {
+  const pieces = query.split(' ')
+  search.tags = []
+  search.words = []
+  for (let piece of pieces) {
+    if (piece.startsWith('#')) {
+      search.tags.push(piece.slice(1))
+      continue
+    }
+    search.words.push(piece.toLowerCase())
+  }
+  search.query = query
+}
+
+export function setTag(tag: string) {
+  search.tags = [tag]
+  search.words = []
+  search.query = '#' + tag + ' '
+  const input = document.getElementById('search-input')
+  if (input) input.focus()
+}
 
 type Info = {
   tags: Record<string, number>

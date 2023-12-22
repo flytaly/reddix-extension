@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { debounce } from 'lodash-es'
 import { defineModel } from 'vue'
-import { search } from '~/logic/store'
+import { search, setSearchQuery } from '~/logic/store'
 import TextInput from 'primevue/inputtext'
 
 const postsOn = defineModel<boolean>('postsOn', { default: true })
 const commentsOn = defineModel<boolean>('commentsOn', { default: true })
 
 const update = debounce((e: Event) => {
-  search.query = (e.target as HTMLInputElement)?.value
+  const query = (e.target as HTMLInputElement)?.value
+  setSearchQuery(query)
 }, 200)
 
 watch(postsOn, (on) => {

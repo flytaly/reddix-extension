@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import Button from 'primevue/button'
 import type { RedditCommentData, RedditItem, RedditPostData } from '~/reddit/reddit-types'
 import type { SavedRedditItem } from '~/logic/db'
-import Button from 'primevue/button'
+import { setTag } from '~/logic/store'
 
 defineProps<{ items?: SavedRedditItem[]; addTags: () => void }>()
 
@@ -14,6 +15,12 @@ function itemType(post: RedditItem): string {
     return 'Post'
   }
   return 'Comment'
+}
+
+async function onTagClick(e: MouseEvent) {
+  const tag = (e.currentTarget as HTMLElement).dataset.tag
+  if (!tag) return
+  setTag(tag)
 }
 </script>
 
@@ -48,9 +55,14 @@ function itemType(post: RedditItem): string {
 
       <ul v-if="post._tags?.length" class="flex flex-wrap gap-2 pt-0.5 text-xs">
         <li v-for="tag in post._tags" :key="tag" class="">
-          <a href="#" class="text-surface-500 hover:text-primary-500 dark:text-surface-400 dark:hover:text-primary-400"
-            >#{{ tag }}</a
+          <a
+            href="#"
+            class="text-surface-500 hover:text-primary-500 dark:text-surface-400 dark:hover:text-primary-400"
+            :data-tag="tag"
+            @click.prevent="onTagClick"
           >
+            #{{ tag }}
+          </a>
         </li>
       </ul>
     </li>
