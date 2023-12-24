@@ -28,15 +28,26 @@ export const search = reactive<SearchQuery>({
   hideComments: false,
   tags: [],
   words: [],
+  author: '',
 })
 
 export function setSearchQuery(query: string) {
   const pieces = query.split(' ')
   search.tags = []
   search.words = []
+  search.author = ''
   for (let piece of pieces) {
+    if (piece.startsWith('\\')) {
+      // escape
+      search.words.push(piece.slice(1).toLowerCase())
+      continue
+    }
     if (piece.startsWith('#')) {
       search.tags.push(piece.slice(1))
+      continue
+    }
+    if (piece.startsWith('author:')) {
+      search.author = piece.slice(7)
       continue
     }
     search.words.push(piece.toLowerCase())

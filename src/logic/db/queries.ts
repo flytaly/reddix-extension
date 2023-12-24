@@ -9,6 +9,7 @@ export type SearchQuery = {
   hideComments: boolean
   words: string[]
   tags: string[]
+  author: string
 }
 // with cursor based pagination
 // https://dexie.org/docs/Collection/Collection.offset()#a-better-paging-approach
@@ -53,8 +54,15 @@ export function find(
       db.savedItems.where('_body_words').startsWith(p).or('_title_words').startsWith(p).primaryKeys(),
     )
     dbQueries.push(...details.tags.map((t) => db.savedItems.where('_tags').equals(t).primaryKeys()))
+    if (details.author) {
+      dbQueries.push(db.savedItems.where('author').startsWithIgnoreCase(details.author).primaryKeys())
+    }
 
     const results = await Dexie.Promise.all(dbQueries)
+
+    if (results.length === 0) {
+      return []
+    }
 
     // Intersect result set of primary keys
     const reduced = results.reduce((a, b) => {
