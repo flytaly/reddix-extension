@@ -4,13 +4,14 @@ import { db } from '~/logic/db'
 import { RedditObjectKind } from '~/reddit/reddit-types'
 
 export type SearchQuery = {
-  query: string
-  hidePosts: boolean
-  hideComments: boolean
-  words: string[]
-  tags: string[]
   author: string
+  hideComments: boolean
+  hidePosts: boolean
+  query: string
+  subreddit: string
+  tags: string[]
   title: string[]
+  words: string[]
 }
 
 // with cursor based pagination
@@ -71,6 +72,11 @@ export function find(
     // author
     if (details.author) {
       dbQueries.push(db.savedItems.where('author').startsWithIgnoreCase(details.author).primaryKeys())
+    }
+
+    // subreddit
+    if (details.subreddit) {
+      dbQueries.push(db.savedItems.where('subreddit').startsWithIgnoreCase(details.subreddit).primaryKeys())
     }
 
     const results = await Dexie.Promise.all(dbQueries)

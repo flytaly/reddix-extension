@@ -1,13 +1,14 @@
 import { SearchQuery } from './db/queries'
 
 export const search = reactive<SearchQuery>({
-  query: '',
-  tags: [],
-  words: [],
   author: '',
-  title: [],
-  hidePosts: false,
   hideComments: false,
+  hidePosts: false,
+  query: '',
+  subreddit: '',
+  tags: [],
+  title: [],
+  words: [],
 })
 
 export function clearSearch() {
@@ -16,6 +17,7 @@ export function clearSearch() {
   search.words = []
   search.author = ''
   search.title = []
+  search.subreddit = ''
 }
 
 export function setSearchQuery(query: string) {
@@ -35,8 +37,20 @@ export function setSearchQuery(query: string) {
       search.author = piece.slice(7)
       continue
     }
+    if (piece.startsWith('u/')) {
+      search.author = piece.slice(2)
+      continue
+    }
     if (piece.startsWith('title:')) {
       search.title.push(piece.slice(6).toLowerCase())
+      continue
+    }
+    if (piece.startsWith('subreddit:')) {
+      search.subreddit = piece.slice(10)
+      continue
+    }
+    if (piece.startsWith('r/')) {
+      search.subreddit = piece.slice(2)
       continue
     }
     search.words.push(piece.toLowerCase())

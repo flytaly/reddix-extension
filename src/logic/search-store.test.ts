@@ -26,16 +26,34 @@ describe('Search store', () => {
       expect(search).toMatchObject(create({ query, tags: ['hello'], words: ['world'], author: 'name' }))
     })
 
+    it('author u/', () => {
+      const query = '#hello u/name world'
+      setSearchQuery(query)
+      expect(search).toMatchObject(create({ query, tags: ['hello'], words: ['world'], author: 'name' }))
+    })
+
     it('title', () => {
       const query = 'title:Hello world'
       setSearchQuery(query)
       expect(search).toMatchObject(create({ query, words: ['world'], title: ['hello'] }))
     })
 
-    it('escape', () => {
-      const query = '\\#Hello World'
+    it('subreddit', () => {
+      const query = 'subreddit:Damnthatsinteresting hello'
       setSearchQuery(query)
-      expect(search).toMatchObject(create({ query, words: ['#hello', 'world'] }))
+      expect(search).toMatchObject(create({ query, words: ['hello'], subreddit: 'Damnthatsinteresting' }))
+    })
+
+    it('subreddit r/', () => {
+      const query = 'r/Damnthatsinteresting hello'
+      setSearchQuery(query)
+      expect(search).toMatchObject(create({ query, words: ['hello'], subreddit: 'Damnthatsinteresting' }))
+    })
+
+    it('escape', () => {
+      const query = '\\r/sub \\#Hello World'
+      setSearchQuery(query)
+      expect(search).toMatchObject(create({ query, words: ['r/sub', '#hello', 'world'] }))
     })
   })
 
