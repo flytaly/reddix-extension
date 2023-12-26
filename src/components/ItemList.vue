@@ -2,7 +2,7 @@
 import Button from 'primevue/button'
 import type { RedditCommentData, RedditItem, RedditPostData } from '~/reddit/reddit-types'
 import type { SavedRedditItem } from '~/logic/db'
-import { setTag } from '~/logic/store'
+import { setTag } from '~/logic/search-store'
 
 defineProps<{ items?: SavedRedditItem[]; addTags: () => void }>()
 

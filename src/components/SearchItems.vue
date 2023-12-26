@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { debounce } from 'lodash-es'
 import { defineModel } from 'vue'
-import { search, setSearchQuery } from '~/logic/store'
+import { search, setSearchQuery } from '~/logic/search-store'
 import TextInput from 'primevue/inputtext'
 
 const postsOn = defineModel<boolean>('postsOn', { default: true })

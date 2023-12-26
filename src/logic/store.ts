@@ -1,6 +1,5 @@
 import { reactive } from 'vue'
 import { onMessage, sendMessage } from 'webext-bridge/options'
-import type { SearchQuery } from './db/queries'
 import { db } from './db/index'
 import { liveQuery } from 'dexie'
 
@@ -21,47 +20,6 @@ export async function setupMessageHandlers() {
 }
 
 void setupMessageHandlers()
-
-export const search = reactive<SearchQuery>({
-  query: '',
-  hidePosts: false,
-  hideComments: false,
-  tags: [],
-  words: [],
-  author: '',
-})
-
-export function setSearchQuery(query: string) {
-  const pieces = query.split(' ')
-  search.tags = []
-  search.words = []
-  search.author = ''
-  for (let piece of pieces) {
-    if (piece.startsWith('\\')) {
-      // escape
-      search.words.push(piece.slice(1).toLowerCase())
-      continue
-    }
-    if (piece.startsWith('#')) {
-      search.tags.push(piece.slice(1))
-      continue
-    }
-    if (piece.startsWith('author:')) {
-      search.author = piece.slice(7)
-      continue
-    }
-    search.words.push(piece.toLowerCase())
-  }
-  search.query = query
-}
-
-export function setTag(tag: string) {
-  search.tags = [tag]
-  search.words = []
-  search.query = '#' + tag + ' '
-  const input = document.getElementById('search-input')
-  if (input) input.focus()
-}
 
 type Info = {
   tags: Record<string, number>

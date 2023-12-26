@@ -10,7 +10,9 @@ export type SearchQuery = {
   words: string[]
   tags: string[]
   author: string
+  title: string[]
 }
+
 // with cursor based pagination
 // https://dexie.org/docs/Collection/Collection.offset()#a-better-paging-approach
 export async function getPostsFromDB(queryDetails: SearchQuery, lastId = 0, limit = ITEMS_ON_PAGE) {
@@ -50,10 +52,23 @@ export function find(
   return db.transaction('r', db.savedItems, async () => {
     // Parallell search for all prefixes - just select resulting primary keys
     let dbQueries = [] as PromiseExtended<IndexableType[]>[]
+
+    // words in title and body
     dbQueries = details.words.map((p) =>
       db.savedItems.where('_body_words').startsWith(p).or('_title_words').startsWith(p).primaryKeys(),
     )
-    dbQueries.push(...details.tags.map((t) => db.savedItems.where('_tags').equals(t).primaryKeys()))
+
+    // title
+    if (details.title.length != 0) {
+      dbQueries.push(...details.title.map((t) => db.savedItems.where('_title_words').startsWith(t).primaryKeys()))
+    }
+
+    // tags
+    if (details.tags.length != 0) {
+      dbQueries.push(...details.tags.map((t) => db.savedItems.where('_tags').equals(t).primaryKeys()))
+    }
+
+    // author
     if (details.author) {
       dbQueries.push(db.savedItems.where('author').startsWithIgnoreCase(details.author).primaryKeys())
     }

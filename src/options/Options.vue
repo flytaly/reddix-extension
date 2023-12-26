@@ -7,7 +7,8 @@ import SearchItems from '~/components/SearchItems.vue'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 import { ref, watch } from 'vue'
-import { getTagsArray, setupStatsStore, setTag } from '~/logic/store'
+import { getTagsArray, setupStatsStore } from '~/logic/store'
+import { setTag } from '~/logic/search-store'
 
 const status = ref('')
 
