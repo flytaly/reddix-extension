@@ -2,7 +2,7 @@
 import Button from 'primevue/button'
 import type { RedditCommentData, RedditItem, RedditPostData } from '~/reddit/reddit-types'
 import type { SavedRedditItem } from '~/logic/db'
-import { setTag } from '~/logic/search-store'
+import { setTag, setSubreddit } from '~/logic/search-store'
 
 defineProps<{ items?: SavedRedditItem[]; addTags: () => void }>()
 
@@ -25,10 +25,17 @@ function itemType(post: RedditItem): string {
   return 'comment'
 }
 
-async function onTagClick(e: MouseEvent) {
+function onTagClick(e: MouseEvent) {
   const tag = (e.currentTarget as HTMLElement).dataset.tag
   if (!tag) return
   setTag(tag)
+}
+
+function onSubredditClick(e: MouseEvent) {
+  const root = (e.currentTarget as HTMLElement).closest('[data-subreddit]') as HTMLElement
+  const subreddit = root?.dataset.subreddit
+  if (!subreddit) return
+  setSubreddit(subreddit)
 }
 </script>
 
@@ -38,6 +45,7 @@ async function onTagClick(e: MouseEvent) {
       v-for="item in items"
       :key="item.id"
       :data-reddit-name="item.name"
+      :data-subreddit="item.subreddit"
       class="max-w-full overflow-hidden text-ellipsis py-2 text-sm"
     >
       <div class="rounded-md p-1">
@@ -45,7 +53,7 @@ async function onTagClick(e: MouseEvent) {
           <span>
             <span class="dimmed-2">{{ itemType(item) }}</span>
             <span class="dimmed-2"> in </span>
-            <span class="dimmed-1">r/{{ item.subreddit }} </span>
+            <a class="dimmed-1" href="#" @click.prevent="onSubredditClick">{{ item.subreddit_name_prefixed }} </a>
             <span class="dimmed-2"> by </span>
             <span class="dimmed-1">u/{{ item.author }} </span>
           </span>

@@ -66,6 +66,13 @@ function focusInput() {
 export function setTag(tag: string) {
   clearSearch()
   search.tags = [tag]
-  search.query = '#' + tag + ' '
+  search.query = `#${tag} `
+  focusInput()
+}
+
+export function setSubreddit(subreddit: string) {
+  clearSearch()
+  search.subreddit = subreddit
+  search.query = `r/${subreddit} `
   focusInput()
 }
