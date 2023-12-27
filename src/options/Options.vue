@@ -90,9 +90,9 @@ async function onTagClick(e: MouseEvent) {
         </ul>
       </div>
     </aside>
-    <div class="flex flex-col items-center p-4">
+    <div class="mx-auto flex w-full max-w-[60rem] flex-col items-center p-4">
       <SearchItems />
-      <div class="mt-4">
+      <div class="mt-4 w-full">
         <Items />
       </div>
     </div>
@@ -103,7 +103,6 @@ async function onTagClick(e: MouseEvent) {
 main {
   /* Prevent layout shift caused by scrollbar */
   margin-right: calc(-1 * (100vw - 100%));
-  overflow-x: hidden;
 }
 .error {
   @apply ring-red-600 dark:ring-red-300;

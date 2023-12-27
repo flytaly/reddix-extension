@@ -47,7 +47,7 @@ function onAuthorClick(e: MouseEvent) {
 </script>
 
 <template>
-  <ol class="flex max-w-[40rem] flex-col gap-4 text-left">
+  <ol class="flex w-full flex-col gap-4 text-left">
     <li
       v-for="item in items"
       :key="item.id"
@@ -67,12 +67,12 @@ function onAuthorClick(e: MouseEvent) {
           </span>
           <span class="dimmed-2 ml-auto">[{{ new Date(item.created * 1000).toLocaleDateString() }}]</span>
         </div>
-        <div>
+        <div class="wrap-anywhere">
           <a class="flex items-center gap-2 text-dark dark:text-light" :href="makeFullLink(item.permalink)">
             {{ getTitle(item) }}
           </a>
         </div>
-        <div class="dimmed-1 mt-1 flex gap-1 text-sm">
+        <div class="wrap-anywhere dimmed-1 mt-1 flex gap-1 text-sm">
           <div class="line-clamp-2">
             {{ getBody(item) }}
           </div>
@@ -105,5 +105,8 @@ function onAuthorClick(e: MouseEvent) {
 }
 .dimmed-2 {
   @apply text-surface-400 dark:text-surface-500;
+}
+.wrap-anywhere {
+  overflow-wrap: anywhere;
 }
 </style>
