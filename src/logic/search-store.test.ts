@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { search, setSearchQuery, setTag, setSubreddit } from './search-store'
+import { search, setSearchQuery, setTag, setSubreddit, setAuthor } from './search-store'
 import { SearchQuery } from './db/queries'
 
 function create(s: Partial<SearchQuery> = {}) {
@@ -73,6 +73,15 @@ describe('Search store', () => {
       expect(document.activeElement === input).toBe(false)
       setSubreddit('subreddit')
       expect(search).toMatchObject(create({ query: 'r/subreddit ', subreddit: 'subreddit' }))
+      expect(document.activeElement === input).toBe(true)
+    })
+
+    it('should add author to input', () => {
+      document.body.innerHTML = '<input id="search-input" />'
+      const input = document.getElementById('search-input')
+      expect(document.activeElement === input).toBe(false)
+      setAuthor('username')
+      expect(search).toMatchObject(create({ query: 'u/username ', author: 'username' }))
       expect(document.activeElement === input).toBe(true)
     })
   })

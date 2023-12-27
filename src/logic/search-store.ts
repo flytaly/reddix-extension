@@ -76,3 +76,10 @@ export function setSubreddit(subreddit: string) {
   search.query = `r/${subreddit} `
   focusInput()
 }
+
+export function setAuthor(author: string) {
+  clearSearch()
+  search.author = author
+  search.query = `u/${author} `
+  focusInput()
+}

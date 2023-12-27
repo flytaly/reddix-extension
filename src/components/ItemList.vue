@@ -2,7 +2,7 @@
 import Button from 'primevue/button'
 import type { RedditCommentData, RedditItem, RedditPostData } from '~/reddit/reddit-types'
 import type { SavedRedditItem } from '~/logic/db'
-import { setTag, setSubreddit } from '~/logic/search-store'
+import { setTag, setSubreddit, setAuthor } from '~/logic/search-store'
 
 defineProps<{ items?: SavedRedditItem[]; addTags: () => void }>()
 
@@ -37,6 +37,13 @@ function onSubredditClick(e: MouseEvent) {
   if (!subreddit) return
   setSubreddit(subreddit)
 }
+
+function onAuthorClick(e: MouseEvent) {
+  const root = (e.currentTarget as HTMLElement).closest('[data-subreddit]') as HTMLElement
+  const author = root?.dataset.author
+  if (!author) return
+  setAuthor(author)
+}
 </script>
 
 <template>
@@ -46,6 +53,7 @@ function onSubredditClick(e: MouseEvent) {
       :key="item.id"
       :data-reddit-name="item.name"
       :data-subreddit="item.subreddit"
+      :data-author="item.author"
       class="max-w-full overflow-hidden text-ellipsis py-2 text-sm"
     >
       <div class="rounded-md p-1">
@@ -53,9 +61,9 @@ function onSubredditClick(e: MouseEvent) {
           <span>
             <span class="dimmed-2">{{ itemType(item) }}</span>
             <span class="dimmed-2"> in </span>
-            <a class="dimmed-1" href="#" @click.prevent="onSubredditClick">{{ item.subreddit_name_prefixed }} </a>
+            <a class="dimmed-1" href="#" @click.prevent="onSubredditClick">{{ item.subreddit_name_prefixed }}</a>
             <span class="dimmed-2"> by </span>
-            <span class="dimmed-1">u/{{ item.author }} </span>
+            <a class="dimmed-1" href="#" @click.prevent="onAuthorClick">u/{{ item.author }}</a>
           </span>
           <span class="dimmed-2 ml-auto">[{{ new Date(item.created * 1000).toLocaleDateString() }}]</span>
         </div>
