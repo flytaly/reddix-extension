@@ -3,6 +3,8 @@ import devSetup from './dev-setup'
 import { getPosts } from '~/reddit'
 import type { RedditItem, RedditItemResponse } from '~/reddit/reddit-types'
 import { type SavedRedditItem, db } from '~/logic/db'
+import { RateLimits } from '~/reddit/rate-limits'
+import { requestInfo } from '~/logic'
 
 devSetup()
 
@@ -38,12 +40,17 @@ async function savePosts(listing: RedditItemResponse) {
   }
 }
 
+function onRateLimits(rl: RateLimits) {
+  requestInfo.value = { rateLimits: rl }
+}
+
 async function fetchPosts(username: string) {
   if (state.isFetching) {
     return
   }
   setStateAndNotify({ isFetching: true, fetchError: '' })
-  const [listing, errMsg] = await getPosts(username)
+
+  const [listing, errMsg] = await getPosts(username, onRateLimits)
   if (errMsg) {
     console.error(errMsg)
   }

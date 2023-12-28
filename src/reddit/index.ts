@@ -1,3 +1,4 @@
+import { RateLimits, getRateLimits } from './rate-limits'
 import type { RedditError, RedditItemResponse } from './reddit-types'
 
 const baseUrl = 'https://www.reddit.com'
@@ -25,13 +26,18 @@ function isListing(data: RedditItemResponse | RedditError): data is RedditItemRe
   return (data as RedditItemResponse).kind === 'Listing'
 }
 
-export async function getPosts(username: string): Promise<[RedditItemResponse | null, null] | [null, string]> {
+export async function getPosts(
+  username: string,
+  onRateLimits?: (rl: RateLimits) => void,
+): Promise<[RedditItemResponse | null, null] | [null, string]> {
   const url = getSavedUrl(username)
   const urlWithParams = url + '?limit=100'
   let listing: RedditItemResponse
 
   try {
     const response = await fetch(urlWithParams, { cache: 'reload' })
+    onRateLimits?.(getRateLimits(response))
+
     const jsonResponse = (await response.json()) as RedditItemResponse | RedditError
     if (response.status !== 200 || !isListing(jsonResponse)) {
       return [null, formatError(jsonResponse as RedditError) || `${response.status} ${response.statusText}`]
