@@ -1,7 +1,7 @@
 import { RateLimits, getRateLimits } from './rate-limits'
 import type { RedditError, RedditItemResponse } from './reddit-types'
 
-const baseUrl = 'https://www.reddit.com'
+export const baseUrl = 'https://www.reddit.com'
 
 const getSavedUrl = (user: string) => {
   return `${baseUrl}/user/${user}/saved.json`

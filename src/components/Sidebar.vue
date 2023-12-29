@@ -1,30 +1,12 @@
 <script setup lang="ts">
-import { sendMessage } from 'webext-bridge/options'
+import { watch } from 'vue'
+
 import { userName } from '~/logic/storage'
 import { state } from '~/logic/store'
-import InputText from 'primevue/inputtext'
-import Button from 'primevue/button'
-import { ref, watch } from 'vue'
 import { getTagsArray } from '~/logic/store'
 import { setTag } from '~/logic/search-store'
 import { requestInfo } from '~/logic/storage'
-
-const status = ref('')
-
-watch(
-  userName,
-  (newValue) => {
-    status.value = !newValue ? 'username is required' : ''
-  },
-  { immediate: true },
-)
-
-async function fetchPosts() {
-  if (userName.value) {
-    const res = await sendMessage('fetch-saved', { username: userName.value }, 'background')
-    state.isFetching = res.isFetching
-  }
-}
+import AccountInput from '~/components/AccountInputBlock.vue'
 
 watch(userName, () => {
   if (state.fetchError) state.fetchError = ''
@@ -43,41 +25,14 @@ function formatTime(ts?: number | null) {
 }
 
 function isInThePast(ts?: number | null) {
-  if (!ts) return false
+  if (!ts) return true
   return ts < Date.now()
 }
 </script>
 
 <template>
   <aside class="mr-auto p-4">
-    <article>
-      <div class="flex flex-col gap-2">
-        <InputText
-          v-model="userName"
-          type="text"
-          size="small"
-          placeholder="username"
-          :disabled="state.isFetching"
-          :class="{ error: status || state.fetchError }"
-        />
-        <small class="text-xs text-red-600 dark:text-red-300">{{ status || state.fetchError }}</small>
-      </div>
-      <div class="mt-2">
-        <Button
-          class="text-primary-700 dark:text-primary-400"
-          size="small"
-          text
-          label="Sync saved items"
-          :disabled="state.isFetching"
-          @click="fetchPosts"
-        >
-          <div class="flex w-full gap-1">
-            <pixelarticons-sync />
-            <span>{{ state.isFetching ? 'fetching...' : 'Fetch saved items' }}</span>
-          </div>
-        </Button>
-      </div>
-    </article>
+    <AccountInput />
     <article class="mt-4 text-xs">
       <div v-if="!isInThePast(requestInfo.rateLimits?.reset)">
         <h2 class="text-sm font-bold">Rate Limits</h2>
