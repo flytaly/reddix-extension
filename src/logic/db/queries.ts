@@ -1,7 +1,7 @@
 import Dexie, { IndexableType, PromiseExtended } from 'dexie'
 import { ITEMS_ON_PAGE } from '~/constants'
-import { db } from '~/logic/db'
-import { RedditObjectKind } from '~/reddit/reddit-types'
+import { SavedRedditItem, db } from '~/logic/db'
+import { RedditItem, RedditObjectKind } from '~/reddit/reddit-types'
 
 export type SearchQuery = {
   author: string
@@ -12,6 +12,19 @@ export type SearchQuery = {
   tags: string[]
   title: string[]
   words: string[]
+}
+
+export async function upsertItems(items: RedditItem[]) {
+  db.transaction('rw', db.savedItems, async () => {
+    const itemsInDB = await db.savedItems.bulkGet(items.map((item) => item.name))
+    const updated = itemsInDB.map((item, i) => {
+      if (!item?._id) {
+        return items[i] as SavedRedditItem
+      }
+      return { ...items[i], _id: item._id } as SavedRedditItem
+    })
+    await db.savedItems.bulkPut(updated)
+  })
 }
 
 // with cursor based pagination

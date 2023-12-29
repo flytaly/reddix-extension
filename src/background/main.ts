@@ -5,6 +5,7 @@ import type { RedditItem, RedditItemResponse } from '~/reddit/reddit-types'
 import { type SavedRedditItem, db } from '~/logic/db'
 import { RateLimits } from '~/reddit/rate-limits'
 import { requestInfo } from '~/logic'
+import { upsertItems } from '~/logic/db/queries'
 
 devSetup()
 
@@ -34,7 +35,7 @@ async function savePosts(listing: RedditItemResponse) {
 
   try {
     const items = listing.data.children.map((itm) => itm.data) as RedditItem[]
-    await db.savedItems.bulkPut(items as SavedRedditItem[])
+    upsertItems(items)
   } catch (error) {
     console.error(error)
   }
