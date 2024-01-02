@@ -3,7 +3,7 @@
     "allowJs": true,
     "baseUrl": ".",
     "module": "ESNext",
-    "target": "es2016",
+    "target": "es2022",
     "lib": ["DOM", "ESNext"],
     "strict": true,
     "esModuleInterop": true,
@@ -14,7 +14,7 @@
     "resolveJsonModule": true,
     "noUnusedLocals": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["vite/client"],
+    "types": ["vite/client", "unplugin-icons/types/vue"],
     "paths": {
       "~/*": ["src/*"]
     }

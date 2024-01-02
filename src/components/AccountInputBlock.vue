@@ -48,17 +48,17 @@ async function fetchUsername() {
 <template>
   <article class="min-w-48 max-w-60">
     <div v-if="!isEdit && userName" class="flex w-full items-center gap-2 text-surface-400">
-      <pixelarticons-user class="h-4 w-4 text-surface-400 dark:text-surface-400" />
+      <PhRedditLogoDuotone class="h-4 w-4 text-surface-400 dark:text-surface-400" />
       <span>{{ userName }}</span>
       <button title="edit username" class="icon-button ml-auto" @click="isEdit = true">
-        <pixelarticons-edit class="h-4 w-4" />
+        <PhPencilSimpleDuotone class="h-4 w-4" />
       </button>
     </div>
 
     <div v-if="isEdit || !userName">
       <div class="flex max-w-full flex-col gap-2">
         <span class="relative">
-          <pixelarticons-user
+          <PhRedditLogoFill
             class="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-surface-400 dark:text-surface-400"
           />
           <InputText
@@ -77,8 +77,8 @@ async function fetchUsername() {
             :disabled="state.isFetching || fetchingUsername"
             @click="fetchUsername"
           >
-            <pixelarticons-login v-if="!fetchingUsername" class="" />
-            <pixelarticons-loader v-if="fetchingUsername" class="animate-spin" />
+            <PhSignInDuotone v-if="!fetchingUsername" class="" />
+            <PhSpinnerGap v-if="fetchingUsername" class="animate-spin" />
           </button>
         </span>
 
@@ -95,8 +95,8 @@ async function fetchUsername() {
         :disabled="state.isFetching"
         @click="fetchPosts"
       >
-        <div class="flex w-full gap-1">
-          <pixelarticons-sync />
+        <div class="flex w-full items-center gap-1">
+          <PhCloudArrowDownDuotone class="h-4 w-4" />
           <span>{{ state.isFetching ? 'fetching...' : 'Fetch saved items' }}</span>
         </div>
       </Button>

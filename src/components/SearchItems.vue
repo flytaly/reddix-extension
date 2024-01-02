@@ -32,7 +32,7 @@ watch(commentsOn, (on) => {
   <div class="mt-4 w-full max-w-[60rem] p-2">
     <div class="flex flex-col">
       <label for="search-input">
-        <b class="mr-2 font-mono text-xl font-semibold text-primary-600 dark:text-primary-400">Search</b>
+        <h2 class="mr-2 font-mono text-xl font-semibold text-primary-600 dark:text-primary-400">Search</h2>
       </label>
       <TextInput
         id="search-input"

@@ -1,15 +1,12 @@
 export default {
-    root: {
+    root: ({ props }) => ({
         class: [
             'relative',
 
             // Flexbox
             'flex',
-            'items-center',
-            'gap-6',
 
             // Spacing
-            'px-6',
             'min-h-[4rem]',
 
             // Shape
@@ -18,9 +15,11 @@ export default {
 
             // Color
             'bg-surface-0 dark:bg-surface-900',
-            'ring-1 ring-inset ring-surface-100 dark:ring-surface-800 ring-offset-0'
+            'ring-1 ring-inset ring-surface-100 dark:ring-surface-800 ring-offset-0',
+
+            { 'items-center px-2 sm:px-6': props.orientation == 'horizontal', 'flex-col justify-center sm:justify-start sm:w-48 px-2': props.orientation !== 'horizontal' }
         ]
-    },
+    }),
     menu: ({ props }) => ({
         class: [
             // Flexbox
@@ -55,13 +54,19 @@ export default {
             'outline-none'
         ]
     }),
-    menuitem: {
-        class: 'sm:relative sm:w-auto w-full static'
-    },
+    menuitem: ({ props }) => ({
+        class: [
+            'sm:relative static',
+            {
+                'sm:w-auto w-full': props.horizontal,
+                'w-full': !props.horizontal
+            }
+        ]
+    }),
     content: ({ props, context }) => ({
         class: [
             // Shape
-            { 'rounded-md': props.root },
+            { 'rounded-md': props.level < 1 },
 
             //  Colors
             {
@@ -82,7 +87,7 @@ export default {
             'duration-200'
         ]
     }),
-    action: ({ context }) => ({
+    action: {
         class: [
             'relative',
 
@@ -98,57 +103,78 @@ export default {
             'px-3',
             'my-1 sm:my-0',
 
-            // Size
-            {
-                'pl-5 sm:pl-3': context.level === 1,
-                'pl-7 sm:pl-3': context.level === 2
-            },
-
             // Misc
             'select-none',
             'cursor-pointer',
             'no-underline ',
             'overflow-hidden'
         ]
-    }),
+    },
     icon: {
         class: 'mr-2'
     },
     submenuicon: ({ props }) => ({
         class: [
             {
-                'ml-auto sm:ml-2': props.root,
-                'ml-auto': !props.root
+                'ml-auto sm:ml-2': props.horizontal,
+                'ml-auto': !props.horizontal
             }
         ]
     }),
-    submenu: ({ props }) => ({
+    panel: ({ props }) => ({
         class: [
             // Size
-            'w-full sm:w-48',
+            'w-auto',
 
             // Spacing
             'py-1',
-            'm-0 ',
-            'list-none',
+            'm-0 mx-2',
 
             // Shape
             'shadow-none sm:shadow-md',
             'border-0',
 
+            // Color
+            'bg-surface-0 dark:bg-surface-900',
+
             // Position
             'static sm:absolute',
             'z-10',
-            { 'sm:absolute sm:left-full sm:top-0': props.level > 1 },
-
-            // Color
-            'bg-surface-0 dark:bg-surface-900'
+            {
+                'sm:left-full top-0': !props.horizontal
+            }
         ]
     }),
+    grid: {
+        class: 'flex flex-wrap sm:flex-nowrap'
+    },
+    column: {
+        class: 'w-full sm:w-1/2'
+    },
+    submenu: {
+        class: ['m-0 list-none', 'py-1 px-2 w-full sm:min-w-[14rem]']
+    },
+    submenuheader: {
+        class: [
+            'font-medium',
+            'sm:text-md',
+
+            // Spacing
+            'py-2.5 px-2',
+            'm-0',
+
+            // Shape
+            'border-b border-surface-200 dark:border-surface-700',
+
+            // Color
+            'text-surface-700 dark:text-white/80',
+            'bg-surface-0 dark:bg-surface-900'
+        ]
+    },
     separator: {
         class: 'border-t border-surface-200 dark:border-surface-600 my-1'
     },
-    button: {
+    menubutton: {
         class: [
             // Flexbox
             'flex sm:hidden',
