@@ -19,7 +19,7 @@ const items = ref([
 
 <template>
   <header>
-    <Menubar :model="items" :pt="{ root: 'min-h-6', menu: 'mx-auto' }" :pt-options="{ mergeProps: true }">
+    <Menubar :model="items" :pt="{ root: 'min-h-[3rem]', menu: 'mx-auto' }" :pt-options="{ mergeProps: true }">
       <template #start>
         <router-link :to="RoutePath.Search" class="flex items-center">
           <ph-bookmarks-bold class="h-7 w-7 text-primary-400" />

@@ -13,11 +13,13 @@ onUnmounted(async () => {
 
 <template>
   <MainLayout>
-    <main class="grid min-h-screen grid-cols-[auto_1fr] bg-surface-50 text-dark dark:bg-surface-900 dark:text-light">
+    <main
+      class="mt-4 sm:grid min-h-screen sm:grid-cols-[auto_1fr] bg-surface-50 text-dark dark:bg-surface-900 dark:text-light"
+    >
       <Sidebar />
-      <div class="mx-auto flex w-full max-w-[60rem] flex-col items-center p-4">
+      <div class="mx-auto flex w-full max-w-[60rem] flex-col items-center px-4 my-4 sm:my-0">
         <SearchItems />
-        <div class="mt-4 w-full">
+        <div class="w-full">
           <Items />
         </div>
       </div>
@@ -25,9 +27,4 @@ onUnmounted(async () => {
   </MainLayout>
 </template>
 
-<style lang="postcss">
-main {
-  /* Prevent layout shift caused by scrollbar */
-  /*   margin-right: calc(-1 * (100vw - 100%)); */
-}
-</style>
+<style lang="postcss"></style>

@@ -31,11 +31,11 @@ function isInThePast(ts?: number | null) {
 </script>
 
 <template>
-  <aside class="mr-auto p-4">
+  <aside class="mr-auto px-4">
     <AccountInput />
-    <article class="mt-4 text-xs">
+    <article class="mt-4 text-xs hidden sm:block">
       <div v-if="!isInThePast(requestInfo.rateLimits?.reset)">
-        <h2 class="text-sm font-bold">Rate Limits</h2>
+        <h3 class="text-sm font-bold">Rate Limits</h3>
         <div class="grid grid-cols-2 gap-x-4">
           <span>used</span>
           <span>{{ requestInfo.rateLimits?.used }}</span>
@@ -46,7 +46,7 @@ function isInThePast(ts?: number | null) {
         </div>
       </div>
     </article>
-    <article class="mt-4 flex flex-col gap-1 py-2 text-sm">
+    <article class="mt-4  flex-col gap-1 py-2 text-sm hidden sm:flex">
       <h2 class="font-bold">Tags</h2>
       <ul>
         <li v-for="[tag, count] in getTagsArray()" :key="tag">
@@ -72,7 +72,6 @@ function isInThePast(ts?: number | null) {
 
 aside {
   display: grid;
-  min-height: 100vh;
   grid-template-rows: auto auto 1fr;
   align-content: start;
 }
