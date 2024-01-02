@@ -43,11 +43,15 @@ async function fetchUsername() {
   fetchingUsername.value = false
   if (!error) isEdit.value = false
 }
+
+function showEdit()  {
+  return isEdit.value || !userName.value || status.value || state.fetchError
+}
 </script>
 
 <template>
   <article class="min-w-48 max-w-60">
-    <div v-if="!isEdit && userName" class="flex w-full items-center gap-2 text-surface-400">
+    <div v-if="!showEdit()" class="flex w-full items-center gap-2 text-surface-400">
       <PhRedditLogoDuotone class="h-4 w-4 text-surface-400 dark:text-surface-400" />
       <span>{{ userName }}</span>
       <button title="edit username" class="icon-button ml-auto" @click="isEdit = true">
@@ -55,7 +59,7 @@ async function fetchUsername() {
       </button>
     </div>
 
-    <div v-if="isEdit || !userName">
+    <div v-if="showEdit()">
       <div class="flex max-w-full flex-col gap-2">
         <span class="relative">
           <PhRedditLogoFill
