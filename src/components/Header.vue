@@ -2,16 +2,19 @@
 import Menubar from 'primevue/menubar'
 import { ref } from 'vue'
 import { RoutePath } from '~/options/routes'
-import NavIcons from './NavIcons.vue'
+import PhUploadBold from '~icons/ph/upload-bold'
+import PhMagnifyingGlassBold from '~icons/ph/magnifying-glass-bold'
+import PhClockCounterClockwiseBold from '~icons/ph/clock-counter-clockwise-bold'
+import PhDownloadBold from '~icons/ph/download-bold'
 
 const items = ref([
-  { label: 'Search', route: RoutePath.Search, icon: 'search' },
+  { label: 'Search', route: RoutePath.Search, icon: PhMagnifyingGlassBold },
   {
     label: 'Backup',
-    icon: 'backup',
+    icon: PhClockCounterClockwiseBold,
     items: [
-      { label: 'Import', route: RoutePath.Import, icon: 'import' },
-      { label: 'Export', route: RoutePath.Export, icon: 'export' },
+      { label: 'Import', route: RoutePath.Import, icon: PhDownloadBold },
+      { label: 'Export', route: RoutePath.Export, icon: PhUploadBold },
     ],
   },
 ])
@@ -27,11 +30,11 @@ const items = ref([
       </template>
       <template #item="{ item, props }">
         <router-link v-if="item.route" :to="item.route" v-bind="props.action" class="flex items-center gap-x-1">
-          <NavIcons :name="item.icon" />
+          <component :is="item.icon" class="h-5 w-5" />
           <span>{{ item.label }}</span>
         </router-link>
         <a v-if="item.items" v-bind="props.action" class="flex items-center gap-x-1">
-          <NavIcons :name="item.icon" />
+          <component :is="item.icon" class="h-5 w-5" />
           <span>{{ item.label }}</span>
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24">
             <path fill="currentColor" d="m12 15.4l-6-6L7.4 8l4.6 4.6L16.6 8L18 9.4z" />
