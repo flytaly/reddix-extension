@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import Menubar from 'primevue/menubar'
-import { ref } from 'vue'
 import { RoutePath } from '~/options/routes'
 import PhUploadBold from '~icons/ph/upload-bold'
 import PhMagnifyingGlassBold from '~icons/ph/magnifying-glass-bold'
 import PhClockCounterClockwiseBold from '~icons/ph/clock-counter-clockwise-bold'
 import PhDownloadBold from '~icons/ph/download-bold'
 
-const items = ref([
+const items = [
   { label: 'Search', route: RoutePath.Search, icon: PhMagnifyingGlassBold },
   {
     label: 'Backup',
@@ -17,12 +16,16 @@ const items = ref([
       { label: 'Export', route: RoutePath.Export, icon: PhUploadBold },
     ],
   },
-])
+]
 </script>
 
 <template>
   <header>
-    <Menubar :model="items" :pt="{ root: 'min-h-[3rem]', menu: 'mx-auto' }" :pt-options="{ mergeProps: true }">
+    <Menubar
+      :model="items"
+      :pt="{ root: 'min-h-[2rem] bg-surface-50 dark:bg-surface-900', menu: 'mx-auto' }"
+      :pt-options="{ mergeProps: true }"
+    >
       <template #start>
         <router-link :to="RoutePath.Search" class="flex items-center">
           <ph-bookmarks-bold class="h-7 w-7 text-primary-400" />
