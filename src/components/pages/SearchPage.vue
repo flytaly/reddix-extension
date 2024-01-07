@@ -13,11 +13,9 @@ onUnmounted(async () => {
 
 <template>
   <MainLayout>
-    <main
-      class="mt-4 sm:grid min-h-screen sm:grid-cols-[auto_1fr] bg-surface-50 text-dark dark:bg-surface-900 dark:text-light"
-    >
+    <main class="mt-4 bg-surface-50 text-dark sm:grid sm:grid-cols-[auto_1fr] dark:bg-surface-900 dark:text-light">
       <Sidebar />
-      <div class="mx-auto flex w-full max-w-[60rem] flex-col items-center px-4 my-4 sm:my-0">
+      <div class="mx-auto my-4 flex w-full max-w-[60rem] flex-col items-center px-4 sm:my-0">
         <SearchItems />
         <div class="w-full">
           <Items />

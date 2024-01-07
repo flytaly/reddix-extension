@@ -5,7 +5,6 @@ import { userName } from '~/logic/storage'
 import { state } from '~/logic/store'
 import { getTagsArray } from '~/logic/store'
 import { setTag } from '~/logic/search-store'
-import { requestInfo } from '~/logic/storage'
 import AccountInput from '~/components/AccountInputBlock.vue'
 
 watch(userName, () => {
@@ -17,36 +16,12 @@ async function onTagClick(e: MouseEvent) {
   if (!tag) return
   setTag(tag)
 }
-
-function formatTime(ts?: number | null) {
-  if (!ts) return 'N/A'
-  const d = new Date(ts)
-  return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0')
-}
-
-function isInThePast(ts?: number | null) {
-  if (!ts) return true
-  return ts < Date.now()
-}
 </script>
 
 <template>
   <aside class="mr-auto px-4">
     <AccountInput />
-    <article class="mt-4 text-xs hidden sm:block">
-      <div v-if="!isInThePast(requestInfo.rateLimits?.reset)">
-        <h3 class="text-sm font-bold">Rate Limits</h3>
-        <div class="grid grid-cols-2 gap-x-4">
-          <span>used</span>
-          <span>{{ requestInfo.rateLimits?.used }}</span>
-          <span>remaining</span>
-          <span>{{ requestInfo.rateLimits?.remaining }}</span>
-          <span>reset at</span>
-          <span>{{ formatTime(requestInfo.rateLimits?.reset) }}</span>
-        </div>
-      </div>
-    </article>
-    <article class="mt-4  flex-col gap-1 py-2 text-sm hidden sm:flex">
+    <article class="mt-4 hidden flex-col gap-1 py-2 text-sm sm:flex">
       <h2 class="font-bold">Tags</h2>
       <ul>
         <li v-for="[tag, count] in getTagsArray()" :key="tag">

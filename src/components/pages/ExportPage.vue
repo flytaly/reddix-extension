@@ -13,7 +13,7 @@ onUnmounted(async () => {
 
 <template>
   <MainLayout>
-    <main class="grid min-h-screen grid-cols-[auto_1fr] bg-surface-50 text-dark dark:bg-surface-900 dark:text-light">
+    <main class="grid grid-cols-[auto_1fr] bg-surface-50 text-dark dark:bg-surface-900 dark:text-light">
       <div></div>
       <div class="mx-auto flex w-full max-w-[60rem] flex-col items-center p-4">
         <h2 class="flex items-center">

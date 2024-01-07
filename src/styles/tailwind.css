@@ -31,6 +31,9 @@
 
     --text-light: 231 229 228; /* #e7e5e4 */
     --text-dark: 41 37 36; /* #292524 */
+
+    --error-light: theme('colors.red.400');
+    --error-dark: theme('colors.red.600');
   }
 }
 

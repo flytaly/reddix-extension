@@ -44,7 +44,7 @@ async function fetchUsername() {
   if (!error) isEdit.value = false
 }
 
-function showEdit()  {
+function showEdit() {
   return isEdit.value || !userName.value || status.value || state.fetchError
 }
 </script>
@@ -86,7 +86,7 @@ function showEdit()  {
           </button>
         </span>
 
-        <small class="text-xs text-red-600 dark:text-red-300">{{ status || state.fetchError }}</small>
+        <small class="text-xs text-error-dark dark:text-error-light">{{ status || state.fetchError }}</small>
       </div>
     </div>
 

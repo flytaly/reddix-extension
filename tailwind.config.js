@@ -30,6 +30,9 @@ export default {
 
         light: 'rgb(var(--text-light) / <alpha-value>)',
         dark: 'rgb(var(--text-dark) / <alpha-value>)',
+
+        'error-light': 'var(--error-light)',
+        'error-dark': 'var(--error-dark)',
       },
     },
   },

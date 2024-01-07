@@ -27,6 +27,11 @@ export async function upsertItems(items: RedditItem[]) {
   })
 }
 
+export async function getItems(ids: string[]) {
+  const idsInDb = await db.savedItems.where('name').anyOf(ids).keys()
+  return idsInDb as string[]
+}
+
 // with cursor based pagination
 // https://dexie.org/docs/Collection/Collection.offset()#a-better-paging-approach
 export async function getPostsFromDB(queryDetails: SearchQuery, lastId = 0, limit = ITEMS_ON_PAGE) {

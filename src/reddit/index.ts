@@ -7,6 +7,10 @@ const getSavedUrl = (user: string) => {
   return `${baseUrl}/user/${user}/saved.json`
 }
 
+const getInfoUrl = (ids: string[]) => {
+  return `${baseUrl}/api/info.json?id=${ids.join(',')}`
+}
+
 function formatError(redditError: RedditError) {
   if (!redditError || !redditError.message) {
     return ''
@@ -26,10 +30,9 @@ function isListing(data: RedditItemResponse | RedditError): data is RedditItemRe
   return (data as RedditItemResponse).kind === 'Listing'
 }
 
-export async function getPosts(
-  username: string,
-  onRateLimits?: (rl: RateLimits) => void,
-): Promise<[RedditItemResponse | null, null] | [null, string]> {
+export type ResponseOrError<T = RedditItemResponse> = [T | null, null] | [null, string]
+
+export async function getPosts(username: string, onRateLimits?: (rl: RateLimits) => void): Promise<ResponseOrError> {
   const url = getSavedUrl(username)
   const urlWithParams = url + '?limit=100'
   let listing: RedditItemResponse
@@ -47,7 +50,29 @@ export async function getPosts(
     return [null, (error as any as Error).message]
   }
 
-  await new Promise((resolve) => setTimeout(resolve, 1000))
+  return [listing, null]
+}
 
+export async function getItemsInfo(
+  redditIds: string[],
+  onRateLimits?: (rl: RateLimits) => void,
+): Promise<ResponseOrError> {
+  if (!redditIds?.length) {
+    return [null, '']
+  }
+  const url = getInfoUrl(redditIds)
+  let listing: RedditItemResponse
+  try {
+    const response = await fetch(url)
+    onRateLimits?.(getRateLimits(response))
+
+    const jsonResponse = (await response.json()) as RedditItemResponse | RedditError
+    if (response.status !== 200 || !isListing(jsonResponse)) {
+      return [null, formatError(jsonResponse as RedditError) || `${response.status} ${response.statusText}`]
+    }
+    listing = jsonResponse
+  } catch (error) {
+    return [null, (error as any as Error).message]
+  }
   return [listing, null]
 }
