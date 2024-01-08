@@ -35,7 +35,7 @@ async function savePosts(listing: RedditItemResponse) {
 
   try {
     const items = listing.data.children.map((itm) => itm.data) as RedditItem[]
-    upsertItems(items)
+    await upsertItems(items)
   } catch (error) {
     console.error(error)
   }

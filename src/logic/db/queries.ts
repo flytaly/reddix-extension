@@ -16,12 +16,20 @@ export type SearchQuery = {
 
 export async function upsertItems(items: RedditItem[]) {
   db.transaction('rw', db.savedItems, async () => {
-    const itemsInDB = await db.savedItems.bulkGet(items.map((item) => item.name))
-    const updated = itemsInDB.map((item, i) => {
-      if (!item?._id) {
-        return items[i] as SavedRedditItem
+    const itemsInDB = await db.savedItems
+      .where('name')
+      .anyOf(items.map((item) => item.name))
+      .toArray()
+    const itemMap = {} as Record<string, SavedRedditItem>
+    itemsInDB.forEach((item) => {
+      itemMap[item.name] = item
+    })
+
+    const updated = items.map((item) => {
+      if (itemMap[item.name]) {
+        return { ...itemMap[item.name], ...item }
       }
-      return { ...items[i], _id: item._id } as SavedRedditItem
+      return item as SavedRedditItem
     })
     await db.savedItems.bulkPut(updated)
   })
