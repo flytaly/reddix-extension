@@ -1,11 +1,10 @@
 import { onMessage, sendMessage } from 'webext-bridge/background'
-import devSetup from './dev-setup'
-import { getPosts } from '~/reddit'
-import type { RedditItem, RedditItemResponse } from '~/reddit/reddit-types'
-import { type SavedRedditItem, db } from '~/logic/db'
-import { RateLimits } from '~/reddit/rate-limits'
 import { requestInfo } from '~/logic'
 import { upsertItems } from '~/logic/db/queries'
+import { getPosts } from '~/reddit'
+import { RateLimits } from '~/reddit/rate-limits'
+import type { RedditItem, RedditItemResponse } from '~/reddit/reddit-types'
+import devSetup from './dev-setup'
 
 devSetup()
 

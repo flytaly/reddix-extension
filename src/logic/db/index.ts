@@ -8,6 +8,8 @@ type DBProperties = {
   _body_words: string[]
   _id: number
   _tags: string[]
+  _created_at: number
+  _updated_at: number
 }
 
 export type SavedRedditPost = RedditPostData & DBProperties
@@ -24,7 +26,7 @@ export class MySubClassedDexie extends Dexie {
     this.version(1).stores({
       // Primary key and indexed props. 'name' is a reddit unique identifier startting with t1_, t2_, t3_...
       savedItems:
-        '++_id, *_title_words, *_body_words, *_tags, &name, author, subreddit, subreddit_name_prefixed, created_utc',
+        '++_id, *_title_words, *_body_words, *_tags, &name, _created_at, _updated_at, author, subreddit, subreddit_name_prefixed, created_utc',
     })
   }
 }
@@ -50,6 +52,9 @@ db.savedItems.hook('creating', (_primKey, obj) => {
   if (isComment(obj) && typeof obj.body == 'string') {
     obj._body_words = tokenize(obj.body)
   }
+  const ts = Math.floor(Date.now() / 1000)
+  obj._created_at = ts
+  obj._updated_at = ts
 })
 
 db.savedItems.hook('updating', (mods, _primKey, obj, _trans): Partial<SavedRedditItem> | undefined => {
@@ -66,6 +71,8 @@ db.savedItems.hook('updating', (mods, _primKey, obj, _trans): Partial<SavedReddi
   if (Object.prototype.hasOwnProperty.call(mods, 'body')) {
     updated._body_words = tokenizeProp((mods as C).body)
   }
+
+  updated._updated_at = Math.floor(Date.now() / 1000)
 
   return {
     _body_words: updated._body_words || obj._body_words,
