@@ -26,27 +26,34 @@ setupMessageHandlers()
 
 type Info = {
   tags: Record<string, number>
+  total: number
 }
 
-export const stats = reactive<Info>({ tags: {} })
+export const stats = reactive<Info>({
+  tags: {},
+  total: 0,
+})
 
 export const getTagsArray = () => {
   return Object.entries(stats.tags)
 }
 
 export async function setupStatsStore() {
-  const tagsObs = liveQuery(() =>
-    db.savedItems.orderBy('_tags').keys((keys) => {
+  const tagsObs = liveQuery(async () => {
+    const tags = await db.savedItems.orderBy('_tags').keys((keys) => {
       const count = {} as Record<string, number>
       keys.forEach((key) => {
         const k = key.toString()
         count[k] = (count[k] || 0) + 1
       })
       return count
-    }),
-  )
+    })
+    const total = await db.savedItems.count()
+    return [tags, total] as const
+  })
 
   return tagsObs.subscribe((response) => {
-    stats.tags = response
+    stats.tags = response[0]
+    stats.total = response[1]
   })
 }

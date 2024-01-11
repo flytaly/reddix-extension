@@ -3,7 +3,7 @@ import { watch } from 'vue'
 
 import { userName } from '~/logic/storage'
 import { state } from '~/logic/options-stores'
-import { getTagsArray } from '~/logic/options-stores'
+import { getTagsArray, stats } from '~/logic/options-stores'
 import { setTag } from '~/logic/search-store'
 import AccountInput from '~/components/AccountInputBlock.vue'
 
@@ -21,7 +21,11 @@ async function onTagClick(e: MouseEvent) {
 <template>
   <aside class="mr-auto px-4">
     <AccountInput />
-    <article class="mt-4 hidden flex-col gap-1 py-2 text-sm sm:flex">
+    <div v-if="stats.total" class="mt-2 flex justify-between text-surface-500 dark:text-surface-400">
+      <span>Items in DB </span>
+      <span>{{ stats.total }}</span>
+    </div>
+    <article class="mt-2 hidden flex-col gap-1 py-2 text-sm sm:flex">
       <h2 class="font-bold">Tags</h2>
       <ul>
         <li v-for="[tag, count] in getTagsArray()" :key="tag">

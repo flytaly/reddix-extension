@@ -25,7 +25,7 @@ async function waitRateLimits(rateLimits?: RateLimits) {
   }
   await new Promise<void>((resolve) => {
     const timeout = reset.getTime() - Date.now()
-    console.log(`Rate limits. Wait unilt ${reset.toLocaleTimeString()} (${timeout / 1000} seconds).`)
+    console.log(`Rate limits. Wait until ${reset.toLocaleTimeString()} (${timeout / 1000} seconds).`)
     setTimeout(() => {
       resolve()
     }, timeout)
