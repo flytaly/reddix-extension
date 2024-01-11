@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import SearchItems from '~/components/SearchItems.vue'
 import MainLayout from '~/components/pages/MainLayout.vue'
-import { setupStatsStore } from '~/logic/store'
+import SearchItems from '~/components/SearchItems.vue'
 import Sidebar from '~/components/Sidebar.vue'
+import { setupStatsStore } from '~/logic/options-stores'
 
 let subscription = setupStatsStore()
 

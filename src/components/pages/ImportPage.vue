@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { onUnmounted } from 'vue'
 import MainLayout from '~/components/pages/MainLayout.vue'
-import { setupStatsStore } from '~/logic/store'
+import { setupStatsStore } from '~/logic/options-stores'
 import PhDownloadBold from '~icons/ph/upload-bold'
 import RateLimits from '~/components/RateLimits.vue'
 import LogList from '~/components/LogList.vue'
 import { extractIds, csvStringToArray } from '~/logic/import'
 import { addMessage } from '~/logic/log-messages'
 import { getItems } from '~/logic/db/queries'
+import { getItemsInfo } from '~/reddit/index'
+import { savePosts } from '~/logic/db/queries'
 
 let subscription = setupStatsStore()
 
@@ -17,6 +19,25 @@ onUnmounted(async () => {
 
 let postsIds = [] as string[]
 let commentsIds = [] as string[]
+
+async function fetchInfo(ids: string[]) {
+  addMessage(`Started getting information about the posts`)
+  ids = ids.slice(0, 50)
+  const [info, error] = await getItemsInfo(ids)
+  if (error) {
+    addMessage(`Error: ${error}`, 'error')
+    return
+  }
+  if (!info) {
+    return
+  }
+  await savePosts(info)
+  const len = info.data.children?.length
+  addMessage(`Added ${len} items`)
+  // TODO: fetch more
+
+  return info
+}
 
 async function update(e: Event) {
   const file = (e.target as HTMLInputElement)?.files?.[0]
@@ -53,16 +74,14 @@ async function update(e: Event) {
 
   const filteredPosts = postsIds.filter((id) => !postsInDb.has(id))
   const filteredComments = commentsIds.filter((id) => !commentsInDb.has(id))
-  console.log(filteredPosts, filteredComments)
-
-  addMessage(`TODO: fetch info`)
+  await fetchInfo(filteredPosts.concat(filteredComments))
 }
 </script>
 
 <template>
   <MainLayout>
     <main
-      class="mx-auto grid max-w-screen-md grid-cols-[auto_1fr] grid-rows-2 bg-surface-50 text-dark dark:bg-surface-900 dark:text-light"
+      class="mx-auto grid max-w-screen-md grid-cols-[auto_1fr] grid-rows-[auto_1fr] bg-surface-50 text-dark dark:bg-surface-900 dark:text-light"
     >
       <div />
       <h2 class="mt-8 flex justify-center">

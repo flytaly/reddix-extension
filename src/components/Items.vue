@@ -2,7 +2,7 @@
 import { useIntersectionObserver } from '@vueuse/core'
 import { SavedRedditItem } from '~/logic/db'
 import { getPostsFromDB } from '~/logic/db/queries'
-import { state } from '~/logic/store'
+import { state } from '~/logic/options-stores'
 import { search } from '~/logic/search-store'
 import ItemList from '~/components/ItemList.vue'
 import { ITEMS_ON_PAGE } from '~/constants'

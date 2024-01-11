@@ -1,3 +1,4 @@
+import { requestInfo } from '~/logic'
 import { RateLimits, getRateLimits } from './rate-limits'
 import type { RedditError, RedditItemResponse } from './reddit-types'
 
@@ -32,14 +33,15 @@ function isListing(data: RedditItemResponse | RedditError): data is RedditItemRe
 
 export type ResponseOrError<T = RedditItemResponse> = [T | null, null] | [null, string]
 
-export async function getPosts(username: string, onRateLimits?: (rl: RateLimits) => void): Promise<ResponseOrError> {
+export async function getPosts(username: string, onRateLimitsCb = onRateLimits, after = ''): Promise<ResponseOrError> {
   const url = getSavedUrl(username)
-  const urlWithParams = url + '?limit=100'
+  const urlWithParams = url + '?limit=100' + (after ? `&after=${after}` : '')
+
   let listing: RedditItemResponse
 
   try {
     const response = await fetch(urlWithParams, { cache: 'reload' })
-    onRateLimits?.(getRateLimits(response))
+    onRateLimitsCb?.(getRateLimits(response))
 
     const jsonResponse = (await response.json()) as RedditItemResponse | RedditError
     if (response.status !== 200 || !isListing(jsonResponse)) {
@@ -53,10 +55,15 @@ export async function getPosts(username: string, onRateLimits?: (rl: RateLimits)
   return [listing, null]
 }
 
-export async function getItemsInfo(
-  redditIds: string[],
-  onRateLimits?: (rl: RateLimits) => void,
-): Promise<ResponseOrError> {
+export function onRateLimits(rl: RateLimits) {
+  if (rl.reset) {
+    rl.reset = new Date(Date.now() + rl.reset * 1000).getTime()
+  }
+  requestInfo.value = { rateLimits: rl }
+  return rl
+}
+
+export async function getItemsInfo(redditIds: string[], onRateLimitsCb = onRateLimits): Promise<ResponseOrError> {
   if (!redditIds?.length) {
     return [null, '']
   }
@@ -64,7 +71,7 @@ export async function getItemsInfo(
   let listing: RedditItemResponse
   try {
     const response = await fetch(url)
-    onRateLimits?.(getRateLimits(response))
+    onRateLimitsCb?.(getRateLimits(response))
 
     const jsonResponse = (await response.json()) as RedditItemResponse | RedditError
     if (response.status !== 200 || !isListing(jsonResponse)) {

@@ -27,9 +27,6 @@ export const requestInfo = computed({
     return reqInfoStorage.value
   },
   set(values: Partial<RequestInfo>) {
-    if (values.rateLimits?.reset) {
-      values.rateLimits.reset = new Date(Date.now() + values.rateLimits.reset * 1000).getTime()
-    }
     reqInfoStorage.value = { ...reqInfoStorage.value, ...values }
   },
 })

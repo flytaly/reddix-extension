@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import MainLayout from '~/components/pages/MainLayout.vue'
-import { setupStatsStore } from '~/logic/store'
+import { setupStatsStore } from '~/logic/options-stores'
 import { onUnmounted } from 'vue'
 import PhUploadBold from '~icons/ph/download-bold'
 

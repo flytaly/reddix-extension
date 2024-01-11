@@ -5,7 +5,7 @@ import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 
 import { userName } from '~/logic/storage'
-import { state } from '~/logic/store'
+import { state } from '~/logic/options-stores'
 import { getUsername } from '~/reddit/username'
 
 const status = ref('')

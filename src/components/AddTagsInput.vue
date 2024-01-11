@@ -2,7 +2,7 @@
 import { ref, nextTick } from 'vue'
 import AutoComplete from 'primevue/autocomplete'
 import { SavedRedditItem, db } from '~/logic/db'
-import { getTagsArray, stats } from '~/logic/store'
+import { getTagsArray, stats } from '~/logic/options-stores'
 
 const props = defineProps<{
   redditId: string

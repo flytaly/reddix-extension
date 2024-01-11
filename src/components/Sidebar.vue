@@ -2,8 +2,8 @@
 import { watch } from 'vue'
 
 import { userName } from '~/logic/storage'
-import { state } from '~/logic/store'
-import { getTagsArray } from '~/logic/store'
+import { state } from '~/logic/options-stores'
+import { getTagsArray } from '~/logic/options-stores'
 import { setTag } from '~/logic/search-store'
 import AccountInput from '~/components/AccountInputBlock.vue'
 

@@ -2,10 +2,13 @@ import { reactive } from 'vue'
 import { onMessage, sendMessage } from 'webext-bridge/options'
 import { db } from './db/index'
 import { liveQuery } from 'dexie'
+import type { BgState } from '~/background/bg-state'
 
-export const state = reactive({
+export const state = reactive<BgState>({
   isFetching: false,
   fetchError: '',
+  loaded: 0,
+  savedNew: 0,
 })
 
 export async function setupMessageHandlers() {
@@ -19,7 +22,7 @@ export async function setupMessageHandlers() {
   })
 }
 
-void setupMessageHandlers()
+setupMessageHandlers()
 
 type Info = {
   tags: Record<string, number>
