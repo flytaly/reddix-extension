@@ -74,7 +74,12 @@ async function update(e: Event) {
 
   const filteredPosts = postsIds.filter((id) => !postsInDb.has(id))
   const filteredComments = commentsIds.filter((id) => !commentsInDb.has(id))
-  await fetchInfo(filteredPosts.concat(filteredComments))
+  const items = filteredPosts.concat(filteredComments)
+
+  addMessage(`${commentsInDb.size} new items`)
+  if (items.length) {
+    await fetchInfo(items)
+  }
 }
 </script>
 
@@ -90,8 +95,8 @@ async function update(e: Event) {
       <aside class="mr-auto px-4">
         <RateLimits />
       </aside>
-      <div class="mx-auto flex w-full flex-col items-center p-4">
-        <div class="mt-4">
+      <div class="mx-auto flex w-full flex-col items-center gap-6 p-4">
+        <div>
           <label
             class="flex rounded-sm bg-primary-500 px-2.5 py-1.5 text-sm font-semibold text-light shadow-sm hover:bg-primary-600 dark:bg-primary-400 dark:text-surface-900 dark:hover:bg-primary-300"
           >
@@ -100,11 +105,7 @@ async function update(e: Event) {
             <input type="file" class="hidden" accept=".json,.csv" @change="update" />
           </label>
         </div>
-        <div
-          class="mt-2 w-full max-w-xl bg-surface-100 p-2 ring-1 ring-surface-200 dark:bg-surface-900 dark:ring-surface-700"
-        >
-          <LogList />
-        </div>
+        <LogList />
       </div>
     </main>
   </MainLayout>

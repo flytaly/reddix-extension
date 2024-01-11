@@ -7,9 +7,9 @@ export type LogEntry = {
   message: string
 }
 
-export let messages = ref<LogEntry[]>([{ id: 0, date: new Date(), message: 'Welcome!' }])
+export let messages = ref<LogEntry[]>([])
 
 export function addMessage(message: string, type?: 'info' | 'error') {
   messages.value.push({ id: messages.value.at(-1)?.id || 0 + 1, date: new Date(), type, message })
-  messages.value = messages.value.slice(-10)
+  messages.value = messages.value.slice(-50)
 }
