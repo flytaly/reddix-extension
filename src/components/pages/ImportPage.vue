@@ -3,13 +3,16 @@ import { onUnmounted } from 'vue'
 import MainLayout from '~/components/pages/MainLayout.vue'
 import { setupStatsStore } from '~/logic/options-stores'
 import PhDownloadBold from '~icons/ph/upload-bold'
-import RateLimits from '~/components/RateLimits.vue'
+import RateLimitsBlock from '~/components/RateLimitsBlock.vue'
 import LogList from '~/components/LogList.vue'
 import { extractIds, csvStringToArray } from '~/logic/import'
 import { addMessage } from '~/logic/log-messages'
-import { getItems } from '~/logic/db/queries'
+import { getItems, savePosts } from '~/logic/db/queries'
 import { getItemsInfo } from '~/reddit/index'
-import { savePosts } from '~/logic/db/queries'
+import { IMPORT_TAKE } from '~/constants'
+import { onRateLimits } from '~/reddit'
+import { type RateLimits } from '~/reddit/rate-limits'
+import { waitRateLimits } from '~/logic/wait-limits'
 
 let subscription = setupStatsStore()
 
@@ -21,22 +24,36 @@ let postsIds = [] as string[]
 let commentsIds = [] as string[]
 
 async function fetchInfo(ids: string[]) {
+  if (!ids.length) return
   addMessage(`Started getting information about the posts`)
-  ids = ids.slice(0, 50)
-  const [info, error] = await getItemsInfo(ids)
-  if (error) {
-    addMessage(`Error: ${error}`, 'error')
-    return
+  const take = IMPORT_TAKE
+  let batch = ids.slice(0, take)
+  let rateLimits: RateLimits = {}
+  const onRateLimitsWrap = (rl: RateLimits) => {
+    rl = onRateLimits(rl)
+    rateLimits = rl
+    return rl
   }
-  if (!info) {
-    return
+  let imported = 0
+  const idsSet = new Set(ids)
+  for (let i = take; batch.length; i += take) {
+    await waitRateLimits(rateLimits, (msg: string) => addMessage(msg))
+    const [info, error] = await getItemsInfo(batch, onRateLimitsWrap)
+    if (error) {
+      addMessage(`Error: ${error}`, 'error')
+      return
+    }
+    if (!info) {
+      return
+    }
+    info.data.children.forEach((item) => idsSet.delete(item.data?.name))
+    const saved = (await savePosts(info)) || 0
+    addMessage(`Added ${saved} items`)
+    imported += saved
+    batch = ids.slice(i, i + take)
   }
-  await savePosts(info)
-  const len = info.data.children?.length
-  addMessage(`Added ${len} items`)
-  // TODO: fetch more
-
-  return info
+  addMessage(`The importing is finished (added ${imported} items)`)
+  addMessage(`Could not get information about following items:  ${[...idsSet].map((v) => v.slice(3)).join(', ')}`)
 }
 
 async function update(e: Event) {
@@ -59,7 +76,6 @@ async function update(e: Event) {
 
   ;({ postsIds, commentsIds } = extractIds(rows))
 
-  console.log(postsIds, commentsIds)
   addMessage(`[${file.name}] contains ${postsIds.length} posts, ${commentsIds.length} comments`)
 
   const postsInDb = new Set(postsIds.length > 0 ? await getItems(postsIds) : [])
@@ -76,7 +92,8 @@ async function update(e: Event) {
   const filteredComments = commentsIds.filter((id) => !commentsInDb.has(id))
   const items = filteredPosts.concat(filteredComments)
 
-  addMessage(`${commentsInDb.size} new items`)
+  addMessage(`${items.length} new items`)
+
   if (items.length) {
     await fetchInfo(items)
   }
@@ -93,7 +110,7 @@ async function update(e: Event) {
         <span>Import</span>
       </h2>
       <aside class="mr-auto px-4">
-        <RateLimits />
+        <RateLimitsBlock />
       </aside>
       <div class="mx-auto flex w-full flex-col items-center gap-6 p-4">
         <div>

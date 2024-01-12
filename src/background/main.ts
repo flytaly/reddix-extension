@@ -4,6 +4,7 @@ import { getPosts, onRateLimits } from '~/reddit'
 import devSetup from './dev-setup'
 import { state, type BgState } from './bg-state'
 import { RateLimits } from '~/reddit/rate-limits'
+import { waitRateLimits } from '~/logic/wait-limits'
 
 devSetup()
 
@@ -14,22 +15,6 @@ browser.runtime.onInstalled.addListener((): void => {
 function setStateAndNotify(updates: Partial<BgState>) {
   Object.assign(state, updates)
   sendMessage('state-update', state, { context: 'options', tabId: -1 })
-}
-
-async function waitRateLimits(rateLimits?: RateLimits) {
-  if (!rateLimits) return
-  const remaining = rateLimits.remaining
-  const reset = rateLimits.reset && new Date(rateLimits?.reset)
-  if (!remaining || !reset || remaining > 1) {
-    return
-  }
-  await new Promise<void>((resolve) => {
-    const timeout = reset.getTime() - Date.now()
-    console.log(`Rate limits. Wait until ${reset.toLocaleTimeString()} (${timeout / 1000} seconds).`)
-    setTimeout(() => {
-      resolve()
-    }, timeout)
-  })
 }
 
 async function fetchItems(username: string) {
@@ -64,7 +49,7 @@ async function fetchItems(username: string) {
     end = !nextAfter || nextAfter === after || listing.data.children.length < 100
     after = nextAfter || ''
 
-    await waitRateLimits(rateLimits)
+    await waitRateLimits(rateLimits, console.log)
   }
 }
 
