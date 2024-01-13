@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { onUnmounted } from 'vue'
 import MainLayout from '~/components/pages/MainLayout.vue'
-import { setupStatsStore } from '~/logic/options-stores'
 import PhDownloadBold from '~icons/ph/upload-bold'
 import RateLimitsBlock from '~/components/RateLimitsBlock.vue'
 import LogList from '~/components/LogList.vue'
@@ -13,12 +11,6 @@ import { IMPORT_TAKE } from '~/constants'
 import { onRateLimits } from '~/reddit'
 import { type RateLimits } from '~/reddit/rate-limits'
 import { waitRateLimits } from '~/logic/wait-limits'
-
-let subscription = setupStatsStore()
-
-onUnmounted(async () => {
-  ;(await subscription).unsubscribe()
-})
 
 let postsIds = [] as string[]
 let commentsIds = [] as string[]

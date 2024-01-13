@@ -1,14 +1,29 @@
 <script setup lang="ts">
+import Button from 'primevue/button'
 import MainLayout from '~/components/pages/MainLayout.vue'
-import { setupStatsStore } from '~/logic/options-stores'
-import { onUnmounted } from 'vue'
+import { SavedRedditItem, db } from '~/logic/db'
 import PhUploadBold from '~icons/ph/download-bold'
 
-let subscription = setupStatsStore()
+async function exportBlob(blob: Blob) {
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = 'export.json'
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(url)
+}
 
-onUnmounted(async () => {
-  ;(await subscription).unsubscribe()
-})
+async function exportItems() {
+  const items: SavedRedditItem[] = []
+  await db.savedItems.each((obj) => {
+    // TODO: filter properties
+    items.push(obj)
+  })
+  const blob = new Blob([JSON.stringify(items)], { type: 'application/json' })
+  exportBlob(blob)
+}
 </script>
 
 <template>
@@ -20,6 +35,9 @@ onUnmounted(async () => {
           <PhUploadBold class="mr-2 h-5 w-5" />
           <span> Export </span>
         </h2>
+        <div>
+          <Button label="Export" @click="exportItems" />
+        </div>
       </div>
     </main>
   </MainLayout>
