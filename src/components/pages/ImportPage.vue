@@ -45,7 +45,9 @@ async function fetchInfo(ids: string[]) {
     batch = ids.slice(i, i + take)
   }
   addMessage(`The importing is finished (added ${imported} items)`)
-  addMessage(`Could not get information about following items:  ${[...idsSet].map((v) => v.slice(3)).join(', ')}`)
+  if (idsSet.size) {
+    addMessage(`Could not get information about following items:  ${[...idsSet].map((v) => v.slice(3)).join(', ')}`)
+  }
 }
 
 async function update(e: Event) {
