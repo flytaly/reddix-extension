@@ -20,9 +20,15 @@ const targetIsVisible = ref(false)
 onMounted(() => loadMore())
 
 async function loadMore() {
-  const id = lastId.value
-  const items = await getPostsFromDB(search, id, ITEMS_ON_PAGE)
-  onNewItems(items, id, ITEMS_ON_PAGE)
+  try {
+    const id = lastId.value
+    const items = await getPostsFromDB(search, id, ITEMS_ON_PAGE)
+    onNewItems(items, id, ITEMS_ON_PAGE)
+  } catch (error) {
+    console.error(error)
+  } finally {
+    isEnd.value = true
+  }
 }
 
 const { pause, resume } = useIntersectionObserver(

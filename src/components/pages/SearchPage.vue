@@ -2,13 +2,7 @@
 import MainLayout from '~/components/pages/MainLayout.vue'
 import SearchItems from '~/components/SearchItems.vue'
 import Sidebar from '~/components/Sidebar.vue'
-import { setupStatsStore } from '~/logic/options-stores'
-
-let subscription = setupStatsStore()
-
-onUnmounted(async () => {
-  ;(await subscription).unsubscribe()
-})
+import Items from '~/components/Items.vue'
 </script>
 
 <template>
