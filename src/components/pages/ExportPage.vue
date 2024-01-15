@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import Button from 'primevue/button'
 import MainLayout from '~/components/pages/MainLayout.vue'
-import { SavedRedditItem, db } from '~/logic/db'
+import { db } from '~/logic/db'
 import PhUploadBold from '~icons/ph/download-bold'
+import { filterProperties, type ExportedItem } from '~/logic/export-utils'
 
 async function exportBlob(blob: Blob) {
   const url = URL.createObjectURL(blob)
@@ -16,10 +17,9 @@ async function exportBlob(blob: Blob) {
 }
 
 async function exportItems() {
-  const items: SavedRedditItem[] = []
+  const items: ExportedItem[] = []
   await db.savedItems.each((obj) => {
-    // TODO: filter properties
-    items.push(obj)
+    items.push(filterProperties(obj))
   })
   const blob = new Blob([JSON.stringify(items)], { type: 'application/json' })
   exportBlob(blob)
