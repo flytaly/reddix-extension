@@ -33,11 +33,11 @@ export class MySubClassedDexie extends Dexie {
 
 export const db = new MySubClassedDexie()
 
-function isPost(data: SavedRedditItem): data is SavedRedditPost {
+export function isPost(data: SavedRedditItem): data is SavedRedditPost {
   return data.name.startsWith(RedditObjectKind.link)
 }
 
-function isComment(data: SavedRedditItem): data is SavedRedditComment {
+export function isComment(data: SavedRedditItem): data is SavedRedditComment {
   return data.name.startsWith(RedditObjectKind.comment)
 }
 

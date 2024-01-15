@@ -6,6 +6,7 @@ const properties: Array<keyof SavedRedditItem> = [
   '_updated_at',
   '_title_words',
   '_body_words',
+  '_title_words',
 ] as const
 
 export type ExportedItem = Omit<SavedRedditItem, (typeof properties)[number]>
