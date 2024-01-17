@@ -60,7 +60,7 @@ async function exportJson() {
 
   const blob = await zip.generateAsync({ type: 'blob' })
 
-  downloadBlob(blob, `reddit_saved_items_${getDate()}.zip`)
+  downloadBlob(blob, `reddit_saved_items_(json)_${getDate()}.zip`)
 }
 
 type CSVRows = { id: string; permalink: string }
@@ -87,7 +87,7 @@ async function exportCsv() {
 
   const blob = await zip.generateAsync({ type: 'blob' })
 
-  downloadBlob(blob, `reddit_saved_items_${getDate()}.zip`)
+  downloadBlob(blob, `reddit_saved_items_(csv)_${getDate()}.zip`)
 }
 
 async function exportItems() {
