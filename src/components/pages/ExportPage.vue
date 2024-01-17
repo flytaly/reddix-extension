@@ -3,10 +3,11 @@ import { ref } from 'vue'
 import Button from 'primevue/button'
 import RadioButton from 'primevue/radiobutton'
 import MainLayout from '~/components/pages/MainLayout.vue'
-import { db } from '~/logic/db'
+import { SavedRedditItem, db, isComment, isPost } from '~/logic/db'
 import PhUploadBold from '~icons/ph/download-bold'
 import { filterProperties, type ExportedItem } from '~/logic/transform/export-utils'
 import { objectsToCsv } from '~/logic/transform/export-csv'
+import JSZip from 'jszip'
 
 const REDDIT_URL = 'https://www.reddit.com'
 
@@ -23,25 +24,70 @@ async function downloadBlob(blob: Blob, name: string) {
   URL.revokeObjectURL(url)
 }
 
-async function exportJson() {
-  const items: ExportedItem[] = []
+async function processItems(onPost: (item: SavedRedditItem) => void, onComment: (item: SavedRedditItem) => void) {
   await db.savedItems.each((obj) => {
-    items.push(filterProperties(obj))
+    if (isPost(obj)) {
+      onPost(obj)
+      return
+    }
+    if (isComment(obj)) {
+      onComment(obj)
+    }
   })
-  const blob = new Blob([JSON.stringify(items)], { type: 'application/json' })
-
-  const date = new Date().toISOString().split('T')[0].replace(/-/g, '_')
-  downloadBlob(blob, `reddit-saved-items_${date}.json`)
 }
 
+const getDate = () => new Date().toISOString().split('T')[0].replace(/-/g, '_')
+
+async function exportJson() {
+  const savedPosts: ExportedItem[] = []
+  const savedComments: ExportedItem[] = []
+
+  await processItems(
+    (obj) => savedPosts.push(filterProperties(obj)),
+    (obj) => savedComments.push(filterProperties(obj)),
+  )
+
+  const zip = new JSZip()
+
+  const addFile = async (name: string, content: ExportedItem[]) => {
+    const json = JSON.stringify(content)
+    const blob = new Blob([json], { type: 'application/json' })
+    zip.file(name, blob, { compression: 'DEFLATE' })
+  }
+
+  addFile('saved_posts.json', savedPosts)
+  addFile('saved_comments.json', savedComments)
+
+  const blob = await zip.generateAsync({ type: 'blob' })
+
+  downloadBlob(blob, `reddit_saved_items_${getDate()}.zip`)
+}
+
+type CSVRows = { id: string; permalink: string }
+
 async function exportCsv() {
-  const items: { id: string; permalink: string }[] = []
-  await db.savedItems.each((obj) => {
-    items.push({ id: obj.name, permalink: REDDIT_URL + obj.permalink })
-  })
-  const csv = objectsToCsv(items)
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
-  downloadBlob(blob, `reddit-saved-items_${new Date().toISOString().split('T')[0].replace(/-/g, '_')}.csv`)
+  const savedPosts: CSVRows[] = []
+  const savedComments: CSVRows[] = []
+
+  await processItems(
+    (obj) => savedPosts.push({ id: obj.name, permalink: REDDIT_URL + obj.permalink }),
+    (obj) => savedComments.push({ id: obj.name, permalink: REDDIT_URL + obj.permalink }),
+  )
+
+  const zip = new JSZip()
+
+  const addFile = async (name: string, content: CSVRows[]) => {
+    const csv = objectsToCsv(content)
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
+    zip.file(name, blob, { compression: 'DEFLATE' })
+  }
+
+  addFile('saved_posts.csv', savedPosts)
+  addFile('saved_comments.csv', savedComments)
+
+  const blob = await zip.generateAsync({ type: 'blob' })
+
+  downloadBlob(blob, `reddit_saved_items_${getDate()}.zip`)
 }
 
 async function exportItems() {

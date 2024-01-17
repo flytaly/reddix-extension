@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "dexie": "^3.2.4",
+    "jszip": "^3.10.1",
     "lodash-es": "^4.17.21",
     "primevue": "^3.45.0",
     "vue-router": "^4.2.5"
