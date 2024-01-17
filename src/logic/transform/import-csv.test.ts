@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { extractIds } from './import'
+import { extractIds } from './import-csv'
 
 describe('Preprocess importing data', () => {
   it('get list of Reddit ids', () => {

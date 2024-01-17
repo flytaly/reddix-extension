@@ -3,13 +3,13 @@ import Button from 'primevue/button'
 import MainLayout from '~/components/pages/MainLayout.vue'
 import { db } from '~/logic/db'
 import PhUploadBold from '~icons/ph/download-bold'
-import { filterProperties, type ExportedItem } from '~/logic/export-utils'
+import { filterProperties, type ExportedItem } from '~/logic/transform/export-utils'
 
-async function exportBlob(blob: Blob) {
+async function exportBlob(blob: Blob, name: string) {
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
   link.href = url
-  link.download = 'export.json'
+  link.download = name
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)
@@ -22,7 +22,9 @@ async function exportItems() {
     items.push(filterProperties(obj))
   })
   const blob = new Blob([JSON.stringify(items)], { type: 'application/json' })
-  exportBlob(blob)
+
+  const date = new Date().toISOString().split('T')[0].replace(/-/g, '_')
+  exportBlob(blob, `reddit-saved-items_${date}.json`)
 }
 </script>
 

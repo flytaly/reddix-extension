@@ -1,4 +1,4 @@
-import { SavedRedditItem } from './db'
+import { SavedRedditItem } from '../db'
 
 const properties: Array<keyof SavedRedditItem> = [
   '_id',

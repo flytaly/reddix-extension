@@ -3,7 +3,7 @@ import MainLayout from '~/components/pages/MainLayout.vue'
 import PhDownloadBold from '~icons/ph/upload-bold'
 import RateLimitsBlock from '~/components/RateLimitsBlock.vue'
 import LogList from '~/components/LogList.vue'
-import { importCSV, importJSON } from '~/logic/import-utils'
+import { importCSV, importJSON } from '~/logic/transform/import-utils'
 
 const isImporting = ref(false)
 
