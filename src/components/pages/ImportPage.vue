@@ -39,7 +39,7 @@ async function update(e: Event) {
             class="flex rounded-sm bg-primary-500 px-2.5 py-1.5 text-sm font-semibold text-light shadow-sm hover:bg-primary-600 dark:bg-primary-400 dark:text-surface-900 dark:hover:bg-primary-300"
           >
             <PhDownloadBold class="mr-2 h-5 w-5" />
-            <span>Choose</span>
+            <span>{{ isImporting ? 'Importing' : 'Choose' }}</span>
             <input type="file" class="hidden" accept=".json,.csv" :disabled="isImporting" @change="update" />
           </label>
         </div>
