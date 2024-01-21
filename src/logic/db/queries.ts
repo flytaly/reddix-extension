@@ -1,7 +1,7 @@
 import Dexie, { IndexableType, PromiseExtended } from 'dexie'
 import { ITEMS_ON_PAGE } from '~/constants'
-import { SavedRedditItem, db } from '~/logic/db'
-import { RedditItem, RedditItemResponse, RedditObjectKind } from '~/reddit/reddit-types'
+import { db } from '~/logic/db'
+import { RedditObjectKind } from '~/reddit/reddit-types'
 
 export type SearchQuery = {
   author: string
@@ -12,48 +12,6 @@ export type SearchQuery = {
   tags: string[]
   title: string[]
   words: string[]
-}
-
-export async function upsertItems(items: RedditItem[]) {
-  let savedNew = 0
-
-  await db.transaction('rw', db.savedItems, async () => {
-    const itemsInDB = await db.savedItems
-      .where('name')
-      .anyOf(items.map((item) => item.name))
-      .toArray()
-
-    const itemMap = {} as Record<string, SavedRedditItem>
-    itemsInDB.forEach((item) => {
-      itemMap[item.name] = item
-    })
-
-    const updated = items.map((item) => {
-      if (itemMap[item.name]) {
-        return { ...itemMap[item.name], ...item }
-      }
-      return item as SavedRedditItem
-    })
-    await db.savedItems.bulkPut(updated)
-
-    savedNew = items.length - itemsInDB.length
-  })
-
-  return savedNew
-}
-
-export async function savePosts(listing: RedditItemResponse) {
-  if (!listing?.data) {
-    return
-  }
-
-  try {
-    const items = listing.data.children.map((itm) => itm.data) as RedditItem[]
-    const saved = await upsertItems(items)
-    return saved
-  } catch (error) {
-    console.error(error)
-  }
 }
 
 export async function getItems(ids: string[]) {

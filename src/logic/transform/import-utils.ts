@@ -1,5 +1,6 @@
 import { IMPORT_TAKE } from '~/constants'
-import { getItems, savePosts, upsertItems } from '~/logic/db/queries'
+import { savePosts, upsertItems } from '~/logic/db/mutations'
+import { getItems } from '~/logic/db/queries'
 import { addMessage } from '~/logic/log-messages'
 import { ExportedItem } from '~/logic/transform/export-utils'
 import { csvStringToArray, extractIds } from '~/logic/transform/import-csv'
