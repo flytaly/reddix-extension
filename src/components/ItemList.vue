@@ -3,45 +3,27 @@ import type { SavedRedditItem } from '~/logic/db'
 import { setTag, setSubreddit, setAuthor } from '~/logic/search-store'
 import ItemCard from '~/components/ItemCard.vue'
 
-defineProps<{ items?: SavedRedditItem[]; addTags: () => void }>()
+const { onRemove } = defineProps<{
+  items?: SavedRedditItem[]
+  addTags: (e: MouseEvent) => void
+  onRemove: (ids: number[]) => void
+}>()
 
-function onTagClick(e: MouseEvent) {
-  const tag = (e.currentTarget as HTMLElement).dataset.tag
-  if (!tag) return
-  setTag(tag)
-}
-
-function onSubredditClick(e: MouseEvent) {
-  const root = (e.currentTarget as HTMLElement).closest('[data-subreddit]') as HTMLElement
-  const subreddit = root?.dataset.subreddit
-  if (!subreddit) return
-  setSubreddit(subreddit)
-}
-
-function onAuthorClick(e: MouseEvent) {
-  const root = (e.currentTarget as HTMLElement).closest('[data-subreddit]') as HTMLElement
-  const author = root?.dataset.author
-  if (!author) return
-  setAuthor(author)
+function removeItem(id: number) {
+  onRemove([id])
 }
 </script>
 
 <template>
   <ol class="flex w-full flex-col gap-4 text-left">
-    <li
-      v-for="item in items"
-      :key="item.id"
-      :data-reddit-name="item.name"
-      :data-subreddit="item.subreddit"
-      :data-author="item.author"
-      class="max-w-full"
-    >
+    <li v-for="item in items" :key="item.id" :data-reddit-name="item.name" class="max-w-full">
       <ItemCard
         :item="item"
-        :add-tags="addTags"
-        @tag-click="onTagClick"
-        @subreddit-click="onSubredditClick"
-        @author-click="onAuthorClick"
+        @add-tags="addTags"
+        @tag-click="setTag"
+        @subreddit-click="setSubreddit"
+        @author-click="setAuthor"
+        @remove="removeItem"
       />
     </li>
   </ol>

@@ -86,7 +86,7 @@ async function commit() {
 
 <template>
   <article ref="target">
-    <h2 class="mb-0.5">Add tags to the item</h2>
+    <h2 class="mb-0.5 text-sm">Add or remove item tags</h2>
     <div class="card flex justify-center">
       <AutoComplete
         v-model="currentTags"
