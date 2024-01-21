@@ -1,5 +1,5 @@
 import { onMessage, sendMessage } from 'webext-bridge/background'
-import { savePosts } from '~/logic/db/queries'
+import { savePosts } from '~/logic/db/mutations'
 import { getPosts, onRateLimits } from '~/reddit'
 import devSetup from './dev-setup'
 import { state, type BgState } from './bg-state'
