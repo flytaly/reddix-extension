@@ -13,20 +13,25 @@ import { removeItems } from '~/logic/db/mutations'
 import { search } from '~/logic/search-store'
 import { state } from '~/logic/options-stores'
 
-const lastId = ref(0)
+const lastItemId = ref(0)
 const isEnd = ref(false)
 const items = shallowRef<SavedRedditItem[]>()
-
 const target = ref(null)
 const targetIsVisible = ref(false)
+
+let lastQueryId = 0
 
 onMounted(() => loadMore())
 
 async function loadMore() {
+  const current = ++lastQueryId
   try {
-    const id = lastId.value
+    const id = lastItemId.value
     const items = await getPostsFromDB(search, id, ITEMS_ON_PAGE)
-    onNewItems(items, id, ITEMS_ON_PAGE)
+    // make sure the query is not out of date
+    if (lastQueryId === current) {
+      onNewItems(items, id, ITEMS_ON_PAGE)
+    }
   } catch (error) {
     console.error(error)
   } finally {
@@ -54,19 +59,19 @@ function onNewItems(incoming: SavedRedditItem[], prevLastId: number, limit: numb
   } else {
     items.value = [...items.value, ...incoming]
   }
-  lastId.value = items.value.at(-1)?._id || 0
+  lastItemId.value = items.value.at(-1)?._id || 0
 }
 
 watch(
   () => state.isFetching,
   (isFetching) => {
     if (isFetching) return
-    lastId.value = 0
+    lastItemId.value = 0
     return loadMore()
   },
 )
 watch(search, async () => {
-  lastId.value = 0
+  lastItemId.value = 0
   return loadMore()
 })
 
