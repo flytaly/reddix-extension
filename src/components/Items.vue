@@ -2,6 +2,7 @@
 import { ref, shallowRef, onMounted, nextTick } from 'vue'
 import { useIntersectionObserver } from '@vueuse/core'
 import Toast from 'primevue/toast'
+import { useToast } from 'primevue/usetoast'
 import OverlayPanel from 'primevue/overlaypanel'
 
 import AddTagsInput from '~/components/AddTagsInput.vue'
@@ -23,6 +24,8 @@ let lastQueryId = 0
 
 onMounted(() => loadMore())
 
+const toast = useToast()
+
 async function loadMore() {
   const current = ++lastQueryId
   try {
@@ -33,6 +36,7 @@ async function loadMore() {
       onNewItems(items, id, ITEMS_ON_PAGE)
     }
   } catch (error) {
+    toast.add({ severity: 'error', summary: 'DB Error', detail: (error as any)?.message || '', life: 3000 })
     console.error(error)
   } finally {
     isEnd.value = true
