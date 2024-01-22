@@ -40,6 +40,7 @@ export type RedditPostData = {
       source?: ImageSource
     }>
   }
+  saved: boolean
   selftext?: string
   selftext_html?: string
   subreddit: string
@@ -65,6 +66,7 @@ export type RedditCommentData = {
   name: string
   over_18: boolean
   permalink: string
+  saved: boolean
   subreddit: string
   subreddit_name_prefixed: string
 }

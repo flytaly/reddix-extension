@@ -1,13 +1,13 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import Button from 'primevue/button'
+import PhTagDuotone from '~icons/ph/tag-duotone'
+import PhTrashSimpleDuotone from '~icons/ph/trash-simple-duotone'
+import PhBookmarksSimpleDuotone from '~icons/ph/bookmarks-simple-duotone'
 import type { RedditCommentData, RedditPostData } from '~/reddit/reddit-types'
 import type { SavedRedditItem } from '~/logic/db'
-import PhTagDuotone from '~icons/ph/tag-duotone'
-import PhTrashDuotone from '~icons/ph/trash-duotone'
-import PhBookmarksSimpleDuotone from '~icons/ph/bookmarks-simple-duotone'
-import { computed } from 'vue'
 
-const { item } = defineProps<{
+const props = defineProps<{
   item: SavedRedditItem
   onAddTags: (e: MouseEvent) => void
 }>()
@@ -17,23 +17,30 @@ const emit = defineEmits<{
   (e: 'tag-click', tag: string): void
   (e: 'author-click', author: string): void
   (e: 'subreddit-click', subreddit: string): void
+  (e: 'unsave', name: string): void
 }>()
 
-const title = computed(() => (item as RedditPostData).title || (item as RedditCommentData).link_title)
-const body = computed(() => (item as RedditPostData).selftext || (item as RedditCommentData).body)
-const fullLink = computed(() => `https://reddit.com${item.permalink}`)
+const title = computed(() => (props.item as RedditPostData).title || (props.item as RedditCommentData).link_title)
+const body = computed(() => (props.item as RedditPostData).selftext || (props.item as RedditCommentData).body)
+const fullLink = computed(() => `https://reddit.com${props.item.permalink}`)
 const itemType = computed(() => {
-  if (item.name.startsWith('t3')) {
+  if (props.item.name.startsWith('t3')) {
     return 'post'
   }
   return 'comment'
 })
 
 let confirmRemoving = ref(false)
+let confirmUnsave = ref(false)
 
 function onRemove() {
-  emit('remove', item._id)
+  emit('remove', props.item._id)
   confirmRemoving.value = false
+}
+
+function onUnsave() {
+  emit('unsave', props.item.name)
+  confirmUnsave.value = false
 }
 </script>
 
@@ -81,24 +88,38 @@ function onRemove() {
       </ul>
       <button
         v-if="!confirmRemoving"
+        title="Remove the item locally from the extension"
         class="flex gap-0.5 hover:text-primary-400"
         size="small"
-        outlined
         @click="confirmRemoving = true"
       >
-        <PhTrashDuotone class="shrink-0" />
+        <PhTrashSimpleDuotone class="shrink-0" />
         remove
       </button>
-      <div v-if="confirmRemoving">
-        <span class="text-primary-400"> Remove the item? </span>
-        <button class="hover:text-primary-400" @click="onRemove">Yes</button>
+      <div v-if="confirmRemoving" class="mr-2" title="Remove the item locally from the extension">
+        <span class="text-primary-400">Remove the item?</span>
+        <button class="ml-2 hover:text-primary-400" @click="onRemove">Yes</button>
         <span class="mx-2">/</span>
         <button class="hover:text-primary-400" @click="confirmRemoving = false">No</button>
       </div>
-      <button class="flex gap-0.5 whitespace-nowrap hover:text-primary-400">
-        <PhBookmarksSimpleDuotone class="shrink-0" />
-        unsave on reddit
-      </button>
+
+      <div v-if="item.saved">
+        <button
+          v-if="!confirmUnsave"
+          class="flex gap-0.5 whitespace-nowrap hover:text-primary-400"
+          title="Unsave on Reddit. You must be logged in."
+          @click="confirmUnsave = true"
+        >
+          <PhBookmarksSimpleDuotone class="shrink-0" />
+          unsave on reddit
+        </button>
+        <div v-if="confirmUnsave" class="mr-2" title="Unsave on Reddit. You must be logged in.">
+          <span class="text-primary-400">Unsave the item?</span>
+          <button class="ml-2 hover:text-primary-400" @click="onUnsave">Yes</button>
+          <span class="mx-2">/</span>
+          <button class="hover:text-primary-400" @click="confirmUnsave = false">No</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>

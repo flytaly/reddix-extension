@@ -6,7 +6,7 @@ import Button from 'primevue/button'
 
 import { userName } from '~/logic/storage'
 import { state } from '~/logic/options-stores'
-import { getUsername } from '~/reddit/username'
+import { getMeInfo, getUserInfo } from '~/reddit/me'
 
 const status = ref('')
 const isEdit = ref(false)
@@ -37,8 +37,8 @@ watch(userName, () => {
 
 async function fetchUsername() {
   fetchingUsername.value = true
-  const [name, error] = await getUsername()
-  userName.value = name || ''
+  const [info, error] = await getUserInfo()
+  userName.value = info?.data?.name || ''
   status.value = error || ''
   fetchingUsername.value = false
   if (!error) isEdit.value = false

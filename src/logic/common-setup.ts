@@ -1,5 +1,7 @@
-import type { App } from 'vue'
 import PrimeVue from 'primevue/config'
+import ConfirmationService from 'primevue/confirmationservice'
+import Tooltip from 'primevue/tooltip'
+import type { App } from 'vue'
 import PrimePreset from '~/styles/presets/wind'
 
 export function setupApp(app: App) {
@@ -18,4 +20,7 @@ export function setupApp(app: App) {
     unstyled: true,
     pt: PrimePreset,
   })
+
+  app.use(ConfirmationService)
+  app.directive('tooltip', Tooltip)
 }

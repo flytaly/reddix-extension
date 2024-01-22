@@ -1,15 +1,17 @@
 <script setup lang="ts">
+import { ref, shallowRef, onMounted, nextTick } from 'vue'
 import { useIntersectionObserver } from '@vueuse/core'
-import { SavedRedditItem } from '~/logic/db'
-import { getPostsFromDB } from '~/logic/db/queries'
-import { state } from '~/logic/options-stores'
-import { search } from '~/logic/search-store'
+import Toast from 'primevue/toast'
+import OverlayPanel from 'primevue/overlaypanel'
+
+import AddTagsInput from '~/components/AddTagsInput.vue'
 import ItemList from '~/components/ItemList.vue'
 import { ITEMS_ON_PAGE } from '~/constants'
-import OverlayPanel from 'primevue/overlaypanel'
-import AddTagsInput from '~/components/AddTagsInput.vue'
-import { ref, shallowRef, onMounted, nextTick } from 'vue'
+import { SavedRedditItem } from '~/logic/db'
+import { getPostsFromDB } from '~/logic/db/queries'
 import { removeItems } from '~/logic/db/mutations'
+import { search } from '~/logic/search-store'
+import { state } from '~/logic/options-stores'
 
 const lastId = ref(0)
 const isEnd = ref(false)
@@ -90,14 +92,24 @@ async function onRemove(itemIds: number[]) {
   await removeItems(itemIds)
   items.value = items.value?.filter((item) => !itemIds.includes(item._id))
 }
+
+async function markUnsaved(itemId: number) {
+  items.value = items.value?.map((item) => {
+    if (item._id === itemId) {
+      return { ...item, saved: false }
+    }
+    return item
+  })
+}
 </script>
 
 <template>
+  <Toast />
   <div class="flex flex-col items-center justify-center">
     <OverlayPanel ref="op" class="px-0 py-0" :pt="{ content: 'p-2' }">
       <AddTagsInput :reddit-id="redditId" @exit="updateTags" />
     </OverlayPanel>
-    <ItemList :items="items" :add-tags="toggle" @remove="onRemove" />
+    <ItemList :items="items" :add-tags="toggle" @unsave="markUnsaved" @remove="onRemove" />
     <div v-if="!isEnd">
       <button ref="target" class="p-2 py-4 text-primary-700 dark:text-primary-400" tabindex="-1" @click="loadMore">
         Load more

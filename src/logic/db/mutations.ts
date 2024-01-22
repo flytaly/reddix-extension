@@ -5,6 +5,10 @@ export async function removeItems(ids: number[]) {
   return db.savedItems.bulkDelete(ids)
 }
 
+export async function updateItem(id: number, props: Partial<SavedRedditItem>) {
+  return db.savedItems.update(id, props)
+}
+
 export async function upsertItems(items: RedditItem[]) {
   let savedNew = 0
 
