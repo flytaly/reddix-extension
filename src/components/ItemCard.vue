@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed  } from 'vue'
 import Button from 'primevue/button'
 import PhTagDuotone from '~icons/ph/tag-duotone'
 import PhTrashSimpleDuotone from '~icons/ph/trash-simple-duotone'
@@ -30,8 +30,8 @@ const itemType = computed(() => {
   return 'comment'
 })
 
-let confirmRemoving = ref(false)
-let confirmUnsave = ref(false)
+const confirmRemoving = ref(false)
+const confirmUnsave = ref(false)
 
 function onRemove() {
   emit('remove', props.item._id)
@@ -45,8 +45,8 @@ function onUnsave() {
 </script>
 
 <template>
-  <div class="max-w-full overflow-hidden text-ellipsis py-2 text-sm">
-    <div class="rounded-md p-1">
+  <div class="container">
+    <div class="w-full rounded-md py-1">
       <div class="flex w-full justify-between gap-2 text-xs">
         <span>
           <span class="dimmed-2">{{ itemType }}</span>
@@ -60,18 +60,17 @@ function onUnsave() {
         <span class="dimmed-2 ml-auto">[{{ new Date(item.created * 1000).toLocaleDateString() }}]</span>
       </div>
       <div class="wrap-anywhere">
-        <a class="flex items-center gap-2 text-dark dark:text-light" :href="fullLink">
+        <a class="flex items-center gap-2 text-base font-medium text-dark dark:text-light" :href="fullLink">
           {{ title }}
         </a>
       </div>
-      <div class="wrap-anywhere dimmed-1 mt-1 flex gap-1 text-sm">
-        <div class="line-clamp-2">
-          {{ body }}
-        </div>
+      <div class="wrap-anywhere mt-1 flex w-full flex-col gap-1 text-sm">
+        <!-- eslint-disable-next-line vue/no-v-html -->
+        <div ref="bodyElemRef" class="item-body overflow-hidden" :class="{ 'max-h-28': !expanded }" v-html="body" />
       </div>
     </div>
 
-    <div class="dimmed-1 flex gap-2 pt-0.5 text-xs">
+    <div class="dimmed-1 flex items-center gap-2 pt-0.5 text-xs">
       <ul class="mr-auto flex flex-wrap gap-1">
         <button
           size="small"
@@ -125,6 +124,12 @@ function onUnsave() {
 </template>
 
 <style lang="postcss" scoped>
+.container {
+  @apply max-w-full overflow-hidden text-ellipsis bg-surface-0 px-4 py-2 text-sm ring-1
+         ring-surface-200 hover:ring-surface-400
+         dark:bg-surface-900 dark:ring-surface-800 dark:hover:ring-surface-700;
+}
+
 .dimmed-1 {
   @apply text-surface-500 dark:text-surface-400;
 }
@@ -133,5 +138,31 @@ function onUnsave() {
 }
 .wrap-anywhere {
   overflow-wrap: anywhere;
+}
+</style>
+
+<style lang="postcss">
+.item-body {
+  p {
+    @apply my-2;
+  }
+  p:first-child {
+    @apply mt-0;
+  }
+  a {
+    @apply underline;
+  }
+  blockquote {
+    @apply border-l-2 border-surface-700 pl-2 dark:border-surface-400;
+  }
+  ol {
+    @apply my-2 list-decimal pl-4;
+  }
+  ul {
+    @apply my-2 list-disc pl-4;
+  }
+  code {
+    @apply my-2 block bg-surface-100 p-1 font-mono dark:bg-surface-800;
+  }
 }
 </style>

@@ -114,7 +114,7 @@ async function markUnsaved(itemId: number) {
 
 <template>
   <Toast />
-  <div class="flex flex-col items-center justify-center">
+  <div class="mb-10 flex flex-col items-center justify-center">
     <OverlayPanel ref="op" class="px-0 py-0" :pt="{ content: 'p-2' }">
       <AddTagsInput :reddit-id="redditId" @exit="updateTags" />
     </OverlayPanel>
