@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { computed  } from 'vue'
+import { computed, onMounted } from 'vue'
 import Button from 'primevue/button'
+import { unescape } from 'lodash-es'
 import PhTagDuotone from '~icons/ph/tag-duotone'
 import PhTrashSimpleDuotone from '~icons/ph/trash-simple-duotone'
 import PhBookmarksSimpleDuotone from '~icons/ph/bookmarks-simple-duotone'
+import PhArrowsOutSimple from '~icons/ph/arrows-out-simple'
+
 import type { RedditCommentData, RedditPostData } from '~/reddit/reddit-types'
 import type { SavedRedditItem } from '~/logic/db'
 
@@ -21,7 +24,10 @@ const emit = defineEmits<{
 }>()
 
 const title = computed(() => (props.item as RedditPostData).title || (props.item as RedditCommentData).link_title)
-const body = computed(() => (props.item as RedditPostData).selftext || (props.item as RedditCommentData).body)
+const body = computed(() => {
+  const text = (props.item as RedditPostData).selftext_html || (props.item as RedditCommentData).body_html
+  return unescape(text)
+})
 const fullLink = computed(() => `https://reddit.com${props.item.permalink}`)
 const itemType = computed(() => {
   if (props.item.name.startsWith('t3')) {
@@ -32,6 +38,21 @@ const itemType = computed(() => {
 
 const confirmRemoving = ref(false)
 const confirmUnsave = ref(false)
+
+const bodyElemRef = ref<HTMLElement | null>(null)
+const overflowen = ref(false)
+const expanded = ref(false)
+
+onMounted(() => {
+  const element = bodyElemRef.value
+  if (element) {
+    overflowen.value = isOverflowen(element)
+  }
+})
+
+function isOverflowen(element: HTMLElement) {
+  return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth
+}
 
 function onRemove() {
   emit('remove', props.item._id)
@@ -64,9 +85,25 @@ function onUnsave() {
           {{ title }}
         </a>
       </div>
-      <div class="wrap-anywhere mt-1 flex w-full flex-col gap-1 text-sm">
+      <div class="wrap-anywhere relative mt-1 flex w-full flex-col gap-1 text-sm">
         <!-- eslint-disable-next-line vue/no-v-html -->
         <div ref="bodyElemRef" class="item-body overflow-hidden" :class="{ 'max-h-28': !expanded }" v-html="body" />
+        <button
+          v-if="overflowen && !expanded"
+          class="mask absolute bottom-0 left-0 flex w-full items-center justify-center gap-1 bg-white pt-3 text-surface-600 hover:text-primary-400 dark:bg-surface-900 dark:text-surface-400"
+          @click="expanded = true"
+        >
+          <PhArrowsOutSimple />
+          expand
+        </button>
+        <button
+          v-if="expanded"
+          class="flex w-full items-center justify-center gap-1 text-surface-500 hover:text-primary-400 dark:text-surface-500"
+          @click="expanded = false"
+        >
+          <PhArrowsOutSimple />
+          collapse
+        </button>
       </div>
     </div>
 
@@ -138,6 +175,9 @@ function onUnsave() {
 }
 .wrap-anywhere {
   overflow-wrap: anywhere;
+}
+.mask {
+  mask-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.754)), to(rgba(0, 0, 0, 1)));
 }
 </style>
 
