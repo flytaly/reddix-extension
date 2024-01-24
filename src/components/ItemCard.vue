@@ -85,7 +85,7 @@ function onUnsave() {
           {{ title }}
         </a>
       </div>
-      <div class="wrap-anywhere relative mt-1 flex w-full flex-col gap-1 text-sm">
+      <div class="wrap-anywhere dimmed-1 relative mt-1 flex w-full flex-col gap-1 text-sm">
         <!-- eslint-disable-next-line vue/no-v-html -->
         <div ref="bodyElemRef" class="item-body overflow-hidden" :class="{ 'max-h-28': !expanded }" v-html="body" />
         <button
@@ -168,7 +168,7 @@ function onUnsave() {
 }
 
 .dimmed-1 {
-  @apply text-surface-500 dark:text-surface-400;
+  @apply text-surface-700 dark:text-surface-300;
 }
 .dimmed-2 {
   @apply text-surface-400 dark:text-surface-500;
