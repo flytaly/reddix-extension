@@ -7,7 +7,7 @@ import PhTrashSimpleDuotone from '~icons/ph/trash-simple-duotone'
 import PhBookmarksSimpleDuotone from '~icons/ph/bookmarks-simple-duotone'
 import PhArrowsOutSimple from '~icons/ph/arrows-out-simple'
 
-import type { RedditCommentData, RedditPostData } from '~/reddit/reddit-types'
+import type { RedditCommentData, RedditItem, RedditPostData } from '~/reddit/reddit-types'
 import type { SavedRedditItem } from '~/logic/db'
 
 const props = defineProps<{
@@ -24,7 +24,7 @@ const emit = defineEmits<{
 }>()
 
 const title = computed(() => (props.item as RedditPostData).title || (props.item as RedditCommentData).link_title)
-const body = computed(() => {
+const itemBody = computed(() => {
   const text = (props.item as RedditPostData).selftext_html || (props.item as RedditCommentData).body_html
   return unescape(text)
 })
@@ -34,6 +34,12 @@ const itemType = computed(() => {
     return 'post'
   }
   return 'comment'
+})
+
+const preview = computed(() => {
+  const img = (props.item as RedditPostData).preview?.images?.[0].source
+  if (!img) return
+  return unescape(img.url)
 })
 
 const confirmRemoving = ref(false)
@@ -66,9 +72,17 @@ function onUnsave() {
 </script>
 
 <template>
-  <div class="container">
-    <div class="w-full rounded-md py-1">
-      <div class="flex w-full justify-between gap-2 text-xs">
+  <article class="container">
+    <!-- Preview  --->
+    <img
+      v-if="preview"
+      :src="preview"
+      class="float-left mb-2 mr-2 h-[4.5rem] w-24 flex-shrink-0 rounded object-cover"
+    />
+
+    <!-- Header  --->
+    <header class="inline">
+      <div class="inline-flex justify-between gap-2 text-xs">
         <span>
           <span class="dimmed-2">{{ itemType }}</span>
           <span class="dimmed-2"> in </span>
@@ -80,34 +94,42 @@ function onUnsave() {
         </span>
         <span class="dimmed-2 ml-auto">[{{ new Date(item.created * 1000).toLocaleDateString() }}]</span>
       </div>
-      <div class="wrap-anywhere">
+      <h4 class="wrap-anywhere">
         <a class="flex items-center gap-2 text-base font-medium text-dark dark:text-light" :href="fullLink">
           {{ title }}
         </a>
-      </div>
-      <div class="wrap-anywhere dimmed-1 relative mt-1 flex w-full flex-col gap-1 text-sm">
-        <!-- eslint-disable-next-line vue/no-v-html -->
-        <div ref="bodyElemRef" class="item-body overflow-hidden" :class="{ 'max-h-28': !expanded }" v-html="body" />
-        <button
-          v-if="overflowen && !expanded"
-          class="mask absolute bottom-0 left-0 flex w-full items-center justify-center gap-1 bg-white pt-3 text-surface-600 hover:text-primary-400 dark:bg-surface-900 dark:text-surface-400"
-          @click="expanded = true"
-        >
-          <PhArrowsOutSimple />
-          expand
-        </button>
-        <button
-          v-if="expanded"
-          class="flex w-full items-center justify-center gap-1 text-surface-500 hover:text-primary-400 dark:text-surface-500"
-          @click="expanded = false"
-        >
-          <PhArrowsOutSimple />
-          collapse
-        </button>
-      </div>
+      </h4>
+    </header>
+
+    <!-- Body -->
+    <div v-if="itemBody" class="body wrap-anywhere dimmed-1 relative mt-1 inline-flex flex-col gap-1 text-sm">
+      <!-- eslint-disable-next-line vue/no-v-html -->
+      <span
+        ref="bodyElemRef"
+        class="item-body overflow-hidden"
+        :class="{ 'max-h-28': !expanded }"
+        v-html="itemBody"
+      ></span>
+      <button
+        v-if="overflowen && !expanded"
+        class="mask absolute bottom-0 left-0 flex w-full items-center justify-center gap-1 bg-white pt-3 text-surface-600 hover:text-primary-400 dark:bg-surface-900 dark:text-surface-400"
+        @click="expanded = true"
+      >
+        <PhArrowsOutSimple />
+        expand
+      </button>
+      <button
+        v-if="expanded"
+        class="flex w-full items-center justify-center gap-1 text-surface-500 hover:text-primary-400 dark:text-surface-500"
+        @click="expanded = false"
+      >
+        <PhArrowsOutSimple />
+        collapse
+      </button>
     </div>
 
-    <div class="dimmed-1 flex items-center gap-2 pt-0.5 text-xs">
+    <!-- Footer -->
+    <footer class="dimmed-1 mt-1 flex items-center gap-2 pt-0.5 text-xs" :class="{ 'clear-both': itemBody }">
       <ul class="mr-auto flex flex-wrap gap-1">
         <button
           size="small"
@@ -126,7 +148,7 @@ function onUnsave() {
       <button
         v-if="!confirmRemoving"
         title="Remove the item locally from the extension"
-        class="flex gap-0.5 hover:text-primary-400"
+        class="ml-auto flex gap-0.5 hover:text-primary-400"
         size="small"
         @click="confirmRemoving = true"
       >
@@ -157,8 +179,8 @@ function onUnsave() {
           <button class="hover:text-primary-400" @click="confirmUnsave = false">No</button>
         </div>
       </div>
-    </div>
-  </div>
+    </footer>
+  </article>
 </template>
 
 <style lang="postcss" scoped>
@@ -184,7 +206,7 @@ function onUnsave() {
 
 <style lang="postcss">
 .item-body {
-  p {
+  /* p {
     @apply my-2;
   }
   p:first-child {
@@ -204,6 +226,6 @@ function onUnsave() {
   }
   code {
     @apply my-2 block bg-surface-100 p-1 font-mono dark:bg-surface-800;
-  }
+  } */
 }
 </style>

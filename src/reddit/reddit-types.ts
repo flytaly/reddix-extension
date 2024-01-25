@@ -33,6 +33,7 @@ export type RedditPostData = {
   name: string
   over_18?: boolean
   permalink: string
+  thumbnail?: string
   preview?: {
     images: Array<{
       id: string
