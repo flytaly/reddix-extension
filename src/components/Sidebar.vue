@@ -31,11 +31,11 @@ async function onTagClick(e: MouseEvent) {
         <li v-for="[tag, count] in getTagsArray()" :key="tag">
           <a
             href="#"
-            class="flex justify-between gap-2 overflow-hidden text-ellipsis whitespace-pre text-surface-500 dark:text-surface-400"
+            class="flex justify-between gap-2 whitespace-pre text-surface-500 dark:text-surface-400"
             :data-tag="tag"
             @click.prevent="onTagClick"
           >
-            <span>#{{ tag }}</span>
+            <span class="max-w-52 overflow-hidden text-ellipsis">#{{ tag }}</span>
             <span>{{ count }}</span>
           </a>
         </li>

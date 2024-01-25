@@ -111,7 +111,6 @@ function onUnsave() {
       <ul class="mr-auto flex flex-wrap gap-1">
         <button
           size="small"
-          outlined
           class="mr-1 h-3 w-3 flex-shrink-0 self-start border-0 px-0 py-0 hover:text-primary-400 active:text-primary-500"
           title="Edit tags"
           @click="onAddTags"
@@ -119,7 +118,9 @@ function onUnsave() {
           <PhTagDuotone />
         </button>
         <li v-for="tag in item._tags" :key="tag">
-          <a href="#" class="dimmed-2" :data-tag="tag" @click.prevent="$emit('tag-click', tag)"> #{{ tag }} </a>
+          <a href="#" class="dimmed-2 break-all" :data-tag="tag" @click.prevent="$emit('tag-click', tag)">
+            #{{ tag }}
+          </a>
         </li>
       </ul>
       <button

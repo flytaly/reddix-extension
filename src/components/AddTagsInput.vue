@@ -95,13 +95,16 @@ async function commit() {
         :suggestions="completeItems"
         :complete-on-focus="true"
         :delay="200"
+        class="max-w-[32rem]"
         @complete="search"
         @item-select="commit"
         @item-unselect="commit"
       >
-        <template #chip="slotProps"> #{{ slotProps.value[0] }} </template>
+        <template #chip="slotProps">
+          <span class="max-w-48 break-all"> #{{ slotProps.value[0] }} </span>
+        </template>
         <template #option="slotProps">
-          <div class="flex justify-between gap-2">
+          <div class="flex max-w-48 justify-between gap-2 break-all">
             <div>#{{ slotProps.option[0] }}</div>
             <div class="ml-auto text-surface-400 dark:text-surface-500">{{ slotProps.option[1] || 'new' }}</div>
           </div>
