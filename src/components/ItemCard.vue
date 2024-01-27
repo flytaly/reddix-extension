@@ -6,7 +6,7 @@ import { unescape } from 'lodash-es'
 
 import MediaPreview from '~/components/MediaPreview.vue'
 import type { RedditCommentData, RedditPostData } from '~/reddit/reddit-types'
-import { type SavedRedditItem } from '~/logic/db'
+import { SavedRedditPost, type SavedRedditItem } from '~/logic/db'
 import { extractMedia } from '~/reddit/post-media'
 
 const props = defineProps<{
@@ -74,14 +74,22 @@ const togglePreview = (event: Event) => {
 
 <template>
   <article class="container">
-    <!-- Preview  --->
+    <!-- Thumbnail  --->
     <button
       v-if="media.thumbnail"
-      class="float-left mb-2 mr-2 flex-shrink-0"
+      class="relative float-left mb-2 mr-2 flex-shrink-0"
       title="click to preview image"
       @click="togglePreview"
     >
       <img class="h-[4.5rem] w-24 rounded object-cover" :src="media.thumbnail" />
+      <PhImagesSquare
+        v-if="(item as SavedRedditPost).is_gallery"
+        class="absolute bottom-0 right-0 h-4 w-4 rounded-tl bg-surface-100 dark:bg-surface-900"
+      />
+      <PhPlayCircle
+        v-if="(item as SavedRedditPost).is_video"
+        class="absolute bottom-0 right-0 h-4 w-4 rounded-tl bg-surface-100 dark:bg-surface-900"
+      />
     </button>
 
     <!-- Header  --->

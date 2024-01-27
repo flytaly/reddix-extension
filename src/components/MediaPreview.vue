@@ -26,7 +26,7 @@ onMounted(() => {
       </div>
       <img :src="media.source.url" alt="preview" class="limit aspect-auto" @load="overlayImgLoading = 'loaded'" />
       <a v-if="item.is_gallery" :href="getFullLink(item.permalink)" class="link">
-        <PhImagesLight />
+        <PhImagesSquare />
         view full gallery
       </a>
     </div>
