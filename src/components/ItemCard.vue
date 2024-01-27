@@ -103,7 +103,6 @@ function onUnsave() {
 
     <!-- Body -->
     <div v-if="itemBody" class="body wrap-anywhere dimmed-1 relative mt-1 inline-flex flex-col gap-1 text-sm">
-      <!-- eslint-disable-next-line vue/no-v-html -->
       <span
         ref="bodyElemRef"
         class="item-body overflow-hidden"
@@ -206,7 +205,7 @@ function onUnsave() {
 
 <style lang="postcss">
 .item-body {
-  /* p {
+  p {
     @apply my-2;
   }
   p:first-child {
@@ -226,6 +225,6 @@ function onUnsave() {
   }
   code {
     @apply my-2 block bg-surface-100 p-1 font-mono dark:bg-surface-800;
-  } */
+  }
 }
 </style>
