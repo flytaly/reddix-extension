@@ -1,8 +1,23 @@
 import { requestInfo } from '~/logic'
 import { RateLimits, getRateLimits } from './rate-limits'
-import type { RedditError, RedditItemResponse } from './reddit-types'
+import {
+  RedditCommentData,
+  RedditItem,
+  RedditObjectKind,
+  RedditPostData,
+  type RedditError,
+  type RedditItemResponse,
+} from './reddit-types'
 
 export const baseUrl = 'https://www.reddit.com'
+
+export function isPostData(data: RedditItem): data is RedditPostData {
+  return data.name.startsWith(RedditObjectKind.link)
+}
+
+export function isCommentData(data: RedditItem): data is RedditCommentData {
+  return data.name.startsWith(RedditObjectKind.comment)
+}
 
 const getSavedUrl = (user: string) => {
   return `${baseUrl}/user/${user}/saved.json`

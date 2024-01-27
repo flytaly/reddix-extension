@@ -8,8 +8,7 @@ import PhUploadBold from '~icons/ph/download-bold'
 import { filterProperties, type ExportedItem } from '~/logic/transform/export-utils'
 import { objectsToCsv } from '~/logic/transform/export-csv'
 import JSZip from 'jszip'
-
-const REDDIT_URL = 'https://www.reddit.com'
+import { getFullLink } from '~/logic/convert-link'
 
 const selected = ref<'JSON' | 'CSV'>('CSV')
 
@@ -70,8 +69,8 @@ async function exportCsv() {
   const savedComments: CSVRows[] = []
 
   await processItems(
-    (obj) => savedPosts.push({ id: obj.name, permalink: REDDIT_URL + obj.permalink }),
-    (obj) => savedComments.push({ id: obj.name, permalink: REDDIT_URL + obj.permalink }),
+    (obj) => savedPosts.push({ id: obj.name, permalink: getFullLink(obj.permalink) }),
+    (obj) => savedComments.push({ id: obj.name, permalink: getFullLink(obj.permalink) }),
   )
 
   const zip = new JSZip()

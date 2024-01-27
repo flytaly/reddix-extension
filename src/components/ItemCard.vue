@@ -3,14 +3,11 @@ import { computed, onMounted } from 'vue'
 import Button from 'primevue/button'
 import OverlayPanel from 'primevue/overlaypanel'
 import { unescape } from 'lodash-es'
-import PhTagDuotone from '~icons/ph/tag-duotone'
-import PhTrashSimpleDuotone from '~icons/ph/trash-simple-duotone'
-import PhBookmarksSimpleDuotone from '~icons/ph/bookmarks-simple-duotone'
-import PhArrowsOutSimple from '~icons/ph/arrows-out-simple'
 
+import MediaPreview from '~/components/MediaPreview.vue'
 import type { RedditCommentData, RedditPostData } from '~/reddit/reddit-types'
 import { type SavedRedditItem } from '~/logic/db'
-import { extractMedia } from '~/reddit/utils'
+import { extractMedia } from '~/reddit/post-media'
 
 const props = defineProps<{
   item: SavedRedditItem
@@ -84,7 +81,7 @@ const togglePreview = (event: Event) => {
       title="click to preview image"
       @click="togglePreview"
     >
-      <img class="h-[4.5rem] w-24 rounded object-cover" :src="media.thumbnail.url" />
+      <img class="h-[4.5rem] w-24 rounded object-cover" :src="media.thumbnail" />
     </button>
 
     <!-- Header  --->
@@ -108,22 +105,7 @@ const togglePreview = (event: Event) => {
       </h4>
 
       <OverlayPanel ref="overlayRef" :pt="{ content: 'p-0' }">
-        <img
-          v-if="!media.video && media.source"
-          :src="media.source.url"
-          alt="preview"
-          class="aspect-auto max-h-[20rem] max-w-[38rem]"
-        />
-        <video
-          v-if="media.video"
-          class="max-h-[30rem] max-w-[38rem] bg-black"
-          :width="media.video.width"
-          :height="media.video.height"
-          controls
-          controlslist="nofullscreen"
-        >
-          <source :src="media.video.url" />
-        </video>
+        <MediaPreview :media="media" :item="item" />
       </OverlayPanel>
     </header>
 

@@ -34,7 +34,10 @@ export type MediaMetadata = {
   e: LiteralUnion<'Image' | 'RedditVideo' | 'AnimatedImage', string>
   /** image/gif, image/png .... */
   m?: string
+  /** preview list */
   p?: MediaMedataPreview[]
+  /** source */
+  s?: MediaMedataPreview
 }
 
 export type RedditPostData = {
