@@ -1,7 +1,20 @@
 export type ImageSource = {
-  height?: number
-  width?: number
+  height: number
+  width: number
   url: string
+}
+
+export type VideoSource = {
+  fallback_url: string
+  has_audio: boolean
+  height: number
+  width: number
+  scrubber_media_url: string
+  dash_url: string
+  duration: number
+  hls_url: string
+  is_gif: boolean
+  transcoding_status: string
 }
 
 export type LiteralUnion<LiteralType, BaseType> = LiteralType | (BaseType & Record<never, never>)
@@ -49,6 +62,10 @@ export type RedditPostData = {
   title: string
   url: string
   is_gallery?: boolean
+  media?: {
+    reddit_video?: VideoSource
+  }
+  is_video?: boolean
   media_metadata?: Record<string, MediaMetadata>
 }
 

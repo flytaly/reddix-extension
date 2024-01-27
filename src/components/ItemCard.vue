@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
 import Button from 'primevue/button'
+import OverlayPanel from 'primevue/overlaypanel'
 import { unescape } from 'lodash-es'
 import PhTagDuotone from '~icons/ph/tag-duotone'
 import PhTrashSimpleDuotone from '~icons/ph/trash-simple-duotone'
 import PhBookmarksSimpleDuotone from '~icons/ph/bookmarks-simple-duotone'
 import PhArrowsOutSimple from '~icons/ph/arrows-out-simple'
 
-import type { RedditCommentData, RedditItem, RedditPostData } from '~/reddit/reddit-types'
-import type { SavedRedditItem } from '~/logic/db'
+import type { RedditCommentData, RedditPostData } from '~/reddit/reddit-types'
+import { type SavedRedditItem } from '~/logic/db'
+import { extractMedia } from '~/reddit/utils'
 
 const props = defineProps<{
   item: SavedRedditItem
@@ -36,11 +38,7 @@ const itemType = computed(() => {
   return 'comment'
 })
 
-const preview = computed(() => {
-  const img = (props.item as RedditPostData).preview?.images?.[0].source
-  if (!img) return
-  return unescape(img.url)
-})
+const media = computed(() => extractMedia(props.item))
 
 const confirmRemoving = ref(false)
 const confirmUnsave = ref(false)
@@ -69,16 +67,25 @@ function onUnsave() {
   emit('unsave', props.item.name)
   confirmUnsave.value = false
 }
+
+const overlayRef = ref()
+
+const togglePreview = (event: Event) => {
+  overlayRef.value.toggle(event)
+}
 </script>
 
 <template>
   <article class="container">
     <!-- Preview  --->
-    <img
-      v-if="preview"
-      :src="preview"
-      class="float-left mb-2 mr-2 h-[4.5rem] w-24 flex-shrink-0 rounded object-cover"
-    />
+    <button
+      v-if="media.thumbnail"
+      class="float-left mb-2 mr-2 flex-shrink-0"
+      title="click to preview image"
+      @click="togglePreview"
+    >
+      <img class="h-[4.5rem] w-24 rounded object-cover" :src="media.thumbnail.url" />
+    </button>
 
     <!-- Header  --->
     <header class="inline">
@@ -99,6 +106,25 @@ function onUnsave() {
           {{ title }}
         </a>
       </h4>
+
+      <OverlayPanel ref="overlayRef" :pt="{ content: 'p-0' }">
+        <img
+          v-if="!media.video && media.source"
+          :src="media.source.url"
+          alt="preview"
+          class="aspect-auto max-h-[20rem] max-w-[38rem]"
+        />
+        <video
+          v-if="media.video"
+          class="max-h-[30rem] max-w-[38rem] bg-black"
+          :width="media.video.width"
+          :height="media.video.height"
+          controls
+          controlslist="nofullscreen"
+        >
+          <source :src="media.video.url" />
+        </video>
+      </OverlayPanel>
     </header>
 
     <!-- Body -->
