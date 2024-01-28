@@ -62,7 +62,7 @@ watch(
             </span>
           </div>
           <div class="mb-3 flex gap-3">
-            <Button label="Cancel" text class="px-2 py-1 text-white" @click="closeCallback">Hide</Button>
+            <Button label="Cancel" text class="px-2 py-1" @click="closeCallback">Hide</Button>
           </div>
         </div>
       </section>
