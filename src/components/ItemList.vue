@@ -41,7 +41,7 @@ async function unsaveOnReddit(name: string) {
 </script>
 
 <template>
-  <ol class="mt-4 flex w-full flex-col gap-4 text-left">
+  <ol class="mt-4 flex w-full flex-col gap-0 text-left">
     <li v-for="item in items" :key="item.id" :data-reddit-name="item.name" class="flex max-w-full flex-col gap-2">
       <ItemCard
         :item="item"
