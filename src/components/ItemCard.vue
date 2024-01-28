@@ -5,6 +5,7 @@ import OverlayPanel from 'primevue/overlaypanel'
 import { unescape } from 'lodash-es'
 
 import MediaPreview from '~/components/MediaPreview.vue'
+import Thumbnail from '~/components/Thumbnail.vue'
 import type { RedditCommentData, RedditPostData } from '~/reddit/reddit-types'
 import { SavedRedditPost, type SavedRedditItem } from '~/logic/db'
 import { extractMedia } from '~/reddit/post-media'
@@ -34,8 +35,6 @@ const itemType = computed(() => {
   }
   return 'comment'
 })
-
-const media = computed(() => extractMedia(props.item))
 
 const confirmRemoving = ref(false)
 const confirmUnsave = ref(false)
@@ -67,39 +66,20 @@ function onUnsave() {
 
 const overlayRef = ref()
 
-const togglePreview = (event: Event) => {
-  overlayRef.value.toggle(event)
-}
+const media = computed(() => extractMedia(props.item))
+const togglePreview = computed(() => {
+  if (!media.value.video && !media.value.source) {
+    return null
+  }
+  return (event: Event) => {
+    overlayRef.value.toggle(event)
+  }
+})
 </script>
 
 <template>
   <article class="container">
-    <!-- Thumbnail  --->
-    <button
-      v-if="media.thumbnail"
-      class="relative float-left mb-2 mr-2 flex-shrink-0"
-      title="click to preview image"
-      @click="togglePreview"
-    >
-      <img class="h-[4.5rem] w-24 rounded object-cover" :src="media.thumbnail" />
-      <PhImagesSquare
-        v-if="(item as SavedRedditPost).is_gallery"
-        class="absolute bottom-0 right-0 h-4 w-4 rounded-tl bg-surface-100 dark:bg-surface-900"
-      />
-      <PhPlayCircle
-        v-if="(item as SavedRedditPost).is_video"
-        class="absolute bottom-0 right-0 h-4 w-4 rounded-tl bg-surface-100 dark:bg-surface-900"
-      />
-    </button>
-
-    <div
-      v-if="!media.thumbnail && media.generic"
-      class="float-left mb-2 mr-2 flex h-[4.5rem] w-24 items-center justify-center rounded bg-surface-100 dark:bg-surface-800"
-    >
-      <div v-if="media.generic === 'nsfw'" class="font-bold text-surface-500 dark:text-surface-500">NSFW</div>
-      <PhLink v-else-if="media.generic === 'default'" class="h-7 w-7 text-surface-500 dark:text-surface-500" />
-      <PhFileTextLight v-else class="h-7 w-7 text-surface-500 dark:text-surface-500" />
-    </div>
+    <Thumbnail :media="media" :item="item" @click="togglePreview" />
 
     <!-- Header  --->
     <header class="inline">
