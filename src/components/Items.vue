@@ -38,8 +38,6 @@ async function loadMore() {
   } catch (error) {
     toast.add({ severity: 'error', summary: 'DB Error', detail: (error as any)?.message || '', life: 3000 })
     console.error(error)
-  } finally {
-    isEnd.value = true
   }
 }
 
