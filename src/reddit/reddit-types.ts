@@ -62,6 +62,7 @@ export type RedditPostData = {
   selftext_html?: string
   subreddit: string
   subreddit_name_prefixed: string
+  url_overridden_by_dest?: string
   title: string
   url: string
   is_gallery?: boolean

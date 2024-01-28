@@ -2,9 +2,12 @@ import { unescape } from 'lodash-es'
 import { isPostData } from '~/reddit'
 import { ImageSource, RedditItem, RedditPostData } from './reddit-types'
 
+export type GenericThumbnail = 'default' | 'nsfw' | 'spoiler' | 'self'
+
 export type PostMedia = {
   thumbnail?: string | null
   source?: ImageSource | null
+  generic?: GenericThumbnail
   video?: {
     url: string
     width: number
@@ -14,6 +17,8 @@ export type PostMedia = {
 
 const minWidth = 150
 const minHeight = 150
+
+const isImageExt = (link?: string) => link && link.match(/(\.jpg|\.jpeg|\.png|\.gif|\.webp)$/)
 
 function getMediaFromGallery(post: RedditPostData): PostMedia {
   const result = {} as PostMedia
@@ -51,9 +56,11 @@ export function extractMedia(item: RedditItem): PostMedia {
   let result = {} as PostMedia
 
   if (item.thumbnail) {
-    const link = unescape(item.thumbnail)
-    if (link.startsWith('https')) {
-      result.thumbnail = link
+    const thumbnail = unescape(item.thumbnail)
+    if (thumbnail.startsWith('https')) {
+      result.thumbnail = thumbnail
+    } else {
+      result.generic = thumbnail as GenericThumbnail
     }
   }
 
@@ -71,6 +78,10 @@ export function extractMedia(item: RedditItem): PostMedia {
     if (thumbnail) {
       result.thumbnail = unescape(thumbnail.url)
     }
+  }
+
+  if (!result.thumbnail && isImageExt(item.url_overridden_by_dest)) {
+    result.thumbnail = unescape(item.url_overridden_by_dest)
   }
 
   if (item.is_video && item.media?.reddit_video) {

@@ -92,6 +92,15 @@ const togglePreview = (event: Event) => {
       />
     </button>
 
+    <div
+      v-if="!media.thumbnail && media.generic"
+      class="float-left mb-2 mr-2 flex h-[4.5rem] w-24 items-center justify-center rounded bg-surface-100 dark:bg-surface-800"
+    >
+      <div v-if="media.generic === 'nsfw'" class="font-bold text-surface-500 dark:text-surface-500">NSFW</div>
+      <PhLink v-else-if="media.generic === 'default'" class="h-7 w-7 text-surface-500 dark:text-surface-500" />
+      <PhFileTextLight v-else class="h-7 w-7 text-surface-500 dark:text-surface-500" />
+    </div>
+
     <!-- Header  --->
     <header class="inline">
       <div class="inline-flex justify-between gap-2 text-xs">
