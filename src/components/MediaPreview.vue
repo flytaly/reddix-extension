@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { defineProps } from 'vue'
+
 import { type PostMedia } from '~/reddit/post-media'
 import { type SavedRedditPost } from '~/logic/db'
 import { getFullLink } from '~/logic/convert-link'
@@ -21,11 +22,11 @@ onMounted(() => {
 <template>
   <div class="relative min-h-32 min-w-32">
     <div v-if="!media.video && media.source">
-      <div v-if="overlayImgLoading === 'loading'" class="w-32">
+      <div v-if="overlayImgLoading === 'loading'" class="flex h-32 w-32 items-center justify-center">
         <PhSpinnerGap class="m-auto h-8 w-8 animate-spin" />
       </div>
       <img :src="media.source.url" alt="preview" class="limit aspect-auto" @load="overlayImgLoading = 'loaded'" />
-      <a v-if="item.is_gallery" :href="getFullLink(item.permalink)" class="link">
+      <a v-if="item.is_gallery" :href="getFullLink(item.permalink)" class="link whitespace-nowrap">
         <PhImagesSquare />
         view full gallery
       </a>
@@ -45,7 +46,7 @@ onMounted(() => {
 
 <style lang="postcss" scoped>
 .limit {
-  max-width: 40vw;
+  max-width: 50vw;
   max-height: 50vh;
 }
 
