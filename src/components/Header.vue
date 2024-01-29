@@ -23,7 +23,7 @@ const items = [
   <header>
     <Menubar
       :model="items"
-      :pt="{ root: 'min-h-[2rem] bg-surface-50 dark:bg-surface-900', menu: 'mx-auto' }"
+      :pt="{ root: 'min-h-[2rem] bg-surface-50 dark:bg-surface-950', menu: 'mx-auto' }"
       :pt-options="{ mergeProps: true }"
     >
       <template #start>

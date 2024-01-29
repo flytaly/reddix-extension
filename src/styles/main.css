@@ -9,7 +9,7 @@ body,
 }
 
 body {
-  @apply bg-surface-50 text-dark dark:bg-surface-900 dark:text-light;
+  @apply bg-surface-50 text-dark dark:bg-surface-950 dark:text-light;
 }
 
 a {

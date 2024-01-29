@@ -127,7 +127,7 @@ const expandPostOrPreview = (event: Event) => {
       <div v-if="itemBody" class="body wrap-anywhere dimmed-1 relative mt-1 inline-flex w-full flex-col gap-1 text-sm">
         <span
           ref="bodyElemRef"
-          class="item-body max-w-[100ch] overflow-hidden"
+          class="item-body overflow-hidden"
           :class="{ 'max-h-28': !expanded }"
           v-html="itemBody"
         ></span>
@@ -207,9 +207,16 @@ const expandPostOrPreview = (event: Event) => {
 
 <style lang="postcss" scoped>
 .container {
-  @apply max-w-full overflow-hidden text-ellipsis bg-surface-0 text-sm ring-1
-         ring-surface-200 hover:z-10 hover:ring-surface-400
-         dark:bg-surface-900 dark:ring-surface-800 dark:hover:ring-surface-600;
+  @apply max-w-full overflow-hidden text-ellipsis bg-surface-0 text-sm
+         ring-1 ring-surface-200 hover:z-10
+         hover:ring-surface-400 dark:bg-surface-900 dark:ring-surface-800 dark:hover:ring-surface-600;
+
+  &:first-child {
+    @apply rounded-t;
+  }
+  &:last-child {
+    @apply rounded-b;
+  }
 }
 
 .dimmed-1 {
@@ -228,17 +235,16 @@ const expandPostOrPreview = (event: Event) => {
 
 <style lang="postcss">
 .item-body {
+  max-width: min(100%, 100ch);
+
   p {
-    @apply my-2;
-  }
-  p:first-child {
-    @apply mt-0;
+    @apply my-2 first:mt-0;
   }
   a {
     @apply underline;
   }
   blockquote {
-    @apply border-l-2 border-surface-700 pl-2 dark:border-surface-400;
+    @apply mt-4 border-l-2 border-surface-700 pl-2 dark:border-surface-400;
   }
   ol {
     @apply my-2 list-decimal pl-4;
@@ -247,7 +253,7 @@ const expandPostOrPreview = (event: Event) => {
     @apply my-2 list-disc pl-4;
   }
   code {
-    @apply my-2 block bg-surface-100 p-1 font-mono dark:bg-surface-800;
+    @apply my-2 block overflow-x-auto bg-surface-100 p-1 font-mono dark:bg-surface-800;
   }
 }
 </style>

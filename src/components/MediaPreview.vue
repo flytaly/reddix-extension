@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { defineProps } from 'vue'
-
 import { type PostMedia } from '~/reddit/post-media'
 import { type SavedRedditPost } from '~/logic/db'
 import { getFullLink } from '~/logic/convert-link'
