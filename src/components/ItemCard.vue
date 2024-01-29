@@ -7,7 +7,7 @@ import { unescape } from 'lodash-es'
 import MediaPreview from '~/components/MediaPreview.vue'
 import Thumbnail from '~/components/Thumbnail.vue'
 import type { RedditCommentData, RedditPostData } from '~/reddit/reddit-types'
-import { SavedRedditPost, type SavedRedditItem } from '~/logic/db'
+import { type SavedRedditItem } from '~/logic/db'
 import { extractMedia } from '~/reddit/post-media'
 
 const props = defineProps<{
@@ -190,7 +190,7 @@ const togglePreview = computed(() => {
 <style lang="postcss" scoped>
 .container {
   @apply max-w-full overflow-hidden text-ellipsis bg-surface-0 px-4 py-2 text-sm ring-1
-         ring-surface-200 hover:ring-surface-400
+         ring-surface-200 hover:z-10 hover:ring-surface-400
          dark:bg-surface-900 dark:ring-surface-800 dark:hover:ring-surface-700;
 }
 
