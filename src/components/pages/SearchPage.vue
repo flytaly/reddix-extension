@@ -9,7 +9,7 @@ import Items from '~/components/Items.vue'
   <MainLayout>
     <main class="mt-4 bg-surface-50 text-dark sm:grid sm:grid-cols-[auto_1fr] dark:bg-surface-900 dark:text-light">
       <Sidebar />
-      <div class="mx-auto my-4 flex w-full max-w-[60rem] flex-col items-center px-4 sm:my-0">
+      <div class="mx-auto my-4 flex w-full max-w-[80rem] flex-col items-center px-4 sm:my-0">
         <SearchInput />
         <div class="w-full">
           <Items />

@@ -29,7 +29,7 @@ watch(commentsOn, (on) => {
 </script>
 
 <template>
-  <div class="w-full max-w-[60rem]">
+  <div class="w-full max-w-[80rem]">
     <div class="flex flex-col">
       <label for="search-input">
         <h2 class="mr-2 font-mono text-xl font-semibold text-primary-600 dark:text-primary-400">Search</h2>
