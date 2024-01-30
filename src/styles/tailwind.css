@@ -40,19 +40,43 @@
 @layer components {
   .tag-toggle {
     @apply rounded-md bg-primary-500 px-2 py-1 font-semibold text-white dark:bg-primary-400 dark:text-black;
-  }
 
-  .tag-toggle:focus-within,
-  .tag-toggle:hover {
-    @apply bg-primary-300 bg-opacity-70 text-gray-800 ring ring-primary-200
+    &:focus-within,
+    &:hover {
+      @apply bg-primary-300 bg-opacity-70 text-gray-800 ring ring-primary-200
            dark:bg-primary-300 dark:bg-opacity-70 dark:text-white dark:ring-primary-600;
+    }
   }
 
   .tag-toggle-off {
     @apply bg-surface-200 text-gray-500 dark:bg-surface-700 dark:text-gray-300;
+
+    &:focus-within,
+    &:hover {
+      @apply bg-surface-300 text-gray-800  dark:bg-surface-800 dark:text-gray-200;
+    }
   }
-  .tag-toggle-off:focus-within,
-  .tag-toggle-off:hover {
-    @apply bg-surface-300 text-gray-800  dark:bg-surface-800 dark:text-gray-200;
+
+  .item-body-html {
+    max-width: min(100%, 100ch);
+
+    p {
+      @apply my-2 first:mt-0 last:mb-0;
+    }
+    a {
+      @apply underline;
+    }
+    blockquote {
+      @apply mt-4 border-l-2 border-surface-700 pl-2 dark:border-surface-400;
+    }
+    ol {
+      @apply my-2 list-decimal pl-4;
+    }
+    ul {
+      @apply my-2 list-disc pl-4;
+    }
+    code {
+      @apply my-2 block overflow-x-auto bg-surface-100 p-1 font-mono dark:bg-surface-800;
+    }
   }
 }

@@ -86,20 +86,23 @@ const expandPostOrPreview = (event: Event) => {
 </script>
 
 <template>
-  <article class="container grid grid-cols-[auto_1fr] gap-1 pr-2">
-    <div class="flex w-6">
+  <article class="grid grid-cols-[auto_1fr] gap-1 pr-2">
+    <!-- Toggle Bar -->
+    <div class="flex h-full w-6 flex-col">
       <button
         v-if="togglePreview || overflowen || expanded"
-        class="w-full hover:bg-surface-100 dark:hover:bg-surface-800"
+        class="h-full w-full hover:bg-surface-100 dark:hover:bg-surface-800"
         title="Expand or Collapse the item"
         @click="expandPostOrPreview"
       />
     </div>
-    <div class="w-full py-2">
-      <Thumbnail :media="media" :item="item" @click="togglePreview" />
+
+    <div class="item w-full py-2 pl-1 pr-2" :class="{ 'item__with-body': itemBody }">
+      <!-- Thumbnail  --->
+      <Thumbnail class="item-thumbnail" :media="media" :item="item" @click="togglePreview" />
 
       <!-- Header  --->
-      <header class="inline">
+      <header class="item-header">
         <div class="inline-flex justify-between gap-2 text-xs">
           <span>
             <span class="dimmed-2">{{ itemType }}</span>
@@ -112,6 +115,7 @@ const expandPostOrPreview = (event: Event) => {
           </span>
           <span class="dimmed-2 ml-auto">[{{ new Date(item.created * 1000).toLocaleDateString() }}]</span>
         </div>
+
         <h4 class="wrap-anywhere">
           <a class="flex items-center gap-2 text-base font-medium text-dark dark:text-light" :href="fullLink">
             {{ title }}
@@ -124,16 +128,19 @@ const expandPostOrPreview = (event: Event) => {
       </header>
 
       <!-- Body -->
-      <div v-if="itemBody" class="body wrap-anywhere dimmed-1 relative mt-1 inline-flex w-full flex-col gap-1 text-sm">
+      <div
+        v-if="itemBody"
+        class="item-body wrap-anywhere dimmed-1 relative mt-1 inline-flex w-full flex-col gap-1 text-sm"
+      >
         <span
           ref="bodyElemRef"
-          class="item-body overflow-hidden"
-          :class="{ 'max-h-28': !expanded }"
+          class="item-body-html overflow-hidden"
+          :class="{ 'max-h-24': !expanded }"
           v-html="itemBody"
         ></span>
         <button
           v-if="overflowen && !expanded"
-          class="mask absolute bottom-0 left-0 flex w-full items-center justify-center gap-1 bg-white pt-3 text-surface-600 hover:text-primary-400 dark:bg-surface-900 dark:text-surface-400"
+          class="mask absolute bottom-0 left-0 flex w-full items-center justify-center gap-1 bg-white pt-2 text-surface-600 hover:text-primary-400 dark:bg-surface-900 dark:text-surface-400"
           @click="expanded = true"
         >
           <PhArrowsOutSimple />
@@ -150,7 +157,7 @@ const expandPostOrPreview = (event: Event) => {
       </div>
 
       <!-- Footer -->
-      <footer class="dimmed-1 mt-1 flex items-center gap-2 pt-0.5 text-xs" :class="{ 'clear-both': itemBody }">
+      <footer class="item-footer dimmed-1 mt-1 flex items-center gap-2 pt-0.5 text-xs">
         <ul class="mr-auto flex flex-wrap gap-1">
           <button
             size="small"
@@ -200,13 +207,20 @@ const expandPostOrPreview = (event: Event) => {
             <button class="hover:text-primary-400" @click="confirmUnsave = false">No</button>
           </div>
         </div>
+
+        <div>
+          <button class="flex gap-0.5 whitespace-nowrap hover:text-primary-400">
+            <PhArrowsClockwise class="shrink-0" />
+            update
+          </button>
+        </div>
       </footer>
     </div>
   </article>
 </template>
 
 <style lang="postcss" scoped>
-.container {
+article {
   @apply max-w-full overflow-hidden text-ellipsis bg-surface-0 text-sm
          ring-1 ring-surface-200 hover:z-10
          hover:ring-surface-400 dark:bg-surface-900 dark:ring-surface-800 dark:hover:ring-surface-600;
@@ -219,41 +233,53 @@ const expandPostOrPreview = (event: Event) => {
   }
 }
 
+.item {
+  display: grid;
+  align-items: start;
+  justify-content: start;
+  grid-template-columns: auto 1fr;
+  gap: 0.25rem;
+  grid-template-areas:
+    'thumbnail header'
+    'thumbnail footer  ';
+}
+
+.item__with-body {
+  grid-template-areas:
+    'thumbnail header'
+    'body      body  '
+    'footer    footer';
+}
+
+.item-thumbnail {
+  grid-area: thumbnail;
+}
+
+.item-header {
+  grid-area: header;
+}
+
+.item-body {
+  grid-area: body;
+}
+
+.item-footer {
+  grid-area: footer;
+}
+
 .dimmed-1 {
   @apply text-surface-700 dark:text-surface-300;
 }
+
 .dimmed-2 {
   @apply text-surface-400 dark:text-surface-500;
 }
+
 .wrap-anywhere {
   overflow-wrap: anywhere;
 }
+
 .mask {
   mask-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.754)), to(rgba(0, 0, 0, 1)));
-}
-</style>
-
-<style lang="postcss">
-.item-body {
-  max-width: min(100%, 100ch);
-
-  p {
-    @apply my-2 first:mt-0;
-  }
-  a {
-    @apply underline;
-  }
-  blockquote {
-    @apply mt-4 border-l-2 border-surface-700 pl-2 dark:border-surface-400;
-  }
-  ol {
-    @apply my-2 list-decimal pl-4;
-  }
-  ul {
-    @apply my-2 list-disc pl-4;
-  }
-  code {
-    @apply my-2 block overflow-x-auto bg-surface-100 p-1 font-mono dark:bg-surface-800;
-  }
 }
 </style>

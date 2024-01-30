@@ -10,7 +10,7 @@ defineProps<{
 </script>
 
 <template>
-  <div class="relative float-left mb-2 mr-2 flex-shrink-0 rounded bg-surface-100 dark:bg-surface-800">
+  <div class="relative max-h-[4.5rem] flex-shrink-0 rounded bg-surface-100 dark:bg-surface-800">
     <component
       :is="onClick ? 'button' : 'div'"
       :title="onClick ? 'click to preview image' : ''"
