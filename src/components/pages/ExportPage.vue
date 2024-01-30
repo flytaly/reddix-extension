@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import Button from 'primevue/button'
-import RadioButton from 'primevue/radiobutton'
+import JSZip from 'jszip'
+
 import MainLayout from '~/components/pages/MainLayout.vue'
 import { SavedRedditItem, db, isComment, isPost } from '~/logic/db'
-import PhUploadBold from '~icons/ph/download-bold'
 import { filterProperties, type ExportedItem } from '~/logic/transform/export-utils'
 import { objectsToCsv } from '~/logic/transform/export-csv'
-import JSZip from 'jszip'
 import { getFullLink } from '~/logic/convert-link'
 
 const selected = ref<'JSON' | 'CSV'>('CSV')

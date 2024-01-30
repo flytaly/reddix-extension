@@ -2,7 +2,6 @@
 import { debounce } from 'lodash-es'
 import { defineModel } from 'vue'
 import { search, setSearchQuery } from '~/logic/search-store'
-import TextInput from 'primevue/inputtext'
 
 const postsOn = defineModel<boolean>('postsOn', { default: true })
 const commentsOn = defineModel<boolean>('commentsOn', { default: true })
@@ -34,7 +33,7 @@ watch(commentsOn, (on) => {
       <label for="search-input">
         <h2 class="mr-2 font-mono text-xl font-semibold text-primary-600 dark:text-primary-400">Search</h2>
       </label>
-      <TextInput
+      <InputText
         id="search-input"
         :value="search.query"
         placeholder="filter posts and comments"

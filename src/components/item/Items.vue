@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import { ref, shallowRef, onMounted, nextTick } from 'vue'
 import { useIntersectionObserver } from '@vueuse/core'
-import Toast from 'primevue/toast'
 import { useToast } from 'primevue/usetoast'
-import OverlayPanel from 'primevue/overlaypanel'
 
 import AddTagsInput from '~/components/AddTagsInput.vue'
-import ItemList from '~/components/ItemList.vue'
+import ItemList from '~/components/item/ItemList.vue'
 import { ITEMS_ON_PAGE } from '~/constants'
 import { SavedRedditItem } from '~/logic/db'
 import { getPostsFromDB } from '~/logic/db/queries'
@@ -80,8 +77,8 @@ watch(search, async () => {
 
 const redditId = ref('')
 const op = ref()
-const toggle = (event: Event & { currentTarget: HTMLElement }) => {
-  const li = event.currentTarget.closest('[data-reddit-name]') as HTMLElement | null
+const toggle = (event: Event) => {
+  const li = (event.currentTarget as HTMLElement).closest('[data-reddit-name]') as HTMLElement | null
   redditId.value = li?.dataset.redditName || ''
   op.value.toggle(event)
 }

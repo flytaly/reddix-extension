@@ -1,15 +1,16 @@
 <script setup lang="ts">
+import { useToast } from 'primevue/usetoast'
+
 import type { SavedRedditItem } from '~/logic/db'
 import { setTag, setSubreddit, setAuthor } from '~/logic/search-store'
-import ItemCard from '~/components/ItemCard.vue'
+import ItemCard from '~/components/item/ItemCard.vue'
 import { getUserInfo } from '~/reddit/me'
 import { unsave } from '~/reddit/unsave'
 import { updateItem } from '~/logic/db/mutations'
-import { useToast } from 'primevue/usetoast'
 
 const props = defineProps<{
   items?: SavedRedditItem[]
-  addTags: (e: MouseEvent) => void
+  addTags: (e: Event) => void
   onRemove: (ids: number[]) => void
   onUnsave: (id: number) => Promise<void>
   onUpdate: (item: SavedRedditItem) => Promise<void>

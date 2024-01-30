@@ -1,8 +1,5 @@
 <script setup lang="ts">
 import { useToast } from 'primevue/usetoast'
-import ProgressBar from 'primevue/progressbar'
-import Toast from 'primevue/toast'
-import Button from 'primevue/button'
 import { setupStatsStore, state } from '~/logic/options-stores'
 
 const toast = useToast()

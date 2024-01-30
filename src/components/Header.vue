@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import Menubar from 'primevue/menubar'
 import { RoutePath } from '~/options/routes'
 import PhUploadBold from '~icons/ph/upload-bold'
 import PhMagnifyingGlassBold from '~icons/ph/magnifying-glass-bold'

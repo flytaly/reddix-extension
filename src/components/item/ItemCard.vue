@@ -1,15 +1,8 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
-import Button from 'primevue/button'
-import OverlayPanel from 'primevue/overlaypanel'
-import { unescape } from 'lodash-es'
-
-import MediaPreview from '~/components/MediaPreview.vue'
-import Thumbnail from '~/components/Thumbnail.vue'
-import type { RedditCommentData, RedditPostData } from '~/reddit/reddit-types'
+import MediaPreview from '~/components/item/MediaPreview.vue'
+import Thumbnail from '~/components/item/Thumbnail.vue'
 import { type SavedRedditItem } from '~/logic/db'
-import { extractMedia } from '~/reddit/post-media'
-import { isPostData } from '~/reddit'
+import { WrappedItem } from '~/logic/wrapped-item'
 
 const props = defineProps<{
   item: SavedRedditItem
@@ -25,15 +18,7 @@ const emit = defineEmits<{
   (e: 'unsave', name: string): void
 }>()
 
-const title = computed(() =>
-  unescape((props.item as RedditPostData).title || (props.item as RedditCommentData).link_title),
-)
-const itemBody = computed(() => {
-  const text = (props.item as RedditPostData).selftext_html || (props.item as RedditCommentData).body_html
-  return unescape(text)
-})
-const fullLink = computed(() => `https://reddit.com${props.item.permalink}`)
-const itemType = computed(() => (isPostData(props.item) ? 'post' : 'comment'))
+const item = computed(() => new WrappedItem(props.item))
 
 const confirmRemoving = ref(false)
 const confirmUnsave = ref(false)
@@ -66,9 +51,8 @@ function onUnsave() {
 const overlayRef = ref()
 const overlayMenuRef = ref()
 
-const media = computed(() => extractMedia(props.item))
 const togglePreview = computed(() => {
-  if (!media.value.video && !media.value.source) {
+  if (!item.value.media.video && !item.value.media.source) {
     return null
   }
   return (event: Event) => {
@@ -105,46 +89,48 @@ const updateItem = async () => {
       />
     </div>
 
-    <div class="item w-full py-2 pl-1 pr-2" :class="{ 'item__with-body': itemBody }">
+    <div class="item w-full py-2 pl-1 pr-2" :class="{ 'item__with-body': item.body }">
       <!-- Thumbnail  --->
-      <Thumbnail class="item-thumbnail" :media="media" :item="item" @click="togglePreview" />
+      <Thumbnail class="item-thumbnail" :media="item.media" :item="item" @click="togglePreview" />
 
       <!-- Header  --->
       <header class="item-header">
         <div class="inline-flex justify-between gap-2 text-xs">
           <span>
-            <span class="dimmed-2">{{ itemType }}</span>
+            <span class="dimmed-2">{{ item.itemType }}</span>
             <span class="dimmed-2"> in </span>
-            <a class="dimmed-1" href="#" @click.prevent="$emit('subreddit-click', item.subreddit)">{{
-              item.subreddit_name_prefixed
+            <a class="dimmed-1" href="#" @click.prevent="$emit('subreddit-click', item.item.subreddit)">{{
+              item.item.subreddit_name_prefixed
             }}</a>
             <span class="dimmed-2"> by </span>
-            <a class="dimmed-1" href="#" @click.prevent="$emit('author-click', item.author)">u/{{ item.author }}</a>
+            <a class="dimmed-1" href="#" @click.prevent="$emit('author-click', item.item.author)"
+              >u/{{ item.item.author }}</a
+            >
           </span>
-          <span class="dimmed-2 ml-auto">[{{ new Date(item.created * 1000).toLocaleDateString() }}]</span>
+          <span class="dimmed-2 ml-auto">[{{ new Date(item.item.created * 1000).toLocaleDateString() }}]</span>
         </div>
 
         <h4 class="wrap-anywhere">
-          <a class="flex items-center gap-2 text-base font-medium text-dark dark:text-light" :href="fullLink">
-            {{ title }}
+          <a class="flex items-center gap-2 text-base font-medium text-dark dark:text-light" :href="item.fullLink">
+            {{ item.title }}
           </a>
         </h4>
 
         <OverlayPanel ref="overlayRef" :pt="{ content: 'p-0' }">
-          <MediaPreview :media="media" :item="item" />
+          <MediaPreview :item="item" />
         </OverlayPanel>
       </header>
 
       <!-- Body -->
       <div
-        v-if="itemBody"
+        v-if="item.body"
         class="item-body wrap-anywhere dimmed-1 relative mt-1 inline-flex w-full flex-col gap-1 text-sm"
       >
         <span
           ref="bodyElemRef"
           class="item-body-html overflow-hidden"
           :class="{ 'max-h-24': !expanded }"
-          v-html="itemBody"
+          v-html="item.body"
         ></span>
         <button
           v-if="overflowen && !expanded"
@@ -166,7 +152,7 @@ const updateItem = async () => {
           <button class="mr-1 h-3 w-3 shrink-0" title="Edit tags" @click="onAddTags">
             <PhTagDuotone />
           </button>
-          <li v-for="tag in item._tags" :key="tag">
+          <li v-for="tag in item.tags" :key="tag">
             <a href="#" class="dimmed-2 break-all" :data-tag="tag" @click.prevent="$emit('tag-click', tag)">
               #{{ tag }}
             </a>
@@ -194,7 +180,7 @@ const updateItem = async () => {
 
         <OverlayPanel ref="overlayMenuRef" :pt="{ content: 'p-0 bg-surface-800 rounded', root: 'z-100' }">
           <ul class="flex flex-col gap-4 p-3 text-sm">
-            <li v-if="item.saved">
+            <li v-if="item.item.saved">
               <button
                 v-if="!confirmUnsave"
                 class="flex gap-1 whitespace-nowrap"

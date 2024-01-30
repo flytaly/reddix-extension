@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
 import { sendMessage } from 'webext-bridge/options'
-import InputText from 'primevue/inputtext'
-import Button from 'primevue/button'
 
 import { userName } from '~/logic/storage'
 import { state } from '~/logic/options-stores'
-import { getMeInfo, getUserInfo } from '~/reddit/me'
+import { getUserInfo } from '~/reddit/me'
 
 const status = ref('')
 const isEdit = ref(false)

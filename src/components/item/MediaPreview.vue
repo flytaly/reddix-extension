@@ -1,18 +1,17 @@
 <script setup lang="ts">
-import { type PostMedia } from '~/reddit/post-media'
-import { type SavedRedditPost } from '~/logic/db'
-import { getFullLink } from '~/logic/convert-link'
+import { WrappedItem } from '~/logic/wrapped-item'
 
 const props = defineProps<{
-  media: PostMedia
-  item: SavedRedditPost
+  item: WrappedItem
 }>()
 
 const overlayImgLoading = ref<'initial' | 'loading' | 'loaded'>('initial')
 
+const media = computed(() => props.item.media)
+
 onMounted(() => {
   setTimeout(() => {
-    if (overlayImgLoading.value === 'initial') overlayImgLoading.value = props.media.video ? 'loaded' : 'loading'
+    if (overlayImgLoading.value === 'initial') overlayImgLoading.value = media.value.video ? 'loaded' : 'loading'
   }, 200)
 })
 </script>
@@ -24,7 +23,7 @@ onMounted(() => {
         <PhSpinnerGap class="m-auto h-8 w-8 animate-spin" />
       </div>
       <img :src="media.source.url" alt="preview" class="limit aspect-auto" @load="overlayImgLoading = 'loaded'" />
-      <a v-if="item.is_gallery" :href="getFullLink(item.permalink)" class="link whitespace-nowrap">
+      <a v-if="item.isGallery" :href="item.fullLink" class="link whitespace-nowrap">
         <PhImagesSquare />
         view full gallery
       </a>

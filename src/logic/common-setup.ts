@@ -1,5 +1,6 @@
 import PrimeVue from 'primevue/config'
 import ConfirmationService from 'primevue/confirmationservice'
+import Toast from 'primevue/toast'
 import Tooltip from 'primevue/tooltip'
 import type { App } from 'vue'
 import PrimePreset from '~/styles/presets/wind'
@@ -23,4 +24,7 @@ export function setupApp(app: App) {
 
   app.use(ConfirmationService)
   app.directive('tooltip', Tooltip)
+
+  // for some reason it won't work with autoimport
+  app.component('Toast', Toast)
 }

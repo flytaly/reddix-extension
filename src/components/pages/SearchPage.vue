@@ -2,7 +2,7 @@
 import MainLayout from '~/components/pages/MainLayout.vue'
 import SearchInput from '~/components/SearchInput.vue'
 import Sidebar from '~/components/Sidebar.vue'
-import Items from '~/components/Items.vue'
+import Items from '~/components/item/Items.vue'
 </script>
 
 <template>

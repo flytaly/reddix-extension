@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
-import AutoComplete from 'primevue/autocomplete'
 import { SavedRedditItem, db } from '~/logic/db'
 import { getTagsArray, stats } from '~/logic/options-stores'
 

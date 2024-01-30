@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { type PostMedia } from '~/reddit/post-media'
-import { type SavedRedditItem, type SavedRedditPost } from '~/logic/db'
+import { WrappedItem } from '~/logic/wrapped-item'
 
-defineProps<{
-  media: PostMedia
+const props = defineProps<{
   onClick?: ((e: Event) => void) | null
-  item: SavedRedditItem
+  item: WrappedItem
 }>()
+const media = computed(() => props.item.media)
 </script>
 
 <template>
@@ -26,11 +25,11 @@ defineProps<{
 
     <span v-if="onClick">
       <PhImagesSquare
-        v-if="(item as SavedRedditPost).is_gallery"
+        v-if="item.isVideo"
         class="absolute bottom-0 right-0 h-4 w-4 rounded-tl bg-surface-100 dark:bg-surface-900"
       />
       <PhPlayCircle
-        v-else-if="(item as SavedRedditPost).is_video"
+        v-else-if="item.isGallery"
         class="absolute bottom-0 right-0 h-4 w-4 rounded-tl bg-surface-100 dark:bg-surface-900"
       />
       <PhImageSquare
