@@ -12,6 +12,7 @@ const props = defineProps<{
   addTags: (e: MouseEvent) => void
   onRemove: (ids: number[]) => void
   onUnsave: (id: number) => Promise<void>
+  onUpdate: (item: SavedRedditItem) => Promise<void>
 }>()
 
 function removeItem(id: number) {
@@ -51,6 +52,7 @@ async function unsaveOnReddit(name: string) {
         @author-click="setAuthor"
         @unsave="unsaveOnReddit"
         @remove="removeItem"
+        @update="onUpdate"
       />
     </li>
   </ol>

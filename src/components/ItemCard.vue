@@ -9,10 +9,12 @@ import Thumbnail from '~/components/Thumbnail.vue'
 import type { RedditCommentData, RedditPostData } from '~/reddit/reddit-types'
 import { type SavedRedditItem } from '~/logic/db'
 import { extractMedia } from '~/reddit/post-media'
+import { isPostData } from '~/reddit'
 
 const props = defineProps<{
   item: SavedRedditItem
   onAddTags: (e: MouseEvent) => void
+  onUpdate: (item: SavedRedditItem) => Promise<void>
 }>()
 
 const emit = defineEmits<{
@@ -23,18 +25,15 @@ const emit = defineEmits<{
   (e: 'unsave', name: string): void
 }>()
 
-const title = computed(() => (props.item as RedditPostData).title || (props.item as RedditCommentData).link_title)
+const title = computed(() =>
+  unescape((props.item as RedditPostData).title || (props.item as RedditCommentData).link_title),
+)
 const itemBody = computed(() => {
   const text = (props.item as RedditPostData).selftext_html || (props.item as RedditCommentData).body_html
   return unescape(text)
 })
 const fullLink = computed(() => `https://reddit.com${props.item.permalink}`)
-const itemType = computed(() => {
-  if (props.item.name.startsWith('t3')) {
-    return 'post'
-  }
-  return 'comment'
-})
+const itemType = computed(() => (isPostData(props.item) ? 'post' : 'comment'))
 
 const confirmRemoving = ref(false)
 const confirmUnsave = ref(false)
@@ -65,6 +64,7 @@ function onUnsave() {
 }
 
 const overlayRef = ref()
+const overlayMenuRef = ref()
 
 const media = computed(() => extractMedia(props.item))
 const togglePreview = computed(() => {
@@ -82,6 +82,14 @@ const expandPostOrPreview = (event: Event) => {
     return
   }
   togglePreview.value?.(event)
+}
+
+const updating = ref(false)
+const updateItem = async () => {
+  if (updating.value) return
+  updating.value = true
+  await props.onUpdate(props.item)
+  updating.value = false
 }
 </script>
 
@@ -140,17 +148,13 @@ const expandPostOrPreview = (event: Event) => {
         ></span>
         <button
           v-if="overflowen && !expanded"
-          class="mask absolute bottom-0 left-0 flex w-full items-center justify-center gap-1 bg-white pt-2 text-surface-600 hover:text-primary-400 dark:bg-surface-900 dark:text-surface-400"
+          class="mask absolute bottom-0 left-0 flex w-full items-center justify-center gap-1 bg-white pt-2 dark:bg-surface-900"
           @click="expanded = true"
         >
           <PhArrowsOutSimple />
           expand
         </button>
-        <button
-          v-if="expanded"
-          class="flex w-full items-center justify-center gap-1 text-surface-500 hover:text-primary-400 dark:text-surface-500"
-          @click="expanded = false"
-        >
+        <button v-if="expanded" class="flex w-full items-center justify-center gap-1" @click="expanded = false">
           <PhArrowsOutSimple />
           collapse
         </button>
@@ -159,12 +163,7 @@ const expandPostOrPreview = (event: Event) => {
       <!-- Footer -->
       <footer class="item-footer dimmed-1 mt-1 flex items-center gap-2 pt-0.5 text-xs">
         <ul class="mr-auto flex flex-wrap gap-1">
-          <button
-            size="small"
-            class="mr-1 h-3 w-3 flex-shrink-0 self-start border-0 px-0 py-0 hover:text-primary-400 active:text-primary-500"
-            title="Edit tags"
-            @click="onAddTags"
-          >
+          <button class="mr-1 h-3 w-3 shrink-0" title="Edit tags" @click="onAddTags">
             <PhTagDuotone />
           </button>
           <li v-for="tag in item._tags" :key="tag">
@@ -176,8 +175,7 @@ const expandPostOrPreview = (event: Event) => {
         <button
           v-if="!confirmRemoving"
           title="Remove the item locally from the extension"
-          class="ml-auto flex gap-0.5 hover:text-primary-400"
-          size="small"
+          class="ml-auto flex gap-0.5"
           @click="confirmRemoving = true"
         >
           <PhTrashSimpleDuotone class="shrink-0" />
@@ -185,41 +183,58 @@ const expandPostOrPreview = (event: Event) => {
         </button>
         <div v-if="confirmRemoving" class="mr-2" title="Remove the item locally from the extension">
           <span class="text-primary-400">Remove the item?</span>
-          <button class="ml-2 hover:text-primary-400" @click="onRemove">Yes</button>
+          <button class="ml-2" @click="onRemove">Yes</button>
           <span class="mx-2">/</span>
-          <button class="hover:text-primary-400" @click="confirmRemoving = false">No</button>
+          <button @click="confirmRemoving = false">No</button>
         </div>
 
-        <div v-if="item.saved">
-          <button
-            v-if="!confirmUnsave"
-            class="flex gap-0.5 whitespace-nowrap hover:text-primary-400"
-            title="Unsave on Reddit. You must be logged in."
-            @click="confirmUnsave = true"
-          >
-            <PhBookmarksSimpleDuotone class="shrink-0" />
-            unsave on reddit
-          </button>
-          <div v-if="confirmUnsave" class="mr-2" title="Unsave on Reddit. You must be logged in.">
-            <span class="text-primary-400">Unsave the item?</span>
-            <button class="ml-2 hover:text-primary-400" @click="onUnsave">Yes</button>
-            <span class="mx-2">/</span>
-            <button class="hover:text-primary-400" @click="confirmUnsave = false">No</button>
-          </div>
-        </div>
+        <button class="ml-2" title="More actions" aria-haspopup="true" @click="overlayMenuRef.toggle">
+          <PhDotsThreeBold class="h-4 w-4" />
+        </button>
 
-        <div>
-          <button class="flex gap-0.5 whitespace-nowrap hover:text-primary-400">
-            <PhArrowsClockwise class="shrink-0" />
-            update
-          </button>
-        </div>
+        <OverlayPanel ref="overlayMenuRef" :pt="{ content: 'p-0 bg-surface-800 rounded', root: 'z-100' }">
+          <ul class="flex flex-col gap-4 p-3 text-sm">
+            <li v-if="item.saved">
+              <button
+                v-if="!confirmUnsave"
+                class="flex gap-1 whitespace-nowrap"
+                title="Unsave on Reddit. You must be logged in."
+                @click="confirmUnsave = true"
+              >
+                <PhBookmarksSimpleDuotone class="shrink-0" />
+                unsave on reddit
+              </button>
+              <div v-if="confirmUnsave" class="mr-2" title="Unsave on Reddit. You must be logged in.">
+                <span class="text-primary-400">Unsave the item?</span>
+                <button class="ml-2" @click="onUnsave">Yes</button>
+                <span class="mx-2">/</span>
+                <button @click="confirmUnsave = false">No</button>
+              </div>
+            </li>
+
+            <li>
+              <button
+                title="Update item information"
+                class="flex gap-1 whitespace-nowrap"
+                :disabled="updating"
+                @click="updateItem"
+              >
+                <PhArrowsClockwise class="shrink-0" :class="{ 'animate-spin': updating }" />
+                update
+              </button>
+            </li>
+          </ul>
+        </OverlayPanel>
       </footer>
     </div>
   </article>
 </template>
 
 <style lang="postcss" scoped>
+button {
+  @apply text-dark hover:text-primary-500 active:text-primary-400 dark:text-light dark:hover:text-primary-400 dark:active:text-primary-300;
+}
+
 article {
   @apply max-w-full overflow-hidden text-ellipsis bg-surface-0 text-sm
          ring-1 ring-surface-200 hover:z-10
