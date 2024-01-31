@@ -7,21 +7,15 @@ import { WrappedItem } from '~/logic/wrapped-item'
 const props = defineProps<{
   item: SavedRedditItem
   onAddTags: (e: MouseEvent) => void
-  onUpdate: (item: SavedRedditItem) => Promise<void>
 }>()
 
 const emit = defineEmits<{
-  (e: 'remove', id: number): void
   (e: 'tag-click', tag: string): void
   (e: 'author-click', author: string): void
   (e: 'subreddit-click', subreddit: string): void
-  (e: 'unsave', name: string): void
 }>()
 
 const item = computed(() => new WrappedItem(props.item))
-
-const confirmRemoving = ref(false)
-const confirmUnsave = ref(false)
 
 const bodyElemRef = ref<HTMLElement | null>(null)
 const overflowen = ref(false)
@@ -38,18 +32,7 @@ function isOverflowen(element: HTMLElement) {
   return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth
 }
 
-function onRemove() {
-  emit('remove', props.item._id)
-  confirmRemoving.value = false
-}
-
-function onUnsave() {
-  emit('unsave', props.item.name)
-  confirmUnsave.value = false
-}
-
 const overlayRef = ref()
-const overlayMenuRef = ref()
 
 const togglePreview = computed(() => {
   if (!item.value.media.video && !item.value.media.source) {
@@ -66,14 +49,6 @@ const expandPostOrPreview = (event: Event) => {
     return
   }
   togglePreview.value?.(event)
-}
-
-const updating = ref(false)
-const updateItem = async () => {
-  if (updating.value) return
-  updating.value = true
-  await props.onUpdate(props.item)
-  updating.value = false
 }
 </script>
 
@@ -158,69 +133,14 @@ const updateItem = async () => {
             </a>
           </li>
         </ul>
-        <button
-          v-if="!confirmRemoving"
-          title="Remove the item locally from the extension"
-          class="ml-auto flex gap-0.5"
-          @click="confirmRemoving = true"
-        >
-          <PhTrashSimpleDuotone class="shrink-0" />
-          remove
-        </button>
-        <div v-if="confirmRemoving" class="mr-2" title="Remove the item locally from the extension">
-          <span class="text-primary-400">Remove the item?</span>
-          <button class="ml-2" @click="onRemove">Yes</button>
-          <span class="mx-2">/</span>
-          <button @click="confirmRemoving = false">No</button>
-        </div>
 
-        <button class="ml-2" title="More actions" aria-haspopup="true" @click="overlayMenuRef.toggle">
-          <PhDotsThreeBold class="h-4 w-4" />
-        </button>
-
-        <OverlayPanel ref="overlayMenuRef" :pt="{ content: 'p-0 bg-surface-800 rounded', root: 'z-100' }">
-          <ul class="flex flex-col gap-4 p-3 text-sm">
-            <li v-if="item.item.saved">
-              <button
-                v-if="!confirmUnsave"
-                class="flex gap-1 whitespace-nowrap"
-                title="Unsave on Reddit. You must be logged in."
-                @click="confirmUnsave = true"
-              >
-                <PhBookmarksSimpleDuotone class="shrink-0" />
-                unsave on reddit
-              </button>
-              <div v-if="confirmUnsave" class="mr-2" title="Unsave on Reddit. You must be logged in.">
-                <span class="text-primary-400">Unsave the item?</span>
-                <button class="ml-2" @click="onUnsave">Yes</button>
-                <span class="mx-2">/</span>
-                <button @click="confirmUnsave = false">No</button>
-              </div>
-            </li>
-
-            <li>
-              <button
-                title="Update item information"
-                class="flex gap-1 whitespace-nowrap"
-                :disabled="updating"
-                @click="updateItem"
-              >
-                <PhArrowsClockwise class="shrink-0" :class="{ 'animate-spin': updating }" />
-                update
-              </button>
-            </li>
-          </ul>
-        </OverlayPanel>
+        <slot name="footer-right"> </slot>
       </footer>
     </div>
   </article>
 </template>
 
 <style lang="postcss" scoped>
-button {
-  @apply text-dark hover:text-primary-500 active:text-primary-400 dark:text-light dark:hover:text-primary-400 dark:active:text-primary-300;
-}
-
 article {
   @apply max-w-full overflow-hidden text-ellipsis bg-surface-0 text-sm
          ring-1 ring-surface-200 hover:z-10

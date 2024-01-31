@@ -2,7 +2,6 @@
 import { useIntersectionObserver } from '@vueuse/core'
 import { useToast } from 'primevue/usetoast'
 
-import AddTagsInput from '~/components/AddTagsInput.vue'
 import ItemList from '~/components/item/ItemList.vue'
 import { ITEMS_ON_PAGE } from '~/constants'
 import { SavedRedditItem } from '~/logic/db'
@@ -75,14 +74,6 @@ watch(search, async () => {
   return loadMore()
 })
 
-const redditId = ref('')
-const op = ref()
-const toggle = (event: Event) => {
-  const li = (event.currentTarget as HTMLElement).closest('[data-reddit-name]') as HTMLElement | null
-  redditId.value = li?.dataset.redditName || ''
-  op.value.toggle(event)
-}
-
 const updateTags = (tags: string[], redditId: string) => {
   if (!redditId) return
   items.value = items.value?.map((item) => {
@@ -133,10 +124,13 @@ async function onItemUpdate(item: SavedRedditItem) {
 <template>
   <Toast />
   <div class="mb-10 flex flex-col items-center justify-center">
-    <OverlayPanel ref="op" class="px-0 py-0" :pt="{ content: 'p-2' }">
-      <AddTagsInput :reddit-id="redditId" @exit="updateTags" />
-    </OverlayPanel>
-    <ItemList :items="items" :add-tags="toggle" @unsave="markUnsaved" @remove="onRemove" @update="onItemUpdate" />
+    <ItemList
+      :items="items"
+      @tags-update="updateTags"
+      @unsave="markUnsaved"
+      @remove="onRemove"
+      @update="onItemUpdate"
+    />
     <div v-if="!isEnd">
       <button ref="target" class="p-2 py-4 text-primary-700 dark:text-primary-400" tabindex="-1" @click="loadMore">
         Load more

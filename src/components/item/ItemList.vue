@@ -3,14 +3,16 @@ import { useToast } from 'primevue/usetoast'
 
 import type { SavedRedditItem } from '~/logic/db'
 import { setTag, setSubreddit, setAuthor } from '~/logic/search-store'
+import AddTagsInput from '~/components/AddTagsInput.vue'
 import ItemCard from '~/components/item/ItemCard.vue'
+import ActionMenu from '~/components/item/ActionMenu.vue'
 import { getUserInfo } from '~/reddit/me'
 import { unsave } from '~/reddit/unsave'
 import { updateItem } from '~/logic/db/mutations'
 
 const props = defineProps<{
   items?: SavedRedditItem[]
-  addTags: (e: Event) => void
+  onTagsUpdate: (tags: string[], reditId: string) => void
   onRemove: (ids: number[]) => void
   onUnsave: (id: number) => Promise<void>
   onUpdate: (item: SavedRedditItem) => Promise<void>
@@ -40,6 +42,26 @@ async function unsaveOnReddit(name: string) {
   await props.onUnsave(item._id)
   toast.add({ severity: 'info', summary: 'Info', detail: 'Unsaved the item', life: 1000 })
 }
+
+const redditId = ref('')
+const selectedItem = computed(() => {
+  if (!redditId.value) return
+  return props.items?.find((item) => item.name === redditId.value)
+})
+
+const actionMenuRef = ref()
+const toggleActionMenu = (event: Event) => {
+  const li = (event.currentTarget as HTMLElement).closest('[data-reddit-name]') as HTMLElement | null
+  redditId.value = li?.dataset.redditName || ''
+  actionMenuRef.value.toggle(event)
+}
+
+const tagMenuRef = ref()
+const toggleTagMenu = (event: Event) => {
+  const li = (event.currentTarget as HTMLElement).closest('[data-reddit-name]') as HTMLElement | null
+  redditId.value = li?.dataset.redditName || ''
+  tagMenuRef.value.toggle(event)
+}
 </script>
 
 <template>
@@ -47,16 +69,33 @@ async function unsaveOnReddit(name: string) {
     <li v-for="item in items" :key="item.id" :data-reddit-name="item.name" class="flex max-w-full flex-col gap-2">
       <ItemCard
         :item="item"
-        @add-tags="addTags"
+        @add-tags="toggleTagMenu"
         @tag-click="setTag"
         @subreddit-click="setSubreddit"
         @author-click="setAuthor"
-        @unsave="unsaveOnReddit"
-        @remove="removeItem"
-        @update="onUpdate"
-      />
+      >
+        <template #footer-right>
+          <button class="ml-2" title="More actions" aria-haspopup="true" @click="toggleActionMenu">
+            <PhDotsThreeBold class="h-auto w-5" />
+          </button>
+        </template>
+      </ItemCard>
     </li>
   </ol>
+
+  <OverlayPanel ref="actionMenuRef" :pt="{ content: 'p-0 bg-surface-800 rounded', root: 'z-100' }">
+    <ActionMenu
+      v-if="selectedItem"
+      :item="selectedItem"
+      @update="onUpdate"
+      @remove="() => removeItem(selectedItem?._id as number)"
+      @unsave="() => unsaveOnReddit(selectedItem?.name as string)"
+    />
+  </OverlayPanel>
+
+  <OverlayPanel ref="tagMenuRef" class="px-0 py-0" :pt="{ content: 'p-2' }">
+    <AddTagsInput :reddit-id="redditId" @exit="onTagsUpdate" />
+  </OverlayPanel>
 </template>
 
 <style lang="postcss" scoped>
