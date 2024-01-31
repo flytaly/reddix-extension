@@ -239,7 +239,7 @@ article {
   align-items: start;
   justify-content: start;
   grid-template-columns: auto 1fr;
-  gap: 0.25rem;
+  gap: 0.125rem 0.5rem;
   grid-template-areas:
     'thumbnail header'
     'thumbnail footer  ';

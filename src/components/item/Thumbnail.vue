@@ -24,11 +24,11 @@ const media = computed(() => props.item.media)
     </component>
 
     <span v-if="onClick">
-      <PhImagesSquare
-        v-if="item.isVideo"
+      <PhPlayCircle
+        v-if="item.isVideo || media.video"
         class="absolute bottom-0 right-0 h-4 w-4 rounded-tl bg-surface-100 dark:bg-surface-900"
       />
-      <PhPlayCircle
+      <PhImagesSquare
         v-else-if="item.isGallery"
         class="absolute bottom-0 right-0 h-4 w-4 rounded-tl bg-surface-100 dark:bg-surface-900"
       />
