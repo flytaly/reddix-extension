@@ -49,7 +49,7 @@ onMounted(() => {
 
 .link {
   @apply absolute bottom-0 right-0 flex items-center gap-1 rounded-tl
-         bg-surface-50 bg-opacity-95 px-1 text-center
-         text-base text-dark dark:bg-surface-900 dark:bg-opacity-95 dark:text-light;
+         bg-surface-50 bg-opacity-95 px-2 text-center
+         text-base text-dark hover:text-primary-400 dark:bg-surface-900 dark:bg-opacity-95 dark:text-light;
 }
 </style>
