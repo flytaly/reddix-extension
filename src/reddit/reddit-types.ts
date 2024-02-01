@@ -50,6 +50,7 @@ export type RedditPostData = {
   over_18?: boolean
   permalink: string
   thumbnail?: string
+  post_hint?: LiteralUnion<'image' | 'link' | 'hosted:video', string>
   preview?: {
     images: Array<{
       id: string

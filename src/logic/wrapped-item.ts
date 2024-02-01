@@ -31,11 +31,23 @@ export class WrappedItem {
   }
 
   get isVideo() {
-    return (this.item as SavedRedditPost).is_gallery
+    return (this.item as SavedRedditPost).is_video
   }
 
   get isGallery() {
     return (this.item as SavedRedditPost).is_gallery
+  }
+
+  get hasBody() {
+    return (this.item as RedditPostData).selftext_html || (this.item as RedditCommentData).body_html
+  }
+
+  get isLink() {
+    return (this.item as SavedRedditPost).post_hint == 'link' && !this.hasBody
+  }
+
+  get url() {
+    return (this.item as SavedRedditPost).url || ''
   }
 
   get tags() {
