@@ -6,13 +6,13 @@ import PhClockCounterClockwiseBold from '~icons/ph/clock-counter-clockwise-bold'
 import PhDownloadBold from '~icons/ph/download-bold'
 
 const items = [
-  { label: 'Search', route: RoutePath.Search, icon: PhMagnifyingGlassBold },
+  { label: 'Search', route: RoutePath.Search, iconCmp: PhMagnifyingGlassBold },
   {
     label: 'Backup',
-    icon: PhClockCounterClockwiseBold,
+    iconCmp: PhClockCounterClockwiseBold,
     items: [
-      { label: 'Import', route: RoutePath.Import, icon: PhDownloadBold },
-      { label: 'Export', route: RoutePath.Export, icon: PhUploadBold },
+      { label: 'Import', route: RoutePath.Import, iconCmp: PhDownloadBold },
+      { label: 'Export', route: RoutePath.Export, iconCmp: PhUploadBold },
     ],
   },
 ]
@@ -32,11 +32,11 @@ const items = [
       </template>
       <template #item="{ item, props }">
         <router-link v-if="item.route" :to="item.route" v-bind="props.action" class="flex items-center gap-x-1">
-          <component :is="item.icon" class="h-5 w-5" />
+          <component :is="item.iconCmp" class="h-5 w-5" />
           <span>{{ item.label }}</span>
         </router-link>
         <a v-if="item.items" v-bind="props.action" class="flex items-center gap-x-1">
-          <component :is="item.icon" class="h-5 w-5" />
+          <component :is="item.iconCmp" class="h-5 w-5" />
           <span>{{ item.label }}</span>
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24">
             <path fill="currentColor" d="m12 15.4l-6-6L7.4 8l4.6 4.6L16.6 8L18 9.4z" />
