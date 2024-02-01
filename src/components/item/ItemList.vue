@@ -5,13 +5,15 @@ import type { SavedRedditItem } from '~/logic/db'
 import { setTag, setSubreddit, setAuthor } from '~/logic/search-store'
 import AddTagsInput from '~/components/AddTagsInput.vue'
 import ItemCard from '~/components/item/ItemCard.vue'
+import ItemCardCompact from '~/components/item/ItemCardCompact.vue'
 import ActionMenu from '~/components/item/ActionMenu.vue'
 import { getUserInfo } from '~/reddit/me'
 import { unsave } from '~/reddit/unsave'
 import { updateItem } from '~/logic/db/mutations'
 
 const props = defineProps<{
-  items?: SavedRedditItem[]
+  items: SavedRedditItem[]
+  listType: 'list' | 'compact'
   onTagsUpdate: (tags: string[], reditId: string) => void
   onRemove: (ids: number[]) => void
   onUnsave: (id: number) => Promise<void>
@@ -36,7 +38,7 @@ async function unsaveOnReddit(name: string) {
     toast.add({ severity: 'error', summary: 'Error', detail: unsaveError, life: 3000 })
     return
   }
-  let item = props.items?.find((item) => item.name === name)
+  let item = props.items.find((item) => item.name === name)
   if (!item) return
   await updateItem(item._id, { saved: false })
   await props.onUnsave(item._id)
@@ -46,7 +48,7 @@ async function unsaveOnReddit(name: string) {
 const redditId = ref('')
 const selectedItem = computed(() => {
   if (!redditId.value) return
-  return props.items?.find((item) => item.name === redditId.value)
+  return props.items.find((item) => item.name === redditId.value)
 })
 
 const actionMenuRef = ref()
@@ -65,16 +67,29 @@ const toggleTagMenu = (event: Event) => {
 </script>
 
 <template>
-  <ol class="mt-4 flex w-full flex-col gap-0 text-left">
+  <ol class="flex w-full flex-col gap-0 text-left">
     <li v-for="item in items" :key="item.id" :data-reddit-name="item.name" class="flex max-w-full flex-col gap-2">
+      <ItemCardCompact
+        v-if="listType === 'compact'"
+        :item="item"
+        @subreddit-click="setSubreddit"
+        @author-click="setAuthor"
+      >
+        <template #end>
+          <button class="flex h-full items-center" title="More actions" aria-haspopup="true" @click="toggleActionMenu">
+            <PhDotsThreeBold class="h-auto w-5" />
+          </button>
+        </template>
+      </ItemCardCompact>
       <ItemCard
+        v-else
         :item="item"
         @add-tags="toggleTagMenu"
         @tag-click="setTag"
         @subreddit-click="setSubreddit"
         @author-click="setAuthor"
       >
-        <template #footer-right>
+        <template #footer-end>
           <button class="ml-2" title="More actions" aria-haspopup="true" @click="toggleActionMenu">
             <PhDotsThreeBold class="h-auto w-5" />
           </button>

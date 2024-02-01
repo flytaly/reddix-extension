@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useIntersectionObserver } from '@vueuse/core'
 import { useToast } from 'primevue/usetoast'
+import PhList from '~icons/ph/list'
+import PhRows from '~icons/ph/rows'
 
 import ItemList from '~/components/item/ItemList.vue'
 import { ITEMS_ON_PAGE } from '~/constants'
@@ -10,6 +12,7 @@ import { removeItems, updateItem } from '~/logic/db/mutations'
 import { search } from '~/logic/search-store'
 import { state } from '~/logic/options-stores'
 import { getItemsInfo, isPostData } from '~/reddit'
+import { FunctionalComponent } from 'vue'
 
 const lastItemId = ref(0)
 const isEnd = ref(false)
@@ -119,13 +122,35 @@ async function onItemUpdate(item: SavedRedditItem) {
     return oldItem
   })
 }
+
+type viewType = 'list' | 'compact'
+const viewOptions: { iconCmp: FunctionalComponent; value: viewType }[] = [
+  { iconCmp: PhRows, value: 'list' },
+  { iconCmp: PhList, value: 'compact' },
+]
+const view = ref(viewOptions[1])
 </script>
 
 <template>
   <Toast />
   <div class="mb-10 flex flex-col items-center justify-center">
+    <div class="my-2 flex w-full justify-end gap-2">
+      <SelectButton
+        v-model="view"
+        :options="viewOptions"
+        option-label="value"
+        data-key="value"
+        aria-labelledby="custom"
+      >
+        <template #option="slotProps">
+          <component :is="slotProps.option.iconCmp"></component>
+        </template>
+      </SelectButton>
+    </div>
+
     <ItemList
-      :items="items"
+      :items="items || []"
+      :list-type="view.value"
       @tags-update="updateTags"
       @unsave="markUnsaved"
       @remove="onRemove"

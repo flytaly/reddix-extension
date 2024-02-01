@@ -1,16 +1,14 @@
 <script setup lang="ts">
 import MediaPreview from '~/components/item/MediaPreview.vue'
-import Thumbnail from '~/components/item/Thumbnail.vue'
 import { type SavedRedditItem } from '~/logic/db'
 import { WrappedItem } from '~/logic/wrapped-item'
+import ThumbnailCompact from '~/components/item/ThumbnailCompact.vue'
 
 const props = defineProps<{
   item: SavedRedditItem
-  onAddTags: (e: MouseEvent) => void
 }>()
 
 const emit = defineEmits<{
-  (e: 'tag-click', tag: string): void
   (e: 'author-click', author: string): void
   (e: 'subreddit-click', subreddit: string): void
 }>()
@@ -18,55 +16,31 @@ const emit = defineEmits<{
 const item = computed(() => new WrappedItem(props.item))
 
 const bodyElemRef = ref<HTMLElement | null>(null)
-const overflowen = ref(false)
+const expandable = computed(() => item.value.body || item.value.media?.source || item.value.media?.video)
 const expanded = ref(false)
 
-onMounted(() => {
-  const element = bodyElemRef.value
-  if (element) {
-    overflowen.value = isOverflowen(element)
-  }
-})
-
-function isOverflowen(element: HTMLElement) {
-  return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth
-}
-
-const overlayRef = ref()
-
-const togglePreview = computed(() => {
-  if (!item.value.media.video && !item.value.media.source) {
-    return null
-  }
-  return (event: Event) => {
-    overlayRef.value.toggle(event)
-  }
-})
-
-const expandPostOrPreview = (event: Event) => {
-  if (overflowen.value || expanded.value) {
-    expanded.value = !expanded.value
-    return
-  }
-  togglePreview.value?.(event)
+const toggle = () => {
+  expanded.value = !expanded.value
 }
 </script>
 
 <template>
-  <article class="grid grid-cols-[auto_1fr] gap-1 pr-2">
+  <article class="grid grid-cols-[auto_1fr] gap-1 bg-cover pr-2">
     <!-- Toggle Bar -->
     <div class="flex h-full w-6 flex-col">
       <button
-        v-if="togglePreview || overflowen || expanded"
+        v-if="expandable"
         class="h-full w-full hover:bg-surface-100 dark:hover:bg-surface-800"
         title="Expand or Collapse the item"
-        @click="expandPostOrPreview"
+        @click="toggle"
       />
     </div>
 
-    <div class="item w-full py-2 pl-1 pr-2" :class="{ 'item__with-body': item.body }">
+    <div class="item w-full py-2 pr-2" :class="{ 'item__with-body': expanded }">
       <!-- Thumbnail  --->
-      <Thumbnail class="item-thumbnail" :media="item.media" :item="item" @click="togglePreview" />
+      <ThumbnailCompact :item="item" @click="toggle">
+        <PhFileTextLight class="h-7 w-7 text-surface-500 dark:text-surface-500" />
+      </ThumbnailCompact>
 
       <!-- Header  --->
       <header class="item-header">
@@ -86,56 +60,32 @@ const expandPostOrPreview = (event: Event) => {
         </div>
 
         <h4 class="wrap-anywhere">
-          <a class="flex items-center gap-2 text-base font-medium text-dark dark:text-light" :href="item.fullLink">
+          <a class="flex items-center gap-2 text-sm font-medium text-dark dark:text-light" :href="item.fullLink">
             {{ item.title }}
           </a>
         </h4>
-
-        <OverlayPanel ref="overlayRef" :pt="{ content: 'p-0' }">
-          <MediaPreview :item="item" />
-        </OverlayPanel>
       </header>
 
       <!-- Body -->
       <div
-        v-if="item.body"
+        v-if="expanded"
         class="item-body wrap-anywhere dimmed-1 relative mt-1 inline-flex w-full flex-col gap-1 text-sm"
       >
+        <MediaPreview :item="item" />
         <span
           ref="bodyElemRef"
           class="item-body-html overflow-hidden"
           :class="{ 'max-h-24': !expanded }"
           v-html="item.body"
         ></span>
-        <button
-          v-if="overflowen && !expanded"
-          class="mask absolute bottom-0 left-0 flex w-full items-center justify-center gap-1 bg-white pt-2 dark:bg-surface-900"
-          @click="expanded = true"
-        >
-          <PhArrowsOutSimple />
-          expand
-        </button>
-        <button v-if="expanded" class="flex w-full items-center justify-center gap-1" @click="expanded = false">
+        <button class="flex w-full items-center justify-center gap-1" @click="expanded = false">
           <PhArrowsOutSimple />
           collapse
         </button>
       </div>
 
-      <!-- Footer -->
-      <footer class="item-footer dimmed-1 mt-1 flex items-center gap-2 pt-0.5 text-xs">
-        <ul class="mr-auto flex flex-wrap gap-1">
-          <button class="mr-1 h-3 w-3 shrink-0" title="Edit tags" @click="onAddTags">
-            <PhTagDuotone />
-          </button>
-          <li v-for="tag in item.tags" :key="tag">
-            <a href="#" class="dimmed-2 break-all" :data-tag="tag" @click.prevent="$emit('tag-click', tag)">
-              #{{ tag }}
-            </a>
-          </li>
-        </ul>
-
-        <slot name="footer-end"> </slot>
-      </footer>
+      <!-- Menu Slot -->
+      <slot class="item-end" name="end"></slot>
     </div>
   </article>
 </template>
@@ -158,18 +108,15 @@ article {
   display: grid;
   align-items: start;
   justify-content: start;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto 1fr auto;
   gap: 0.125rem 0.5rem;
-  grid-template-areas:
-    'thumbnail header'
-    'thumbnail footer  ';
+  grid-template-areas: 'thumbnail header end';
 }
 
 .item__with-body {
   grid-template-areas:
-    'thumbnail header'
-    'body      body  '
-    'footer    footer';
+    'thumbnail header end'
+    'body      body   end';
 }
 
 .item-thumbnail {
@@ -184,8 +131,8 @@ article {
   grid-area: body;
 }
 
-.item-footer {
-  grid-area: footer;
+.item-end {
+  grid-area: end;
 }
 
 .dimmed-1 {
