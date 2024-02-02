@@ -31,7 +31,7 @@ export class WrappedItem {
   }
 
   get isVideo() {
-    return (this.item as SavedRedditPost).is_video
+    return (this.item as SavedRedditPost).is_video || this.media.video
   }
 
   get isGallery() {
@@ -43,7 +43,7 @@ export class WrappedItem {
   }
 
   get isLink() {
-    return (this.item as SavedRedditPost).post_hint == 'link' && !this.hasBody
+    return (this.item as SavedRedditPost).post_hint == 'link' && !this.hasBody && this.url
   }
 
   get url() {

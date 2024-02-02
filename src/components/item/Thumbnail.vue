@@ -10,7 +10,9 @@ const isLink = computed(() => props.item.isLink)
 const media = computed(() => props.item.media)
 const clickHandler = computed(() => (props.onClick && !isLink.value ? props.onClick : null))
 const htmlTag = computed(() => {
-  if (isLink.value) return 'a'
+  if (isLink.value) {
+    return 'a'
+  }
   return clickHandler.value ? 'button' : 'div'
 })
 const href = computed(() => (isLink.value ? props.item.url : ''))
@@ -34,7 +36,7 @@ const href = computed(() => (isLink.value ? props.item.url : ''))
 
     <span v-if="onClick">
       <PhPlayCircle
-        v-if="item.isVideo || media.video"
+        v-if="item.isVideo"
         class="absolute bottom-0 right-0 h-4 w-4 rounded-tl bg-surface-100 dark:bg-surface-900"
       />
       <PhImagesSquare

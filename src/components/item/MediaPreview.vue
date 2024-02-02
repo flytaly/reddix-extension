@@ -17,7 +17,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="relative min-h-32 min-w-32">
+  <div class="relative min-h-32 min-w-32 max-w-max">
     <div v-if="!media.video && media.source">
       <div v-if="overlayImgLoading === 'loading'" class="flex h-32 w-32 items-center justify-center">
         <PhSpinnerGap class="m-auto h-8 w-8 animate-spin" />

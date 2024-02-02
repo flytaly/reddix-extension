@@ -1,20 +1,36 @@
 <script setup lang="ts">
 import { WrappedItem } from '~/logic/wrapped-item'
 
-defineProps<{
+const props = defineProps<{
   onClick?: (e: Event) => void
   item: WrappedItem
 }>()
+
+const htmlTag = computed(() => (props.item.isLink ? 'a' : 'button'))
+const clickHandler = computed(() => (props.onClick && !props.item.isLink ? props.onClick : null))
+const title = computed(() => (props.item.isLink ? 'Open Link' : 'Expand or Collapse the item'))
+const href = computed(() => (props.item.isLink ? props.item.url : ''))
 </script>
 
 <template>
-  <button
+  <component
+    :is="htmlTag"
+    :title="title"
+    :href="href"
     class="flex h-full w-10 items-center justify-center rounded hover:bg-surface-100 hover:dark:bg-surface-800"
-    title="Expand or Collapse the item"
-    @click="onClick"
+    v-on="clickHandler ? { click: clickHandler } : {}"
   >
-    <PhFileTextLight class="h-7 w-7 text-surface-500 dark:text-surface-500" />
-  </button>
+    <PhChatText v-if="item.itemType === 'comment'" class="icon" />
+    <PhPlayCircle v-else-if="item.isVideo" class="icon" />
+    <PhImagesSquare v-else-if="item.isGallery" class="icon" />
+    <PhArrowSquareOut v-else-if="item.isLink" class="icon" />
+    <PhImageSquare v-else-if="item.media.source && !item.hasBody" class="icon" />
+    <PhFileTextLight v-else class="icon" />
+  </component>
 </template>
 
-<style scoped></style>
+<style scoped lang="postcss">
+.icon {
+  @apply h-7 w-7 text-surface-500 dark:text-surface-500;
+}
+</style>
