@@ -81,6 +81,7 @@ const toggleTagMenu = (event: Event) => {
           </button>
         </template>
       </ItemCardCompact>
+
       <ItemCard
         v-else
         :item="item"
@@ -102,6 +103,7 @@ const toggleTagMenu = (event: Event) => {
     <ActionMenu
       v-if="selectedItem"
       :item="selectedItem"
+      @add-tags="toggleTagMenu"
       @update="onUpdate"
       @remove="() => removeItem(selectedItem?._id as number)"
       @unsave="() => unsaveOnReddit(selectedItem?.name as string)"

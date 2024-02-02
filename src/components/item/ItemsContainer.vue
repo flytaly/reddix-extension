@@ -121,6 +121,8 @@ async function onItemUpdate(item: SavedRedditItem) {
     }
     return oldItem
   })
+
+  toast.add({ severity: 'info', summary: 'Info', detail: 'Item updated', life: 1000 })
 }
 
 type viewType = 'list' | 'compact'
@@ -150,7 +152,7 @@ const view = ref(viewOptions[1])
 
     <ItemList
       :items="items || []"
-      :list-type="view.value"
+      :list-type="view?.value || 'list'"
       @tags-update="updateTags"
       @unsave="markUnsaved"
       @remove="onRemove"

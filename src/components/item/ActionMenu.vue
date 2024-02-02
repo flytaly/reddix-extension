@@ -4,6 +4,7 @@ import { type SavedRedditItem } from '~/logic/db'
 const props = defineProps<{
   item: SavedRedditItem
   onUpdate: (item: SavedRedditItem) => Promise<void>
+  onAddTags?: ((e: MouseEvent) => void) | null | false
 }>()
 
 const emit = defineEmits<{
@@ -34,7 +35,14 @@ const updateItem = async () => {
 </script>
 
 <template>
-  <ul class="flex flex-col gap-4 p-3 text-sm">
+  <ul class="flex flex-col gap-4 p-3 text-sm" :data-reddit-name="item.name">
+    <li v-if="onAddTags">
+      <button class="flex w-full gap-1 whitespace-nowrap" title="Edit tags" @click="onAddTags">
+        <PhTagDuotone class="shrink-0" />
+        Edit tags
+      </button>
+    </li>
+
     <li>
       <button
         class="flex w-full gap-1 whitespace-nowrap"
