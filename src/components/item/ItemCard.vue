@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import MediaPreview from '~/components/item/MediaPreview.vue'
 import Thumbnail from '~/components/item/Thumbnail.vue'
-import { type SavedRedditItem } from '~/logic/db'
-import { WrappedItem } from '~/logic/wrapped-item'
+import type { WrappedItem } from '~/logic/wrapped-item'
 
 const props = defineProps<{
-  item: SavedRedditItem
+  item: WrappedItem
   onAddTags: (e: MouseEvent) => void
 }>()
 
@@ -14,8 +13,6 @@ const emit = defineEmits<{
   (e: 'author-click', author: string): void
   (e: 'subreddit-click', subreddit: string): void
 }>()
-
-const item = computed(() => new WrappedItem(props.item))
 
 const bodyElemRef = ref<HTMLElement | null>(null)
 const overflowen = ref(false)
@@ -35,7 +32,7 @@ function isOverflowen(element: HTMLElement) {
 const overlayRef = ref()
 
 const togglePreview = computed(() => {
-  if (!item.value.media.video && !item.value.media.source) {
+  if (!props.item.media.video && !props.item.media.source) {
     return null
   }
   return (event: Event) => {

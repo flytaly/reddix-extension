@@ -13,6 +13,14 @@ export class WrappedItem {
     this.media = extractMedia(this.item)
   }
 
+  get dbId() {
+    return this.item._id
+  }
+
+  get redditId() {
+    return this.item.name
+  }
+
   get title() {
     return unescape((this.item as RedditPostData).title || (this.item as RedditCommentData).link_title)
   }
@@ -50,7 +58,19 @@ export class WrappedItem {
     return (this.item as SavedRedditPost).url || ''
   }
 
+  set tags(newTags: string[]) {
+    this.item._tags = newTags
+  }
+
   get tags() {
     return this.item._tags
+  }
+
+  update(updates: Partial<SavedRedditItem>) {
+    Object.assign(this.item, updates)
+  }
+
+  clone() {
+    return new WrappedItem(this.item)
   }
 }

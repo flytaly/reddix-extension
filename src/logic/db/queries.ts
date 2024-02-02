@@ -2,6 +2,7 @@ import Dexie, { IndexableType, PromiseExtended } from 'dexie'
 import { ITEMS_ON_PAGE } from '~/constants'
 import { db } from '~/logic/db'
 import { RedditObjectKind } from '~/reddit/reddit-types'
+import { WrappedItem } from '../wrapped-item'
 
 export type SearchQuery = {
   author: string
@@ -21,18 +22,23 @@ export async function getItems(ids: string[]) {
 
 // with cursor based pagination
 // https://dexie.org/docs/Collection/Collection.offset()#a-better-paging-approach
-export async function getPostsFromDB(queryDetails: SearchQuery, lastId = 0, limit = ITEMS_ON_PAGE) {
+export async function getPostsFromDB(
+  queryDetails: SearchQuery,
+  lastId = 0,
+  limit = ITEMS_ON_PAGE,
+): Promise<WrappedItem[]> {
   const { query } = queryDetails
   if (!query) {
-    return db.savedItems
+    const items = await db.savedItems
       .where('_id')
       .above(lastId)
       .filter(makeFilterFn(queryDetails)) //
       .limit(limit)
       .toArray()
+    return items.map((item) => new WrappedItem(item))
   }
   const res = await find(queryDetails, { limit, lastId })
-  return res
+  return res.map((item) => new WrappedItem(item))
 }
 
 type RedditItemWithName = { name: string }

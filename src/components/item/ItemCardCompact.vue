@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import MediaPreview from '~/components/item/MediaPreview.vue'
-import { type SavedRedditItem } from '~/logic/db'
-import { WrappedItem } from '~/logic/wrapped-item'
+import type { WrappedItem } from '~/logic/wrapped-item'
 import ThumbnailCompact from '~/components/item/ThumbnailCompact.vue'
 
 const props = defineProps<{
-  item: SavedRedditItem
+  item: WrappedItem
 }>()
 
 const emit = defineEmits<{
@@ -13,10 +12,8 @@ const emit = defineEmits<{
   (e: 'subreddit-click', subreddit: string): void
 }>()
 
-const item = computed(() => new WrappedItem(props.item))
-
 const bodyElemRef = ref<HTMLElement | null>(null)
-const expandable = computed(() => item.value.body || item.value.media?.source || item.value.media?.video)
+const expandable = computed(() => props.item.body || props.item.media?.source || props.item.media?.video)
 const expanded = ref(false)
 
 const toggle = () => {

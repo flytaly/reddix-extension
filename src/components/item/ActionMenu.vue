@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { type SavedRedditItem } from '~/logic/db'
+import type { WrappedItem } from '~/logic/wrapped-item'
 
 const props = defineProps<{
-  item: SavedRedditItem
-  onUpdate: (item: SavedRedditItem) => Promise<void>
+  item: WrappedItem
+  onUpdate: (item: WrappedItem) => Promise<void>
   onAddTags?: ((e: MouseEvent) => void) | null | false
 }>()
 
@@ -35,7 +35,7 @@ const updateItem = async () => {
 </script>
 
 <template>
-  <ul class="flex flex-col gap-4 p-3 text-sm" :data-reddit-name="item.name">
+  <ul class="flex flex-col gap-4 p-3 text-sm" :data-reddit-name="item.redditId">
     <li v-if="onAddTags">
       <button class="flex w-full gap-1 whitespace-nowrap" title="Edit tags" @click="onAddTags">
         <PhTagDuotone class="shrink-0" />
@@ -55,7 +55,7 @@ const updateItem = async () => {
       </button>
     </li>
 
-    <li v-if="item.saved">
+    <li v-if="item.item.saved">
       <button
         v-if="!confirmUnsave"
         class="flex w-full gap-1 whitespace-nowrap"

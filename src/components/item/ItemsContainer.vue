@@ -6,17 +6,17 @@ import PhRows from '~icons/ph/rows'
 
 import ItemList from '~/components/item/ItemList.vue'
 import { ITEMS_ON_PAGE } from '~/constants'
-import { SavedRedditItem } from '~/logic/db'
 import { getPostsFromDB } from '~/logic/db/queries'
 import { removeItems, updateItem } from '~/logic/db/mutations'
 import { search } from '~/logic/search-store'
 import { state } from '~/logic/options-stores'
-import { getItemsInfo, isPostData } from '~/reddit'
+import { getItemsInfo } from '~/reddit'
 import { FunctionalComponent } from 'vue'
+import { WrappedItem } from '~/logic/wrapped-item'
 
 const lastItemId = ref(0)
 const isEnd = ref(false)
-const items = shallowRef<SavedRedditItem[]>()
+const items = shallowRef<WrappedItem[]>()
 const target = ref(null)
 const targetIsVisible = ref(false)
 
@@ -52,7 +52,7 @@ const { pause, resume } = useIntersectionObserver(
   { rootMargin: '100px', immediate: false },
 )
 
-function onNewItems(incoming: SavedRedditItem[], prevLastId: number, limit: number) {
+function onNewItems(incoming: WrappedItem[], prevLastId: number, limit: number) {
   isEnd.value = incoming.length < limit
   console.log(`get ${incoming.length} items from db. After id ${prevLastId}`)
   nextTick(() => resume())
@@ -61,7 +61,7 @@ function onNewItems(incoming: SavedRedditItem[], prevLastId: number, limit: numb
   } else {
     items.value = [...items.value, ...incoming]
   }
-  lastItemId.value = items.value.at(-1)?._id || 0
+  lastItemId.value = items.value.at(-1)?.dbId || 0
 }
 
 watch(
@@ -80,8 +80,9 @@ watch(search, async () => {
 const updateTags = (tags: string[], redditId: string) => {
   if (!redditId) return
   items.value = items.value?.map((item) => {
-    if (item.name === redditId) {
-      return { ...item, _tags: tags }
+    if (item.redditId === redditId) {
+      item.tags = tags
+      return item.clone()
     }
     return item
   })
@@ -89,35 +90,37 @@ const updateTags = (tags: string[], redditId: string) => {
 
 async function onRemove(itemIds: number[]) {
   await removeItems(itemIds)
-  items.value = items.value?.filter((item) => !itemIds.includes(item._id))
+  items.value = items.value?.filter((item) => !itemIds.includes(item.dbId))
 }
 
 async function markUnsaved(itemId: number) {
   items.value = items.value?.map((item) => {
-    if (item._id === itemId) {
-      return { ...item, saved: false }
+    if (item.dbId === itemId) {
+      item.item.saved = false
+      return item.clone()
     }
     return item
   })
 }
 
-async function onItemUpdate(item: SavedRedditItem) {
-  const [resp, err] = await getItemsInfo([isPostData(item) ? 't3_' + item.id : 't1_' + item.id])
+async function onItemUpdate(item: WrappedItem) {
+  const [resp, err] = await getItemsInfo([item.redditId])
   if (err) {
     toast.add({ severity: 'error', summary: 'Error', detail: err, life: 3000 })
     return
   }
-  const updated = resp?.data.children.find((u) => u.data.id == item.id)
+  const updated = resp?.data.children.find((u) => u.data.name == item.redditId)
   if (!updated) return
   try {
-    await updateItem(item._id, updated.data)
+    await updateItem(item.dbId, updated.data)
   } catch (error) {
     toast.add({ severity: 'error', summary: 'Error', detail: error, life: 3000 })
   }
 
   items.value = items.value?.map((oldItem) => {
-    if (oldItem._id === item._id) {
-      return { ...oldItem, ...updated.data }
+    if (oldItem.dbId === item.dbId) {
+      oldItem.update(updated.data)
+      return oldItem.clone()
     }
     return oldItem
   })
@@ -126,9 +129,9 @@ async function onItemUpdate(item: SavedRedditItem) {
 }
 
 type viewType = 'list' | 'compact'
-const viewOptions: { iconCmp: FunctionalComponent; value: viewType }[] = [
-  { iconCmp: PhRows, value: 'list' },
-  { iconCmp: PhList, value: 'compact' },
+const viewOptions: { iconCmp: FunctionalComponent; value: viewType; title: string }[] = [
+  { iconCmp: PhRows, value: 'list', title: 'List' },
+  { iconCmp: PhList, value: 'compact', title: 'Compact list' },
 ]
 const view = ref(viewOptions[1])
 </script>
@@ -142,7 +145,8 @@ const view = ref(viewOptions[1])
         :options="viewOptions"
         option-label="value"
         data-key="value"
-        aria-labelledby="custom"
+        aria-labelledby="title"
+        :allow-empty="false"
       >
         <template #option="slotProps">
           <component :is="slotProps.option.iconCmp"></component>
@@ -152,7 +156,7 @@ const view = ref(viewOptions[1])
 
     <ItemList
       :items="items || []"
-      :list-type="view?.value || 'list'"
+      :list-type="view.value"
       @tags-update="updateTags"
       @unsave="markUnsaved"
       @remove="onRemove"

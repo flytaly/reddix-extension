@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useToast } from 'primevue/usetoast'
 
-import type { SavedRedditItem } from '~/logic/db'
 import { setTag, setSubreddit, setAuthor } from '~/logic/search-store'
 import AddTagsInput from '~/components/AddTagsInput.vue'
 import ItemCard from '~/components/item/ItemCard.vue'
@@ -10,23 +9,26 @@ import ActionMenu from '~/components/item/ActionMenu.vue'
 import { getUserInfo } from '~/reddit/me'
 import { unsave } from '~/reddit/unsave'
 import { updateItem } from '~/logic/db/mutations'
+import type { WrappedItem } from '~/logic/wrapped-item'
 
 const props = defineProps<{
-  items: SavedRedditItem[]
+  items: WrappedItem[]
   listType: 'list' | 'compact'
   onTagsUpdate: (tags: string[], reditId: string) => void
   onRemove: (ids: number[]) => void
   onUnsave: (id: number) => Promise<void>
-  onUpdate: (item: SavedRedditItem) => Promise<void>
+  onUpdate: (item: WrappedItem) => Promise<void>
 }>()
 
-function removeItem(id: number) {
+function removeItem(id?: number) {
+  if (!id) return
   props.onRemove([id])
 }
 
 const toast = useToast()
 
-async function unsaveOnReddit(name: string) {
+async function unsaveOnReddit(name?: string) {
+  if (!name) return
   const [userInfo, err] = await getUserInfo()
   const modhash = userInfo?.data?.modhash
   if (err || !modhash) {
@@ -38,17 +40,17 @@ async function unsaveOnReddit(name: string) {
     toast.add({ severity: 'error', summary: 'Error', detail: unsaveError, life: 3000 })
     return
   }
-  let item = props.items.find((item) => item.name === name)
+  let item = props.items.find((item) => item.redditId === name)
   if (!item) return
-  await updateItem(item._id, { saved: false })
-  await props.onUnsave(item._id)
+  await updateItem(item.dbId, { saved: false })
+  await props.onUnsave(item.dbId)
   toast.add({ severity: 'info', summary: 'Info', detail: 'Unsaved the item', life: 1000 })
 }
 
 const redditId = ref('')
 const selectedItem = computed(() => {
   if (!redditId.value) return
-  return props.items.find((item) => item.name === redditId.value)
+  return props.items.find((item) => item.redditId === redditId.value)
 })
 
 const actionMenuRef = ref()
@@ -68,7 +70,7 @@ const toggleTagMenu = (event: Event) => {
 
 <template>
   <ol class="flex w-full flex-col gap-0 text-left">
-    <li v-for="item in items" :key="item.id" :data-reddit-name="item.name" class="flex max-w-full flex-col gap-2">
+    <li v-for="item in items" :key="item.dbId" :data-reddit-name="item.redditId" class="flex max-w-full flex-col gap-2">
       <ItemCardCompact
         v-if="listType === 'compact'"
         :item="item"
@@ -105,8 +107,8 @@ const toggleTagMenu = (event: Event) => {
       :item="selectedItem"
       @add-tags="toggleTagMenu"
       @update="onUpdate"
-      @remove="() => removeItem(selectedItem?._id as number)"
-      @unsave="() => unsaveOnReddit(selectedItem?.name as string)"
+      @remove="() => removeItem(selectedItem?.dbId)"
+      @unsave="() => unsaveOnReddit(selectedItem?.redditId)"
     />
   </OverlayPanel>
 
