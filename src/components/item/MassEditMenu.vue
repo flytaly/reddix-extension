@@ -3,6 +3,8 @@ import type { WrappedItem } from '~/logic/wrapped-item'
 
 const props = defineProps<{
   items: WrappedItem[]
+  hasMore: boolean
+  onLoadAll: () => Promise<void>
   onDelete: (ids: number[]) => Promise<void>
 }>()
 
@@ -42,7 +44,8 @@ const deleteItems = async () => {
 <template>
   <div class="mb-2 mr-auto flex gap-2 pl-2">
     <TriStateCheckbox v-model="selectAll" title="select all" aria-label="select all" />
-    <span class="ml-2"> selected {{ checked?.length || 0 }} / {{ items?.length }} </span>
+    <span class="ml-2"> selected {{ checked?.length || 0 }} / {{ items?.length }}</span>
+    <slot> </slot>
     <button
       v-if="!confirmDeletion"
       class="flex gap-0 underline decoration-dashed underline-offset-2 disabled:text-surface-500"

@@ -1,3 +1,4 @@
+k
 <script setup lang="ts">
 import { useIntersectionObserver } from '@vueuse/core'
 import { useToast } from 'primevue/usetoast'
@@ -29,15 +30,18 @@ onMounted(() => loadMore())
 
 const toast = useToast()
 
-async function loadMore() {
+async function loadMore(loadAll?: boolean) {
   isLoading.value = true
   const current = ++lastQueryId
+  const limit = loadAll ? Infinity : ITEMS_ON_PAGE
   try {
     const id = lastItemId.value
-    const items = await getPostsFromDB(search, id, ITEMS_ON_PAGE)
+    const items = await getPostsFromDB(search, id, limit + 1)
     // make sure the query is not out of date
     if (lastQueryId === current) {
-      onNewItems(items, id, ITEMS_ON_PAGE)
+      isEnd.value = items.length < limit + 1
+      const slice = loadAll ? items : items.slice(0, limit)
+      onNewItems(slice, id)
     }
   } catch (error) {
     toast.add({ severity: 'error', summary: 'DB Error', detail: (error as any)?.message || '', life: 3000 })
@@ -57,8 +61,7 @@ const { pause, resume } = useIntersectionObserver(
   { rootMargin: '100px', immediate: false },
 )
 
-function onNewItems(incoming: WrappedItem[], prevLastId: number, limit: number) {
-  isEnd.value = incoming.length < limit
+function onNewItems(incoming: WrappedItem[], prevLastId: number) {
   console.log(`get ${incoming.length} items from db. After id ${prevLastId}`)
   nextTick(() => resume())
   if (prevLastId === 0 || !items.value?.length) {
@@ -166,7 +169,24 @@ const checkedItems = defineModel<number[]>({ default: [] })
       </SelectButton>
     </div>
 
-    <MassEditMenu v-if="view.value === 'edit'" v-model="checkedItems" :items="items || []" @delete="onDelete" />
+    <MassEditMenu
+      v-if="view.value === 'edit'"
+      v-model="checkedItems"
+      :items="items || []"
+      :has-more="!isEnd"
+      @load-all="() => loadMore(true)"
+      @delete="onDelete"
+    >
+      <span v-if="!isEnd">
+        [<button
+          class="underline decoration-dashed underline-offset-2"
+          :disabled="isLoading"
+          @click="() => loadMore(true)"
+        >
+          {{ isLoading ? 'loading...' : 'Load all' }}</button
+        >]
+      </span>
+    </MassEditMenu>
 
     <ItemList
       v-model:checked="checkedItems"
@@ -183,7 +203,7 @@ const checkedItems = defineModel<number[]>({ default: [] })
         class="p-2 py-4 text-primary-700 dark:text-primary-400"
         tabindex="-1"
         :disabled="isLoading"
-        @click="loadMore"
+        @click="() => loadMore()"
       >
         {{ isLoading ? 'loading' : 'Load more' }}
       </button>
