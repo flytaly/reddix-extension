@@ -3,8 +3,10 @@ import { useIntersectionObserver } from '@vueuse/core'
 import { useToast } from 'primevue/usetoast'
 import PhList from '~icons/ph/list'
 import PhRows from '~icons/ph/rows'
+import PhNotePencil from '~icons/ph/note-pencil'
 
 import ItemList from '~/components/item/ItemList.vue'
+import MassEditMenu from '~/components/item/MassEditMenu.vue'
 import { ITEMS_ON_PAGE } from '~/constants'
 import { getPostsFromDB } from '~/logic/db/queries'
 import { removeItems, updateItem } from '~/logic/db/mutations'
@@ -128,12 +130,15 @@ async function onItemUpdate(item: WrappedItem) {
   toast.add({ severity: 'info', summary: 'Info', detail: 'Item updated', life: 1000 })
 }
 
-type viewType = 'list' | 'compact'
+type viewType = 'list' | 'compact' | 'edit'
 const viewOptions: { iconCmp: FunctionalComponent; value: viewType; title: string }[] = [
   { iconCmp: PhRows, value: 'list', title: 'List' },
   { iconCmp: PhList, value: 'compact', title: 'Compact list' },
+  { iconCmp: PhNotePencil, value: 'edit', title: 'Edit' },
 ]
-const view = ref(viewOptions[1])
+const view = ref(viewOptions[2])
+
+const checkedItems = defineModel<number[]>({ default: [] })
 </script>
 
 <template>
@@ -154,7 +159,10 @@ const view = ref(viewOptions[1])
       </SelectButton>
     </div>
 
+    <MassEditMenu v-if="view.value === 'edit'" v-model="checkedItems" :items="items || []" />
+
     <ItemList
+      v-model:checked="checkedItems"
       :items="items || []"
       :list-type="view.value"
       @tags-update="updateTags"

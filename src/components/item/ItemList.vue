@@ -13,12 +13,14 @@ import type { WrappedItem } from '~/logic/wrapped-item'
 
 const props = defineProps<{
   items: WrappedItem[]
-  listType: 'list' | 'compact'
+  listType: 'list' | 'compact' | 'edit'
   onTagsUpdate: (tags: string[], reditId: string) => void
   onRemove: (ids: number[]) => void
   onUnsave: (id: number) => Promise<void>
   onUpdate: (item: WrappedItem) => Promise<void>
 }>()
+
+const checked = defineModel<number[]>('checked')
 
 function removeItem(id?: number) {
   if (!id) return
@@ -81,6 +83,32 @@ const toggleTagMenu = (event: Event) => {
           <button class="flex h-full items-center" title="More actions" aria-haspopup="true" @click="toggleActionMenu">
             <PhDotsThreeBold class="h-auto w-5" />
           </button>
+        </template>
+      </ItemCardCompact>
+
+      <ItemCardCompact
+        v-else-if="listType === 'edit'"
+        :item="item"
+        @subreddit-click="setSubreddit"
+        @author-click="setAuthor"
+      >
+        <template #start>
+          <div class="flex h-full items-center">
+            <Checkbox
+              v-model="checked"
+              :pt="{
+                root: ({ context }) => ({
+                  class:
+                    'pl-2 pr-2 flex h-full items-center justify-end ' +
+                    (context.checked
+                      ? 'bg-primary-100 dark:bg-primary-800 hover:bg-primary-300 dark:hover:bg-primary-600'
+                      : 'hover:bg-primary-100 dark:hover:bg-primary-700'),
+                }),
+              }"
+              name="item"
+              :value="item.dbId"
+            />
+          </div>
         </template>
       </ItemCardCompact>
 

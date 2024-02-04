@@ -23,15 +23,17 @@ const toggle = () => {
 
 <template>
   <article class="grid grid-cols-[auto_1fr] gap-1 bg-cover pr-2">
-    <!-- Toggle Bar -->
-    <div class="flex h-full w-6 flex-col">
-      <button
-        v-if="expandable"
-        class="h-full w-full hover:bg-surface-100 dark:hover:bg-surface-800"
-        title="Expand or Collapse the item"
-        @click="toggle"
-      />
-    </div>
+    <slot name="start">
+      <!-- Toggle Bar -->
+      <div class="flex h-full w-6 flex-col">
+        <button
+          v-if="expandable"
+          class="h-full w-full hover:bg-surface-100 dark:hover:bg-surface-800"
+          title="Expand or Collapse the item"
+          @click="toggle"
+        />
+      </div>
+    </slot>
 
     <div class="item w-full py-2 pr-2" :class="{ 'item__with-body': expanded }">
       <!-- Thumbnail  --->
