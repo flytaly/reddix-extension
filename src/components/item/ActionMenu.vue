@@ -8,16 +8,16 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'remove'): void
+  (e: 'delete'): void
   (e: 'unsave'): void
 }>()
 
-const confirmRemoving = ref(false)
+const confirmDelete = ref(false)
 const confirmUnsave = ref(false)
 
-function onRemove() {
-  emit('remove')
-  confirmRemoving.value = false
+function onDelete() {
+  emit('delete')
+  confirmDelete.value = false
 }
 
 function onUnsave() {
@@ -76,20 +76,20 @@ const updateItem = async () => {
 
     <li>
       <button
-        v-if="!confirmRemoving"
+        v-if="!confirmDelete"
         class="flex w-full gap-1 whitespace-nowrap"
-        title="Remove the item locally from the extension"
-        @click="confirmRemoving = true"
+        title="Delete the item locally from the extension"
+        @click="confirmDelete = true"
       >
         <PhTrashSimpleDuotone class="shrink-0" />
-        remove
+        delete
       </button>
-      <div v-if="confirmRemoving" class="mr-2" title="Remove the item locally from the extension">
-        <span class="text-primary-400">Remove the item?</span>
+      <div v-if="confirmDelete" class="mr-2" title="Delete the item locally from the extension">
+        <span class="text-primary-400">Delete the item?</span>
         <br />
-        <button class="ml-2" @click="onRemove">Yes</button>
+        <button class="ml-2" @click="onDelete">Yes</button>
         <span class="mx-2">/</span>
-        <button @click="confirmRemoving = false">No</button>
+        <button @click="confirmDelete = false">No</button>
       </div>
     </li>
   </ul>

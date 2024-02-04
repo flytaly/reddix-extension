@@ -9,7 +9,7 @@ import ItemList from '~/components/item/ItemList.vue'
 import MassEditMenu from '~/components/item/MassEditMenu.vue'
 import { ITEMS_ON_PAGE } from '~/constants'
 import { getPostsFromDB } from '~/logic/db/queries'
-import { removeItems, updateItem } from '~/logic/db/mutations'
+import { deleteItems, updateItem } from '~/logic/db/mutations'
 import { search } from '~/logic/search-store'
 import { state } from '~/logic/options-stores'
 import { getItemsInfo } from '~/reddit'
@@ -21,6 +21,7 @@ const isEnd = ref(false)
 const items = shallowRef<WrappedItem[]>()
 const target = ref(null)
 const targetIsVisible = ref(false)
+const isLoading = ref(false)
 
 let lastQueryId = 0
 
@@ -29,6 +30,7 @@ onMounted(() => loadMore())
 const toast = useToast()
 
 async function loadMore() {
+  isLoading.value = true
   const current = ++lastQueryId
   try {
     const id = lastItemId.value
@@ -41,6 +43,7 @@ async function loadMore() {
     toast.add({ severity: 'error', summary: 'DB Error', detail: (error as any)?.message || '', life: 3000 })
     console.error(error)
   }
+  isLoading.value = false
 }
 
 const { pause, resume } = useIntersectionObserver(
@@ -90,9 +93,13 @@ const updateTags = (tags: string[], redditId: string) => {
   })
 }
 
-async function onRemove(itemIds: number[]) {
-  await removeItems(itemIds)
-  items.value = items.value?.filter((item) => !itemIds.includes(item.dbId))
+async function onDelete(itemIds: number[]) {
+  await deleteItems(itemIds)
+  const set = new Set(itemIds)
+  items.value = items.value?.filter((item) => !set.has(item.dbId))
+  if (!items.value?.length) {
+    loadMore()
+  }
 }
 
 async function markUnsaved(itemId: number) {
@@ -159,7 +166,7 @@ const checkedItems = defineModel<number[]>({ default: [] })
       </SelectButton>
     </div>
 
-    <MassEditMenu v-if="view.value === 'edit'" v-model="checkedItems" :items="items || []" />
+    <MassEditMenu v-if="view.value === 'edit'" v-model="checkedItems" :items="items || []" @delete="onDelete" />
 
     <ItemList
       v-model:checked="checkedItems"
@@ -167,12 +174,18 @@ const checkedItems = defineModel<number[]>({ default: [] })
       :list-type="view.value"
       @tags-update="updateTags"
       @unsave="markUnsaved"
-      @remove="onRemove"
+      @delete="onDelete"
       @update="onItemUpdate"
     />
     <div v-if="!isEnd">
-      <button ref="target" class="p-2 py-4 text-primary-700 dark:text-primary-400" tabindex="-1" @click="loadMore">
-        Load more
+      <button
+        ref="target"
+        class="p-2 py-4 text-primary-700 dark:text-primary-400"
+        tabindex="-1"
+        :disabled="isLoading"
+        @click="loadMore"
+      >
+        {{ isLoading ? 'loading' : 'Load more' }}
       </button>
     </div>
   </div>

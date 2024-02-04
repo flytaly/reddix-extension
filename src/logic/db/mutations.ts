@@ -1,7 +1,7 @@
 import { SavedRedditItem, db } from '~/logic/db'
 import { RedditItem, RedditItemResponse } from '~/reddit/reddit-types'
 
-export async function removeItems(ids: number[]) {
+export async function deleteItems(ids: number[]) {
   return db.savedItems.bulkDelete(ids)
 }
 

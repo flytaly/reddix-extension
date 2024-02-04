@@ -15,16 +15,16 @@ const props = defineProps<{
   items: WrappedItem[]
   listType: 'list' | 'compact' | 'edit'
   onTagsUpdate: (tags: string[], reditId: string) => void
-  onRemove: (ids: number[]) => void
+  onDelete: (ids: number[]) => void
   onUnsave: (id: number) => Promise<void>
   onUpdate: (item: WrappedItem) => Promise<void>
 }>()
 
 const checked = defineModel<number[]>('checked')
 
-function removeItem(id?: number) {
+function deleteItem(id?: number) {
   if (!id) return
-  props.onRemove([id])
+  props.onDelete([id])
 }
 
 const toast = useToast()
@@ -110,6 +110,11 @@ const toggleTagMenu = (event: Event) => {
             />
           </div>
         </template>
+        <template #end>
+          <button class="flex h-full items-center" title="More actions" aria-haspopup="true" @click="toggleActionMenu">
+            <PhDotsThreeBold class="h-auto w-5" />
+          </button>
+        </template>
       </ItemCardCompact>
 
       <ItemCard
@@ -135,7 +140,7 @@ const toggleTagMenu = (event: Event) => {
       :item="selectedItem"
       @add-tags="toggleTagMenu"
       @update="onUpdate"
-      @remove="() => removeItem(selectedItem?.dbId)"
+      @delete="() => deleteItem(selectedItem?.dbId)"
       @unsave="() => unsaveOnReddit(selectedItem?.redditId)"
     />
   </OverlayPanel>

@@ -3,6 +3,7 @@ import type { WrappedItem } from '~/logic/wrapped-item'
 
 const props = defineProps<{
   items: WrappedItem[]
+  onDelete: (ids: number[]) => Promise<void>
 }>()
 
 const checked = defineModel<number[]>()
@@ -28,19 +29,34 @@ watch(checked, (val) => {
     selectAll.value = false
   }
 })
+
+const confirmDeletion = ref(false)
+
+const deleteItems = async () => {
+  await props.onDelete(checked.value || [])
+  checked.value = []
+  confirmDeletion.value = false
+}
 </script>
 
 <template>
   <div class="mb-2 mr-auto flex gap-2 pl-2">
-    <TriStateCheckbox
-      v-model="selectAll"
-      value="select-all"
-      name="select-all"
-      title="select all"
-      aria-label="select all"
-    />
+    <TriStateCheckbox v-model="selectAll" title="select all" aria-label="select all" />
     <span class="ml-2"> selected {{ checked?.length || 0 }} / {{ items?.length }} </span>
-    <div class="ml-4"></div>
+    <button
+      v-if="!confirmDeletion"
+      class="flex gap-0 underline decoration-dashed underline-offset-2 disabled:text-surface-500"
+      :disabled="!checked?.length"
+      @click="confirmDeletion = true"
+    >
+      Delete
+    </button>
+    <div v-else class="mr-2">
+      Delete selected items?
+      <button @click="deleteItems">Yes</button>
+      <span> / </span>
+      <button @click="confirmDeletion = false">No</button>
+    </div>
   </div>
 </template>
 
