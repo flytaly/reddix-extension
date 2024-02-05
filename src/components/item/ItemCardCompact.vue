@@ -55,6 +55,9 @@ const toggle = () => {
               >u/{{ item.item.author }}</a
             >
           </span>
+          <a :href="item.fullLink">
+            <ph-arrow-square-out />
+          </a>
           <span class="dimmed-2 ml-auto">[{{ new Date(item.item.created * 1000).toLocaleDateString() }}]</span>
         </div>
 
