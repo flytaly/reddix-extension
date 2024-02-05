@@ -3,7 +3,6 @@ import type { WrappedItem } from '~/logic/wrapped-item'
 
 const props = defineProps<{
   items: WrappedItem[]
-  hasMore: boolean
   onLoadAll: () => Promise<void>
   onDelete: (ids: number[]) => Promise<void>
 }>()

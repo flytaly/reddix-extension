@@ -1,6 +1,5 @@
 k
 <script setup lang="ts">
-import { useIntersectionObserver } from '@vueuse/core'
 import { useToast } from 'primevue/usetoast'
 import PhList from '~icons/ph/list'
 import PhRows from '~icons/ph/rows'
@@ -18,10 +17,8 @@ import { FunctionalComponent } from 'vue'
 import { WrappedItem } from '~/logic/wrapped-item'
 
 const lastItemId = ref(0)
-const isEnd = ref(false)
+const isEnd = ref<boolean | null>(null)
 const items = shallowRef<WrappedItem[]>()
-const target = ref(null)
-const targetIsVisible = ref(false)
 const isLoading = ref(false)
 
 let lastQueryId = 0
@@ -31,6 +28,7 @@ onMounted(() => loadMore())
 const toast = useToast()
 
 async function loadMore(loadAll?: boolean) {
+  if (isEnd.value) return
   isLoading.value = true
   const current = ++lastQueryId
   const limit = loadAll ? Infinity : ITEMS_ON_PAGE
@@ -50,20 +48,8 @@ async function loadMore(loadAll?: boolean) {
   isLoading.value = false
 }
 
-const { pause, resume } = useIntersectionObserver(
-  target,
-  ([{ isIntersecting }], _observerElement) => {
-    targetIsVisible.value = isIntersecting
-    if (!isIntersecting || isEnd.value || !items.value?.length) return
-    pause()
-    loadMore()
-  },
-  { rootMargin: '100px', immediate: false },
-)
-
 function onNewItems(incoming: WrappedItem[], prevLastId: number) {
   console.log(`get ${incoming.length} items from db. After id ${prevLastId}`)
-  nextTick(() => resume())
   if (prevLastId === 0 || !items.value?.length) {
     items.value = incoming
   } else {
@@ -82,6 +68,7 @@ watch(
 )
 watch(search, async () => {
   lastItemId.value = 0
+  isEnd.value = null
   return loadMore()
 })
 
@@ -146,7 +133,7 @@ const viewOptions: { iconCmp: FunctionalComponent; value: viewType; title: strin
   { iconCmp: PhList, value: 'compact', title: 'Compact list' },
   { iconCmp: PhNotePencil, value: 'edit', title: 'Edit' },
 ]
-const view = ref(viewOptions[2])
+const view = ref(viewOptions[0])
 
 const checkedItems = defineModel<number[]>({ default: [] })
 </script>
@@ -173,17 +160,16 @@ const checkedItems = defineModel<number[]>({ default: [] })
       v-if="view.value === 'edit'"
       v-model="checkedItems"
       :items="items || []"
-      :has-more="!isEnd"
       @load-all="() => loadMore(true)"
       @delete="onDelete"
     >
-      <span v-if="!isEnd">
+      <span v-if="isEnd === false">
         [<button
           class="underline decoration-dashed underline-offset-2"
           :disabled="isLoading"
           @click="() => loadMore(true)"
         >
-          {{ isLoading ? 'loading...' : 'Load all' }}</button
+          Load all</button
         >]
       </span>
     </MassEditMenu>
@@ -196,17 +182,7 @@ const checkedItems = defineModel<number[]>({ default: [] })
       @unsave="markUnsaved"
       @delete="onDelete"
       @update="onItemUpdate"
+      @scroll-end="async () => (isLoading ? undefined : loadMore())"
     />
-    <div v-if="!isEnd">
-      <button
-        ref="target"
-        class="p-2 py-4 text-primary-700 dark:text-primary-400"
-        tabindex="-1"
-        :disabled="isLoading"
-        @click="() => loadMore()"
-      >
-        {{ isLoading ? 'loading' : 'Load more' }}
-      </button>
-    </div>
   </div>
 </template>

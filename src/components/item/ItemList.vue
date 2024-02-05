@@ -10,6 +10,7 @@ import { getUserInfo } from '~/reddit/me'
 import { unsave } from '~/reddit/unsave'
 import { updateItem } from '~/logic/db/mutations'
 import type { WrappedItem } from '~/logic/wrapped-item'
+import VirtualList from '~/components/item/VirtualList.vue'
 
 const props = defineProps<{
   items: WrappedItem[]
@@ -21,6 +22,10 @@ const props = defineProps<{
 }>()
 
 const checked = defineModel<number[]>('checked')
+
+const emit = defineEmits<{
+  (e: 'scroll-end'): void
+}>()
 
 function deleteItem(id?: number) {
   if (!id) return
@@ -71,68 +76,70 @@ const toggleTagMenu = (event: Event) => {
 </script>
 
 <template>
-  <ol class="flex w-full flex-col gap-0 text-left">
-    <li v-for="item in items" :key="item.dbId" :data-reddit-name="item.redditId" class="flex max-w-full flex-col gap-2">
-      <ItemCardCompact
-        v-if="listType === 'compact'"
-        :item="item"
-        @subreddit-click="setSubreddit"
-        @author-click="setAuthor"
-      >
-        <template #end>
-          <button class="flex h-full items-center" title="More actions" aria-haspopup="true" @click="toggleActionMenu">
-            <PhDotsThreeBold class="h-auto w-5" />
-          </button>
-        </template>
-      </ItemCardCompact>
+  <VirtualList :items="items" @scroll-end="emit('scroll-end')">
+    <template #item="{ item }">
+      <div :data-reddit-name="item.redditId">
+        <ItemCardCompact v-if="listType === 'compact'" :key="item.dbId" :item="item">
+          <template #end>
+            <button class="flex h-full items-center" title="More actions" aria-haspopup="true" @click="() => {}">
+              <PhDotsThreeBold class="h-auto w-5" />
+            </button>
+          </template>
+        </ItemCardCompact>
 
-      <ItemCardCompact
-        v-else-if="listType === 'edit'"
-        :item="item"
-        @subreddit-click="setSubreddit"
-        @author-click="setAuthor"
-      >
-        <template #start>
-          <div class="flex h-full items-center">
-            <Checkbox
-              v-model="checked"
-              :pt="{
-                root: ({ context }) => ({
-                  class:
-                    'pl-2 pr-2 flex h-full items-center justify-end ' +
-                    (context.checked
-                      ? 'bg-primary-100 dark:bg-primary-800 hover:bg-primary-300 dark:hover:bg-primary-600'
-                      : 'hover:bg-primary-100 dark:hover:bg-primary-700'),
-                }),
-              }"
-              name="item"
-              :value="item.dbId"
-            />
-          </div>
-        </template>
-        <template #end>
-          <button class="flex h-full items-center" title="More actions" aria-haspopup="true" @click="toggleActionMenu">
-            <PhDotsThreeBold class="h-auto w-5" />
-          </button>
-        </template>
-      </ItemCardCompact>
+        <ItemCardCompact
+          v-else-if="listType === 'edit'"
+          :item="item"
+          @subreddit-click="setSubreddit"
+          @author-click="setAuthor"
+        >
+          <template #start>
+            <div class="flex h-full items-center">
+              <Checkbox
+                v-model="checked"
+                :pt="{
+                  root: ({ context }) => ({
+                    class:
+                      'pl-2 pr-2 flex h-full items-center justify-end ' +
+                      (context.checked
+                        ? 'bg-primary-100 dark:bg-primary-800 hover:bg-primary-300 dark:hover:bg-primary-600'
+                        : 'hover:bg-primary-100 dark:hover:bg-primary-700'),
+                  }),
+                }"
+                name="item"
+                :value="item.dbId"
+              />
+            </div>
+          </template>
+          <template #end>
+            <button
+              class="flex h-full items-center"
+              title="More actions"
+              aria-haspopup="true"
+              @click="toggleActionMenu"
+            >
+              <PhDotsThreeBold class="h-auto w-5" />
+            </button>
+          </template>
+        </ItemCardCompact>
 
-      <ItemCard
-        v-else
-        :item="item"
-        @add-tags="toggleTagMenu"
-        @tag-click="setTag"
-        @subreddit-click="setSubreddit"
-        @author-click="setAuthor"
-      >
-        <template #footer-end>
-          <button class="ml-2" title="More actions" aria-haspopup="true" @click="toggleActionMenu">
-            <PhDotsThreeBold class="h-auto w-5" />
-          </button>
-        </template>
-      </ItemCard>
-    </li>
-  </ol>
+        <ItemCard
+          v-else
+          :item="item"
+          @add-tags="toggleTagMenu"
+          @tag-click="setTag"
+          @subreddit-click="setSubreddit"
+          @author-click="setAuthor"
+        >
+          <template #footer-end>
+            <button class="ml-2" title="More actions" aria-haspopup="true" @click="toggleActionMenu">
+              <PhDotsThreeBold class="h-auto w-5" />
+            </button>
+          </template>
+        </ItemCard>
+      </div>
+    </template>
+  </VirtualList>
 
   <OverlayPanel ref="actionMenuRef" :pt="{ content: 'p-0 bg-surface-800 rounded', root: 'z-100' }">
     <ActionMenu

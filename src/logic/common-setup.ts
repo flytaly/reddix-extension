@@ -4,6 +4,8 @@ import Toast from 'primevue/toast'
 import Tooltip from 'primevue/tooltip'
 import type { App } from 'vue'
 import PrimePreset from '~/styles/presets/wind'
+import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller'
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 
 export function setupApp(app: App) {
   // Inject a globally available `$app` object in template
@@ -24,6 +26,9 @@ export function setupApp(app: App) {
 
   app.use(ConfirmationService)
   app.directive('tooltip', Tooltip)
+
+  app.component('DynamicScroller', DynamicScroller)
+  app.component('DynamicScrollerItem', DynamicScrollerItem)
 
   // for some reason it won't work with autoimport
   app.component('Toast', Toast)

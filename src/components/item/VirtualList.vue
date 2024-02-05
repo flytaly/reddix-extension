@@ -1,0 +1,62 @@
+<script setup lang="ts">
+import { WrappedItem } from '~/logic/wrapped-item'
+
+defineProps<{
+  items: WrappedItem[]
+}>()
+
+const emit = defineEmits<{
+  (e: 'scroll-end'): void
+}>()
+
+const height = ref(300)
+const elem = ref<HTMLElement>()
+const scroller = ref()
+const hasScroll = ref(false)
+
+const onResize = () => {
+  if (!elem.value) return
+  height.value = window.innerHeight - elem.value.offsetTop - 10
+  const el = scroller.value.$el
+  if (!el) return
+  hasScroll.value = el.scrollHeight > el.clientHeight
+}
+
+onMounted(() => {
+  document.body.style.overflowY = 'hidden'
+})
+onUnmounted(() => {
+  document.body.style.overflowY = ''
+})
+</script>
+
+<template>
+  <div ref="elem" class="flex w-full flex-col overflow-hidden" :style="{ height: height + 'px' }">
+    <DynamicScroller
+      ref="scroller"
+      :items="items"
+      :min-item-size="54"
+      key-field="dbId"
+      @resize="onResize"
+      @scroll-end="emit('scroll-end')"
+    >
+      <template #default="{ item, index, active }">
+        <DynamicScrollerItem :item="item" :active="active" :data-index="index" :data-active="active">
+          <div :key="item.dbId" class="w-full p-[1px] px-[2px]">
+            <slot name="item" :item="item as WrappedItem"></slot>
+          </div>
+        </DynamicScrollerItem>
+      </template>
+
+      <template #after>
+        <div v-if="hasScroll" class="mt-4 max-w-full">
+          <button class="group mx-auto flex gap-1" @click="scroller.scrollToItem(0)">
+            Scroll to the top<ph-arrow-up class="transition-transform group-hover:-translate-y-[2px]" />
+          </button>
+        </div>
+      </template>
+    </DynamicScroller>
+  </div>
+</template>
+
+<style scoped></style>

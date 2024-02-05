@@ -22,7 +22,7 @@ export class WrappedItem {
   }
 
   get title() {
-    return unescape((this.item as RedditPostData).title || (this.item as RedditCommentData).link_title)
+    return (this.item as RedditPostData).title || (this.item as RedditCommentData).link_title
   }
 
   get body() {

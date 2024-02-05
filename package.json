@@ -36,7 +36,8 @@
     "jszip": "^3.10.1",
     "lodash-es": "^4.17.21",
     "primevue": "^3.45.0",
-    "vue-router": "^4.2.5"
+    "vue-router": "^4.2.5",
+    "vue-virtual-scroller": "2.0.0-beta.8"
   },
   "devDependencies": {
     "@ffflorian/jszip-cli": "^3.6.2",
