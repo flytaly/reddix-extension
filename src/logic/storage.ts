@@ -1,14 +1,18 @@
 import { useWebExtensionStorage } from '~/composables/useWebExtensionStorage'
 import { RateLimits } from '~/reddit/rate-limits'
 
-export const storageDemo = useWebExtensionStorage<string>('username', '')
+export const themeStorage = useWebExtensionStorage<'auto' | 'dark' | 'light'>('theme', 'auto')
+
+export const optionsStorage = useWebExtensionStorage('options', {
+  username: '',
+})
 
 export const userName = computed({
   get() {
-    return storageDemo.value
+    return optionsStorage.value.username
   },
   set(value) {
-    storageDemo.value = value.trim()
+    optionsStorage.value.username = value.trim()
   },
 })
 

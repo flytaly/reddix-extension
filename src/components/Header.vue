@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { RoutePath } from '~/options/routes'
+import { usePreferredDark } from '@vueuse/core'
 import PhUploadBold from '~icons/ph/upload-bold'
 import PhMagnifyingGlassBold from '~icons/ph/magnifying-glass-bold'
 import PhClockCounterClockwiseBold from '~icons/ph/clock-counter-clockwise-bold'
 import PhDownloadBold from '~icons/ph/download-bold'
+
+import { RoutePath } from '~/options/routes'
+import { themeStorage } from '~/logic/storage'
 
 const items = [
   { label: 'Search', route: RoutePath.Search, iconCmp: PhMagnifyingGlassBold },
@@ -16,6 +19,16 @@ const items = [
     ],
   },
 ]
+
+const preferDark = usePreferredDark()
+
+const isDark = computed(() => {
+  return themeStorage.value === 'auto' ? preferDark.value : themeStorage.value === 'dark'
+})
+
+function toggleTheme() {
+  themeStorage.value = isDark.value ? 'light' : 'dark'
+}
 </script>
 
 <template>
@@ -42,6 +55,12 @@ const items = [
             <path fill="currentColor" d="m12 15.4l-6-6L7.4 8l4.6 4.6L16.6 8L18 9.4z" />
           </svg>
         </a>
+      </template>
+      <template #end>
+        <button title="Toggle theme" @click="toggleTheme">
+          <ph-sun v-if="!isDark" class="h-5 w-5" />
+          <ph-moon v-else class="h-5 w-5" />
+        </button>
       </template>
     </Menubar>
   </header>

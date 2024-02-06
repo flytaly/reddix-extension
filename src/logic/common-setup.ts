@@ -6,8 +6,11 @@ import type { App } from 'vue'
 import PrimePreset from '~/styles/presets/wind'
 import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
+import { setupTheme } from '~/logic/theme'
 
 export function setupApp(app: App) {
+  setupTheme()
+
   // Inject a globally available `$app` object in template
   app.config.globalProperties.$app = {
     context: '',
