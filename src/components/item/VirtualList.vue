@@ -59,4 +59,19 @@ onUnmounted(() => {
   </div>
 </template>
 
-<style scoped></style>
+<style lang="postcss">
+.vue-recycle-scroller {
+  scrollbar-color: theme('colors.surface-400') theme('colors.surface-200');
+  &:hover {
+    scrollbar-color: theme('colors.primary-500') theme('colors.surface-200');
+  }
+}
+
+.dark .vue-recycle-scroller {
+  scrollbar-color: theme('colors.surface-600') theme('colors.surface-800');
+
+  &:hover {
+    scrollbar-color: theme('colors.primary-500') theme('colors.surface-800');
+  }
+}
+</style>
