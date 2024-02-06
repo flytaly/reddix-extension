@@ -38,9 +38,19 @@ watch(
     }, 1500)
   },
 )
+
+watch(
+  () => state.fetchError,
+  (err) => {
+    if (err) {
+      toast.add({ severity: 'error', summary: 'Fetch Error', detail: err, life: 3000 })
+    }
+  },
+)
 </script>
 
 <template>
+  <Toast />
   <Toast position="top-left" group="headless" @close="visible = false">
     <template #container="{ message, closeCallback }">
       <section class="grid w-full grid-cols-[auto_1fr] gap-3 rounded-xl p-3">

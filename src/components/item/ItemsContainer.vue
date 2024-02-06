@@ -139,8 +139,7 @@ const checkedItems = defineModel<number[]>({ default: [] })
 </script>
 
 <template>
-  <Toast />
-  <div class="mb-10 flex flex-col items-center justify-center">
+  <div class="flex flex-col items-center justify-center">
     <div class="my-2 flex w-full justify-end gap-2">
       <SelectButton
         v-model="view"

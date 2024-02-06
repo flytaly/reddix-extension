@@ -5,6 +5,8 @@ import PhMagnifyingGlassBold from '~icons/ph/magnifying-glass-bold'
 import PhClockCounterClockwiseBold from '~icons/ph/clock-counter-clockwise-bold'
 import PhDownloadBold from '~icons/ph/download-bold'
 
+import TagList from '~/components/TagList.vue'
+import AccountInputBlock from '~/components/AccountInputBlock.vue'
 import { RoutePath } from '~/options/routes'
 import { themeStorage } from '~/logic/storage'
 
@@ -29,13 +31,16 @@ const isDark = computed(() => {
 function toggleTheme() {
   themeStorage.value = isDark.value ? 'light' : 'dark'
 }
+
+const tagSidebarOn = ref(false)
+const accSidebarOn = ref(false)
 </script>
 
 <template>
   <header>
     <Menubar
       :model="items"
-      :pt="{ root: 'min-h-[2rem] bg-surface-50 dark:bg-surface-950', menu: 'mx-auto' }"
+      :pt="{ root: 'min-h-( 2rem ) bg-surface-50 dark:bg-surface-950', menu: 'mx-auto' }"
       :pt-options="{ mergeProps: true }"
     >
       <template #start>
@@ -57,10 +62,33 @@ function toggleTheme() {
         </a>
       </template>
       <template #end>
-        <button title="Toggle theme" @click="toggleTheme">
-          <ph-sun v-if="!isDark" class="h-5 w-5" />
-          <ph-moon v-else class="h-5 w-5" />
-        </button>
+        <div class="flex gap-1">
+          <button title="Toggle theme" @click="toggleTheme">
+            <ph-sun v-if="!isDark" class="h-5 w-5" />
+            <ph-moon v-else class="h-5 w-5" />
+          </button>
+          <button
+            class="flex w-max items-center rounded px-1 py-0.5 text-sm text-surface-600 md:hidden dark:text-surface-400"
+            title="show tags"
+            @click="tagSidebarOn = true"
+          >
+            <ph-hash class="h-5 w-5 flex-shrink-0" />
+          </button>
+          <button
+            class="flex w-max items-center rounded px-1 py-0.5 text-sm text-surface-600 md:hidden dark:text-surface-400"
+            title="account"
+            @click="accSidebarOn = true"
+          >
+            <ph-user class="h-5 w-5 flex-shrink-0" />
+          </button>
+        </div>
+
+        <Sidebar v-model:visible="tagSidebarOn" header="Tags">
+          <TagList @tag-select="() => (tagSidebarOn = false)" />
+        </Sidebar>
+        <Sidebar v-model:visible="accSidebarOn" header="Account">
+          <AccountInputBlock />
+        </Sidebar>
       </template>
     </Menubar>
   </header>

@@ -3,6 +3,11 @@ export default {
   content: ['./src/**/*.{vue,js,ts,jsx,tsx,html}'],
   darkMode: 'class',
   theme: {
+    screens: {
+      sm: '576px',
+      md: '960px',
+      lg: '1440px',
+    },
     extend: {
       colors: {
         'primary-50': 'rgb(var(--primary-50) / <alpha-value>)',
