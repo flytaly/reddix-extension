@@ -7,18 +7,36 @@ import ItemsContainer from '~/components/item/ItemsContainer.vue'
 
 <template>
   <MainLayout>
-    <main
-      class="mt-4 flex-grow bg-surface-50 text-dark md:grid md:grid-cols-[auto_1fr] dark:bg-surface-950 dark:text-light"
-    >
-      <Sidebar />
-      <div class="mx-auto my-4 flex w-full max-w-[80rem] flex-col items-center px-4 sm:my-0">
+    <main class="mt-4 flex-grow bg-surface-50 text-dark dark:bg-surface-950 dark:text-light">
+      <div class="sidebar">
+        <Sidebar />
+      </div>
+      <div class="input mx-auto mt-4 flex w-full max-w-main-column flex-col items-center px-4 sm:my-0">
         <SearchInput />
-        <div class="w-full">
-          <ItemsContainer />
-        </div>
+      </div>
+      <div class="items mx-auto w-full">
+        <ItemsContainer />
       </div>
     </main>
   </MainLayout>
 </template>
 
-<style lang="postcss"></style>
+<style lang="postcss" scoped>
+main {
+  @apply md:grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    'side input'
+    'side items';
+}
+.sidebar {
+  grid-area: side;
+}
+.input {
+  grid-area: input;
+}
+.items {
+  grid-area: items;
+}
+</style>

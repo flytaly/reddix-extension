@@ -140,7 +140,7 @@ const checkedItems = defineModel<number[]>({ default: [] })
 
 <template>
   <div class="flex flex-col items-center justify-center">
-    <div class="my-2 flex w-full justify-end gap-2">
+    <div class="mx-auto my-2 flex w-full max-w-main-column justify-end gap-2">
       <SelectButton
         v-model="view"
         :options="viewOptions"

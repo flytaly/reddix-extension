@@ -78,7 +78,7 @@ const toggleTagMenu = (event: Event) => {
 <template>
   <VirtualList :items="items" @scroll-end="emit('scroll-end')">
     <template #item="{ item }">
-      <div :data-reddit-name="item.redditId">
+      <div :data-reddit-name="item.redditId" class="mx-auto max-w-main-column">
         <ItemCardCompact v-if="listType === 'compact'" :key="item.dbId" :item="item">
           <template #end>
             <button class="flex h-full items-center" title="More actions" aria-haspopup="true" @click="() => {}">

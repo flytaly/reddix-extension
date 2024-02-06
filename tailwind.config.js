@@ -9,6 +9,9 @@ export default {
       lg: '1440px',
     },
     extend: {
+      spacing: {
+        'main-column': '80rem',
+      },
       colors: {
         'primary-50': 'rgb(var(--primary-50) / <alpha-value>)',
         'primary-100': 'rgb(var(--primary-100) / <alpha-value>)',
