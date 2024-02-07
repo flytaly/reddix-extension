@@ -48,6 +48,12 @@ async function loadMore(loadAll?: boolean) {
   isLoading.value = false
 }
 
+async function reload() {
+  lastItemId.value = 0
+  isEnd.value = null
+  return loadMore()
+}
+
 function onNewItems(incoming: WrappedItem[], prevLastId: number) {
   console.log(`get ${incoming.length} items from db. After id ${prevLastId}`)
   if (prevLastId === 0 || !items.value?.length) {
@@ -61,16 +67,11 @@ function onNewItems(incoming: WrappedItem[], prevLastId: number) {
 watch(
   () => state.isFetching,
   (isFetching) => {
-    if (isFetching) return
-    lastItemId.value = 0
-    return loadMore()
+    if (!isFetching) reload()
   },
 )
-watch(search, async () => {
-  lastItemId.value = 0
-  isEnd.value = null
-  return loadMore()
-})
+
+watch(search, () => reload())
 
 const updateTags = (tags: string[], redditId: string) => {
   if (!redditId) return
