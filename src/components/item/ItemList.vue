@@ -136,7 +136,13 @@ const toggleTagMenu = (event: Event) => {
     </template>
   </VirtualList>
 
-  <OverlayPanel ref="actionMenuRef" :pt="{ content: 'p-0 bg-surface-800 rounded', root: 'z-100' }">
+  <OverlayPanel
+    ref="actionMenuRef"
+    :pt="{
+      content: 'p-0 bg-surface-100 dark:bg-surface-800 rounded ring-1 ring-surface-400 dark:ring-surface-500',
+      root: 'z-100',
+    }"
+  >
     <ActionMenu
       v-if="selectedItem"
       :item="selectedItem"
