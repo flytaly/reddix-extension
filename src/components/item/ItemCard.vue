@@ -50,12 +50,12 @@ const expandPostOrPreview = (event: Event) => {
 </script>
 
 <template>
-  <article class="grid grid-cols-[auto_1fr] gap-1 pr-2">
+  <article class="group grid grid-cols-[auto_1fr] gap-1 pr-2">
     <!-- Toggle Bar -->
     <div class="flex h-full w-6 flex-col">
       <button
         v-if="togglePreview || overflowen || expanded"
-        class="h-full w-full hover:bg-surface-100 dark:hover:bg-surface-800"
+        class="h-full w-full group-hover:bg-surface-100 group-hover:hover:bg-surface-200 group-hover:dark:bg-surface-800 group-hover:hover:dark:bg-surface-700"
         title="Expand or Collapse the item"
         @click="expandPostOrPreview"
       />

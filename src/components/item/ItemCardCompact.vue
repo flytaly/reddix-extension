@@ -22,13 +22,13 @@ const toggle = () => {
 </script>
 
 <template>
-  <article class="grid grid-cols-[auto_1fr] gap-1 bg-cover pr-2">
+  <article class="group grid grid-cols-[auto_1fr] gap-1 bg-cover pr-2">
     <slot name="start">
       <!-- Toggle Bar -->
       <div class="flex h-full w-6 flex-col">
         <button
           v-if="expandable"
-          class="h-full w-full hover:bg-surface-100 dark:hover:bg-surface-800"
+          class="h-full w-full group-hover:bg-surface-100 group-hover:hover:bg-surface-200 group-hover:dark:bg-surface-800 group-hover:hover:dark:bg-surface-700"
           title="Expand or Collapse the item"
           @click="toggle"
         />
