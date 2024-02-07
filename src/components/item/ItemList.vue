@@ -81,7 +81,7 @@ const toggleTagMenu = (event: Event) => {
       <div :data-reddit-name="item.redditId" class="mx-auto max-w-main-column">
         <ItemCardCompact v-if="listType === 'compact'" :key="item.dbId" :item="item">
           <template #end>
-            <button class="flex h-full items-center" title="More actions" aria-haspopup="true" @click="() => {}">
+            <button class="flex h-full items-center" title="Actions" aria-haspopup="true" @click="toggleActionMenu">
               <PhDotsThreeBold class="h-auto w-5" />
             </button>
           </template>
@@ -112,12 +112,7 @@ const toggleTagMenu = (event: Event) => {
             </div>
           </template>
           <template #end>
-            <button
-              class="flex h-full items-center"
-              title="More actions"
-              aria-haspopup="true"
-              @click="toggleActionMenu"
-            >
+            <button class="flex h-full items-center" title="Actions" aria-haspopup="true" @click="toggleActionMenu">
               <PhDotsThreeBold class="h-auto w-5" />
             </button>
           </template>
@@ -132,7 +127,7 @@ const toggleTagMenu = (event: Event) => {
           @author-click="setAuthor"
         >
           <template #footer-end>
-            <button class="ml-2" title="More actions" aria-haspopup="true" @click="toggleActionMenu">
+            <button class="ml-2" title="Actions" aria-haspopup="true" @click="toggleActionMenu">
               <PhDotsThreeBold class="h-auto w-5" />
             </button>
           </template>
