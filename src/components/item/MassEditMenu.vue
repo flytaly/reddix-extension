@@ -41,7 +41,7 @@ const deleteItems = async () => {
 </script>
 
 <template>
-  <div class="mb-2 mr-auto flex gap-2 pl-2">
+  <div class="mx-auto mb-2 mr-auto flex w-main-column max-w-full gap-2 px-2 pl-2">
     <TriStateCheckbox v-model="selectAll" title="select all" aria-label="select all" />
     <span class="ml-2"> selected {{ checked?.length || 0 }} / {{ items?.length }}</span>
     <slot> </slot>
