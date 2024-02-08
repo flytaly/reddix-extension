@@ -16,7 +16,7 @@ import { getItemsInfo } from '~/reddit'
 import { FunctionalComponent } from 'vue'
 import { WrappedItem } from '~/logic/wrapped-item'
 
-const lastItemId = ref(0)
+const lastItem = shallowRef<WrappedItem | null>(null)
 const isEnd = ref<boolean | null>(null)
 const items = shallowRef<WrappedItem[]>()
 const isLoading = ref(false)
@@ -33,13 +33,14 @@ async function loadMore(loadAll?: boolean) {
   const current = ++lastQueryId
   const limit = loadAll ? Infinity : ITEMS_ON_PAGE
   try {
-    const id = lastItemId.value
-    const items = await getPostsFromDB(search, id, limit + 1)
+    const last = lastItem.value
+    const items = await getPostsFromDB(search, { lastItem: last, limit: limit + 1 })
     // make sure the query is not out of date
     if (lastQueryId === current) {
       isEnd.value = items.length < limit + 1
       const slice = loadAll ? items : items.slice(0, limit)
-      onNewItems(slice, id)
+      console.log(`get ${slice.length} items from db. After id ${last?.dbId || 'none'}`)
+      onNewItems(slice, Boolean(last))
     }
   } catch (error) {
     toast.add({ severity: 'error', summary: 'DB Error', detail: (error as any)?.message || '', life: 3000 })
@@ -49,19 +50,18 @@ async function loadMore(loadAll?: boolean) {
 }
 
 async function reload() {
-  lastItemId.value = 0
+  lastItem.value = null
   isEnd.value = null
   return loadMore()
 }
 
-function onNewItems(incoming: WrappedItem[], prevLastId: number) {
-  console.log(`get ${incoming.length} items from db. After id ${prevLastId}`)
-  if (prevLastId === 0 || !items.value?.length) {
-    items.value = incoming
-  } else {
-    items.value = [...items.value, ...incoming]
+function onNewItems(incoming: WrappedItem[], append: boolean) {
+  let newItems = incoming
+  if (append && items.value?.length) {
+    newItems = [...items.value, ...incoming]
   }
-  lastItemId.value = items.value.at(-1)?.dbId || 0
+  items.value = newItems
+  lastItem.value = items.value.at(-1) || null
 }
 
 watch(

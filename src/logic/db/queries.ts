@@ -4,6 +4,11 @@ import { db } from '~/logic/db'
 import { RedditObjectKind } from '~/reddit/reddit-types'
 import { WrappedItem } from '../wrapped-item'
 
+export type PaginationDetails = {
+  lastItem?: WrappedItem | null
+  limit?: number
+}
+
 export type SearchQuery = {
   author: string
   hideComments: boolean
@@ -24,10 +29,11 @@ export async function getItems(ids: string[]) {
 // https://dexie.org/docs/Collection/Collection.offset()#a-better-paging-approach
 export async function getPostsFromDB(
   queryDetails: SearchQuery,
-  lastId = 0,
-  limit = ITEMS_ON_PAGE,
+  pagination: PaginationDetails = {},
 ): Promise<WrappedItem[]> {
   const { query } = queryDetails
+  const { lastItem, limit = ITEMS_ON_PAGE } = pagination
+  const lastId = lastItem?.dbId || 0
   if (!query) {
     const items = await db.savedItems
       .where('_id')
