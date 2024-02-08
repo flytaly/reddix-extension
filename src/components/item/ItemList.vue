@@ -2,7 +2,7 @@
 import { useToast } from 'primevue/usetoast'
 
 import { setTag, setSubreddit, setAuthor } from '~/logic/search-store'
-import AddTagsInput from '~/components/AddTagsInput.vue'
+import EditItemTags from '~/components/tags/EditItemTags.vue'
 import ItemCard from '~/components/item/ItemCard.vue'
 import ItemCardCompact from '~/components/item/ItemCardCompact.vue'
 import ActionMenu from '~/components/item/ActionMenu.vue'
@@ -15,7 +15,7 @@ import VirtualList from '~/components/item/VirtualList.vue'
 const props = defineProps<{
   items: WrappedItem[]
   listType: 'list' | 'compact' | 'edit'
-  onTagsUpdate: (tags: string[], reditId: string) => void
+  onTagsUpdate: (updated: Record<number, string[]>) => void
   onDelete: (ids: number[]) => void
   onUnsave: (id: number) => Promise<void>
   onUpdate: (item: WrappedItem) => Promise<void>
@@ -154,7 +154,7 @@ const toggleTagMenu = (event: Event) => {
   </OverlayPanel>
 
   <OverlayPanel ref="tagMenuRef" class="px-0 py-0" :pt="{ content: 'p-2' }">
-    <AddTagsInput :reddit-id="redditId" @exit="onTagsUpdate" />
+    <EditItemTags v-if="selectedItem" :item="selectedItem" @exit="onTagsUpdate" />
   </OverlayPanel>
 </template>
 

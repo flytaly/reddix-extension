@@ -73,11 +73,11 @@ watch(
 
 watch(search, () => reload())
 
-const updateTags = (tags: string[], redditId: string) => {
-  if (!redditId) return
+const updateTags = (updates: Record<number, string[]>) => {
+  if (!Object.keys(updates).length) return
   items.value = items.value?.map((item) => {
-    if (item.redditId === redditId) {
-      item.tags = tags
+    if (updates[item.dbId]) {
+      item.tags = updates[item.dbId]
       return item.clone()
     }
     return item
@@ -162,8 +162,9 @@ const checkedItems = defineModel<number[]>({ default: [] })
       :items="items || []"
       @load-all="() => loadMore(true)"
       @delete="onDelete"
+      @tags-update="updateTags"
     >
-      <span v-if="isEnd === false">
+      <span v-if="isEnd === false" class="whitespace-nowrap">
         [<button
           class="underline decoration-dashed underline-offset-2"
           :disabled="isLoading"

@@ -66,7 +66,7 @@ export class WrappedItem {
   }
 
   get tags() {
-    return this.item._tags
+    return this.item._tags || []
   }
 
   update(updates: Partial<SavedRedditItem>) {
