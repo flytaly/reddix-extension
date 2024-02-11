@@ -1,6 +1,6 @@
-import Dexie, { IndexableType, PromiseExtended } from 'dexie'
+import Dexie, { IndexableType, PromiseExtended, WhereClause } from 'dexie'
 import { ITEMS_ON_PAGE } from '~/constants'
-import { db } from '~/logic/db'
+import { SavedRedditItem, db } from '~/logic/db'
 import { RedditObjectKind } from '~/reddit/reddit-types'
 import { WrappedItem } from '../wrapped-item'
 
@@ -18,11 +18,19 @@ export type SearchQuery = {
   tags: string[]
   title: string[]
   words: string[]
+  direction?: 'asc' | 'desc'
 }
 
 export async function getItems(ids: string[]) {
   const idsInDb = await db.savedItems.where('name').anyOf(ids).keys()
   return idsInDb as string[]
+}
+
+function getCollection(where: WhereClause<SavedRedditItem, IndexableType>, id: number, q: SearchQuery) {
+  if (q.direction === 'desc') {
+    return where.below(id || Infinity).reverse()
+  }
+  return where.above(id)
 }
 
 // with cursor based pagination
@@ -35,12 +43,12 @@ export async function getPostsFromDB(
   const { lastItem, limit = ITEMS_ON_PAGE } = pagination
   const lastId = lastItem?.dbId || 0
   if (!query) {
-    const items = await db.savedItems
-      .where('_id')
-      .above(lastId)
+    const where = db.savedItems.where('_id')
+    const items = await getCollection(where, lastId, queryDetails)
       .filter(makeFilterFn(queryDetails)) //
       .limit(limit)
       .toArray()
+
     return items.map((item) => new WrappedItem(item))
   }
   const res = await find(queryDetails, { limit, lastId })
@@ -66,6 +74,12 @@ export function find(
   details: SearchQuery,
   { lastId = 0, limit = ITEMS_ON_PAGE }: { lastId?: number; limit?: number } = {},
 ) {
+  let pagination = (item: SavedRedditItem) => item._id > lastId
+  if (details.direction === 'desc') {
+    lastId = lastId || Infinity
+    pagination = (item: SavedRedditItem) => item._id < lastId
+  }
+
   return db.transaction('r', db.savedItems, async () => {
     // Parallell search for all prefixes - just select resulting primary keys
     let dbQueries = [] as PromiseExtended<IndexableType[]>[]
@@ -107,23 +121,27 @@ export function find(
       return a.filter((k) => set.has(k))
     })
 
-    const items = await db.savedItems
+    let collection = db.savedItems
       .where(':id')
       .anyOf(reduced)
       .filter((item) => {
+        if (!pagination(item)) {
+          return false
+        }
         if (details.hidePosts) {
           return !item.name.startsWith(RedditObjectKind.link)
         }
         if (details.hideComments) {
           return !item.name.startsWith(RedditObjectKind.comment)
         }
-        // pagination
-        if (item._id <= lastId) {
-          return false
-        }
         return true
       })
-      .sortBy('_id')
+
+    if (details.direction === 'desc') {
+      collection = collection.reverse()
+    }
+
+    const items = await collection.sortBy('_id')
 
     return items.slice(0, limit)
   })

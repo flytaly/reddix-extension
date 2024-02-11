@@ -9,6 +9,7 @@ export const search = reactive<SearchQuery>({
   tags: [],
   title: [],
   words: [],
+  direction: 'asc',
 })
 
 export function clearSearch() {

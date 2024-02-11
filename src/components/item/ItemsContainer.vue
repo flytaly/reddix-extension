@@ -136,12 +136,14 @@ const viewOptions: { iconCmp: FunctionalComponent; value: viewType; title: strin
 ]
 const view = ref(viewOptions[0])
 
+const sortOverlay = ref()
+
 const checkedItems = defineModel<number[]>({ default: [] })
 </script>
 
 <template>
   <div class="flex flex-col items-center justify-center">
-    <div class="mx-auto my-2 flex w-full max-w-main-column justify-end gap-2 pr-4">
+    <div class="mx-auto my-2 flex w-full max-w-main-column items-center justify-end gap-2 pr-4">
       <SelectButton
         v-model="view"
         :options="viewOptions"
@@ -154,6 +156,11 @@ const checkedItems = defineModel<number[]>({ default: [] })
           <component :is="slotProps.option.iconCmp"></component>
         </template>
       </SelectButton>
+
+      <button class="ml-4" @click="sortOverlay.toggle">
+        <ph-sort-descending v-if="search.direction === 'desc'" class="h-5 w-5" />
+        <ph-sort-ascending v-else class="h-5 w-5" />
+      </button>
     </div>
 
     <MassEditMenu
@@ -186,4 +193,24 @@ const checkedItems = defineModel<number[]>({ default: [] })
       @scroll-end="async () => (isLoading ? undefined : loadMore())"
     />
   </div>
+  <OverlayPanel
+    ref="sortOverlay"
+    :pt="{
+      content: 'p-0 bg-surface-100 dark:bg-surface-800 rounded ring-1 ring-surface-400 dark:ring-surface-500',
+      root: 'z-100',
+    }"
+  >
+    <ul class="flex min-w-28 flex-col gap-2 py-2 text-base">
+      <li>
+        <button class="flex items-center gap-1 px-2" @click="search.direction = 'asc'">
+          <ph-sort-ascending :class="{ 'text-primary-500 dark:text-primary-400': search.direction === 'asc' }" />asc
+        </button>
+      </li>
+      <li>
+        <button class="flex items-center gap-1 px-2" @click="search.direction = 'desc'">
+          <ph-sort-descending :class="{ 'text-primary-500 dark:text-primary-400': search.direction === 'desc' }" />desc
+        </button>
+      </li>
+    </ul>
+  </OverlayPanel>
 </template>
