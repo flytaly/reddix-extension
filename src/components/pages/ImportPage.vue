@@ -23,9 +23,7 @@ async function update(e: Event) {
 
 <template>
   <MainLayout>
-    <main
-      class="mx-auto grid max-w-screen-md grid-cols-[auto_1fr] grid-rows-[auto_1fr] bg-surface-50 text-dark dark:bg-surface-900 dark:text-light"
-    >
+    <main class="mx-auto grid max-w-screen-md grid-cols-[auto_1fr] grid-rows-[auto_1fr]">
       <div />
       <h2 class="mt-8 flex justify-center">
         <span>Import</span>

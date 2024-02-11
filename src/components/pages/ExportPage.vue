@@ -7,6 +7,7 @@ import { SavedRedditItem, db, isComment, isPost } from '~/logic/db'
 import { filterProperties, type ExportedItem } from '~/logic/transform/export-utils'
 import { objectsToCsv } from '~/logic/transform/export-csv'
 import { getFullLink } from '~/logic/convert-link'
+import { stats } from '~/logic/options-stores'
 
 const selected = ref<'JSON' | 'CSV'>('CSV')
 
@@ -101,8 +102,7 @@ async function exportItems() {
 
 <template>
   <MainLayout>
-    <main class="grid grid-cols-[auto_1fr] bg-surface-50 text-dark dark:bg-surface-900 dark:text-light">
-      <div></div>
+    <main>
       <div class="mx-auto flex w-full max-w-[60rem] flex-col items-center p-4">
         <h2 class="flex items-center">
           <PhUploadBold class="mr-2 h-5 w-5" />
@@ -111,15 +111,16 @@ async function exportItems() {
         <div class="my-8 flex flex-col flex-wrap gap-3">
           <div class="flex items-center">
             <RadioButton v-model="selected" input-id="CSV" name="CSV" value="CSV" />
-            <label for="CSV" class="ml-2">CSV (only item id and link)</label>
+            <label for="CSV" class="ml-2">as CSV (only item id and link)</label>
           </div>
           <div class="flex items-center">
             <RadioButton v-model="selected" input-id="JSON" name="JSON" value="JSON" />
-            <label for="JSON" class="ml-2">JSON (full data)</label>
+            <label for="JSON" class="ml-2">as JSON (full data)</label>
           </div>
         </div>
-        <div>
-          <Button label="Export" @click="exportItems" />
+        <div class="space-y-1 text-center">
+          <div>{{ stats.total }} items</div>
+          <Button label="Export" :disabled="!stats.total" @click="exportItems" />
         </div>
       </div>
     </main>
