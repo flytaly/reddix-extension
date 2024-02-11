@@ -1,21 +1,20 @@
 <script setup lang="ts">
-import Button from 'primevue/button'
-
 import { state, stats } from '~/logic/options-stores'
 import AccountInput from '~/components/AccountInputBlock.vue'
 import TagList from '~/components/TagList.vue'
 import { userName } from '~/logic/storage'
 import { sendMessage } from 'webext-bridge/options'
+import FetchButton from '~/components/FetchButton.vue'
 
 const visible = ref(false)
 
-async function onSync() {
+async function onSync(category: ItemCategory = 'saved') {
   if (state.isFetching) return
   if (!userName.value || state.fetchError) {
     visible.value = true
     return
   }
-  const res = await sendMessage('fetch-saved', { username: userName.value }, 'background')
+  const res = await sendMessage('fetch-items', { username: userName.value, category }, 'background')
   state.isFetching = res.isFetching
 }
 </script>
@@ -37,20 +36,8 @@ async function onSync() {
       <TagList />
     </aside>
   </div>
-  <div class="mx-4 flex w-full px-6 md:hidden">
-    <Button
-      class="ml-auto text-primary-700 dark:text-primary-400"
-      size="small"
-      text
-      label="Sync saved items"
-      :disabled="state.isFetching"
-      @click="onSync"
-    >
-      <div class="flex w-full items-center gap-1">
-        <PhCloudArrowDownDuotone class="h-4 w-4" />
-        <span>{{ state.isFetching ? 'fetching...' : 'Fetch saved items' }}</span>
-      </div>
-    </Button>
+  <div class="mx-4 flex w-full justify-end px-6 md:hidden">
+    <FetchButton :is-fetching="state.isFetching" @fetch-items="onSync" />
     <Sidebar v-model:visible="visible">
       <AccountInput />
     </Sidebar>

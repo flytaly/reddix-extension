@@ -23,6 +23,10 @@ const getSavedUrl = (user: string) => {
   return `${baseUrl}/user/${user}/saved.json`
 }
 
+const getUpvotedUrl = (user: string) => {
+  return `${baseUrl}/user/${user}/upvoted.json`
+}
+
 const getInfoUrl = (ids: string[]) => {
   return `${baseUrl}/api/info.json?id=${ids.join(',')}`
 }
@@ -48,8 +52,18 @@ function isListing(data: RedditItemResponse | RedditError): data is RedditItemRe
 
 export type ResponseOrError<T = RedditItemResponse> = [T | null, null] | [null, string]
 
-export async function getPosts(username: string, onRateLimitsCb = onRateLimits, after = ''): Promise<ResponseOrError> {
-  const url = getSavedUrl(username)
+export type ItemFetchDetails = {
+  username: string
+  after?: string
+  category: ItemCategory
+}
+
+export async function fetchRedditItems(
+  { username, after, category }: ItemFetchDetails,
+  onRateLimitsCb = onRateLimits,
+): Promise<ResponseOrError> {
+  const url = category === 'upvoted' ? getUpvotedUrl(username) : getSavedUrl(username)
+
   const urlWithParams = url + '?limit=100' + (after ? `&after=${after}` : '')
 
   let listing: RedditItemResponse

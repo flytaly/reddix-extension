@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { sendMessage } from 'webext-bridge/options'
 
-import { userName } from '~/logic/storage'
-import { state } from '~/logic/options-stores'
+import FetchButton from '~/components/FetchButton.vue'
 import { getUserInfo } from '~/reddit/me'
+import { state } from '~/logic/options-stores'
+import { userName } from '~/logic/storage'
 
 const status = ref('')
 const isEdit = ref(false)
@@ -18,13 +19,13 @@ watch(
   { immediate: false },
 )
 
-async function fetchPosts() {
+async function fetchPosts(category: ItemCategory = 'saved') {
   if (state.isFetching) return
   if (!userName.value) {
     status.value = 'username is required'
     return
   }
-  const res = await sendMessage('fetch-saved', { username: userName.value }, 'background')
+  const res = await sendMessage('fetch-items', { username: userName.value, category }, 'background')
   state.isFetching = res.isFetching
 }
 
@@ -88,19 +89,7 @@ function showEdit() {
     </div>
 
     <div class="mt-2">
-      <Button
-        class="text-primary-700 dark:text-primary-400"
-        size="small"
-        text
-        label="Sync saved items"
-        :disabled="state.isFetching"
-        @click="fetchPosts"
-      >
-        <div class="flex w-full items-center gap-1">
-          <PhCloudArrowDownDuotone class="h-4 w-4" />
-          <span>{{ state.isFetching ? 'fetching...' : 'Fetch saved items' }}</span>
-        </div>
-      </Button>
+      <FetchButton :is-fetching="state.isFetching" @fetch-items="fetchPosts" />
     </div>
   </article>
 </template>

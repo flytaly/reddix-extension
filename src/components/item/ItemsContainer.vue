@@ -1,20 +1,20 @@
 k
 <script setup lang="ts">
-import { useToast } from 'primevue/usetoast'
 import PhList from '~icons/ph/list'
-import PhRows from '~icons/ph/rows'
 import PhNotePencil from '~icons/ph/note-pencil'
+import PhRows from '~icons/ph/rows'
+import type { FunctionalComponent } from 'vue'
+import { useToast } from 'primevue/usetoast'
 
 import ItemList from '~/components/item/ItemList.vue'
 import MassEditMenu from '~/components/item/MassEditMenu.vue'
 import { ITEMS_ON_PAGE } from '~/constants'
-import { getPostsFromDB } from '~/logic/db/queries'
+import { WrappedItem } from '~/logic/wrapped-item'
 import { deleteItems, updateItem } from '~/logic/db/mutations'
+import { getItemsInfo } from '~/reddit'
+import { getPostsFromDB } from '~/logic/db/queries'
 import { search } from '~/logic/search-store'
 import { state } from '~/logic/options-stores'
-import { getItemsInfo } from '~/reddit'
-import { FunctionalComponent } from 'vue'
-import { WrappedItem } from '~/logic/wrapped-item'
 
 const lastItem = shallowRef<WrappedItem | null>(null)
 const isEnd = ref<boolean | null>(null)

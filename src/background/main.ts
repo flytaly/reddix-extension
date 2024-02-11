@@ -1,6 +1,6 @@
 import { onMessage, sendMessage } from 'webext-bridge/background'
 import { savePosts } from '~/logic/db/mutations'
-import { getPosts, onRateLimits } from '~/reddit'
+import { fetchRedditItems, onRateLimits } from '~/reddit'
 import devSetup from './dev-setup'
 import { state, type BgState } from './bg-state'
 import { RateLimits } from '~/reddit/rate-limits'
@@ -17,7 +17,7 @@ function setStateAndNotify(updates: Partial<BgState>) {
   sendMessage('state-update', state, { context: 'options', tabId: -1 })
 }
 
-async function fetchItems(username: string) {
+async function fetchItems(username: string, category: ItemCategory) {
   let rateLimits: RateLimits | undefined
   let after: string = ''
 
@@ -29,7 +29,7 @@ async function fetchItems(username: string) {
   let end = false
   while (!end) {
     end = true
-    const [listing, errMsg] = await getPosts(username, onRateLimitsWrap, after)
+    const [listing, errMsg] = await fetchRedditItems({ username, category, after }, onRateLimitsWrap)
     if (errMsg) {
       console.error(errMsg)
       setStateAndNotify({ fetchError: errMsg })
@@ -39,7 +39,7 @@ async function fetchItems(username: string) {
       break
     }
 
-    const savedNew = await savePosts(listing)
+    const savedNew = await savePosts(listing, category)
     setStateAndNotify({
       loaded: state.loaded + listing.data.children.length,
       savedNew: state.savedNew + (savedNew || 0),
@@ -53,17 +53,17 @@ async function fetchItems(username: string) {
   }
 }
 
-async function startFetching(username: string) {
+async function startFetching(username: string, category: ItemCategory) {
   if (state.isFetching) {
     return
   }
   setStateAndNotify({ isFetching: true, fetchError: '', loaded: 0, savedNew: 0 })
-  await fetchItems(username)
+  await fetchItems(username, category)
   setStateAndNotify({ isFetching: false })
 }
 
-onMessage('fetch-saved', async (msg) => {
-  void startFetching(msg.data.username)
+onMessage('fetch-items', async (msg) => {
+  void startFetching(msg.data.username, msg.data.category)
   return state
 })
 
