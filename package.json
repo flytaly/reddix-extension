@@ -35,7 +35,7 @@
     "dexie": "^3.2.4",
     "jszip": "^3.10.1",
     "lodash-es": "^4.17.21",
-    "primevue": "^3.45.0",
+    "primevue": "^3.48.1",
     "vue-router": "^4.2.5",
     "vue-virtual-scroller": "2.0.0-beta.8"
   },
