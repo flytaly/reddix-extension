@@ -59,6 +59,9 @@ type RedditItemWithName = { name: string }
 
 function makeFilterFn(details: SearchQuery) {
   return (item: RedditItemWithName) => {
+    if (details.hidePosts && details.hideComments) {
+      return false
+    }
     if (details.hidePosts) {
       return !item.name.startsWith(RedditObjectKind.link)
     }
@@ -79,6 +82,7 @@ export function find(
     lastId = lastId || Infinity
     pagination = (item: SavedRedditItem) => item._id < lastId
   }
+  const filter = makeFilterFn(details)
 
   return db.transaction('r', db.savedItems, async () => {
     // Parallell search for all prefixes - just select resulting primary keys
@@ -128,13 +132,7 @@ export function find(
         if (!pagination(item)) {
           return false
         }
-        if (details.hidePosts) {
-          return !item.name.startsWith(RedditObjectKind.link)
-        }
-        if (details.hideComments) {
-          return !item.name.startsWith(RedditObjectKind.comment)
-        }
-        return true
+        return filter(item)
       })
 
     if (details.direction === 'desc') {

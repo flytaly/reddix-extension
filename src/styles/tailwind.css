@@ -39,21 +39,25 @@
 
 @layer components {
   .tag-toggle {
-    @apply rounded-md bg-primary-500 px-2 py-1 font-semibold text-white dark:bg-primary-400 dark:text-black;
+    @apply rounded-md bg-primary-500 px-1 py-0.5 font-semibold text-white dark:bg-primary-400 dark:text-black;
 
-    &:focus-within,
+    &:focus-within {
+      @apply ring-1 ring-primary-500 ring-offset-1 dark:ring-primary-600;
+    }
     &:hover {
-      @apply bg-primary-300 bg-opacity-70 text-gray-800 ring ring-primary-200
-           dark:bg-primary-300 dark:bg-opacity-70 dark:text-white dark:ring-primary-600;
+      @apply bg-primary-300 bg-opacity-70 text-gray-800
+             dark:bg-primary-300 dark:bg-opacity-70 dark:text-white;
     }
   }
 
   .tag-toggle-off {
     @apply bg-surface-200 text-gray-500 dark:bg-surface-700 dark:text-gray-300;
 
-    &:focus-within,
+    &:focus-within {
+      @apply ring-gray-400 dark:ring-gray-600;
+    }
     &:hover {
-      @apply bg-surface-300 text-gray-800  dark:bg-surface-800 dark:text-gray-200;
+      @apply bg-surface-300 text-gray-800 dark:bg-surface-800 dark:text-gray-200;
     }
   }
 

@@ -25,6 +25,15 @@ watch(commentsOn, (on) => {
   search.hidePosts = !postsOn.value
   search.hideComments = !commentsOn.value
 })
+
+const options = ['Posts', 'Comments']
+
+const filter = ref([...options])
+
+watch(filter, (newVal) => {
+  search.hidePosts = !newVal.includes('Posts')
+  search.hideComments = !newVal.includes('Comments')
+})
 </script>
 
 <template>
@@ -41,14 +50,24 @@ watch(commentsOn, (on) => {
         @input="update"
       />
       <div class="mt-2 flex items-center gap-2">
-        <label class="tag-toggle" :class="{ 'tag-toggle-off': !postsOn }">
-          <input v-model="postsOn" type="checkbox" class="h-0 w-0" />
-          <span>Posts</span>
-        </label>
-        <label class="tag-toggle" :class="{ 'tag-toggle-off': !commentsOn }">
-          <input v-model="commentsOn" type="checkbox" class="h-0 w-0" />
-          <span>Comments</span>
-        </label>
+        <div class="card flex justify-center">
+          <SelectButton
+            v-model="filter"
+            :pt="{
+              root: 'rounded hover:bg-surface-300 dark:hover:bg-surface-700',
+              button: ({ context }) => ({
+                class: [
+                  'm-0.5 !py-0.5 !px-1 !rounded !text-xs bg-surface-100 dark:bg-surface-800',
+                  { 'text-dark dark:text-light !bg-primary-200 dark:!bg-primary-700': context.active },
+                ],
+              }),
+            }"
+            :pt-options="{ mergeProps: true }"
+            :options="options"
+            multiple
+            aria-labelledby="multiple"
+          />
+        </div>
       </div>
     </div>
   </div>
