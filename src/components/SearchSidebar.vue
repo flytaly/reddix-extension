@@ -22,7 +22,7 @@ async function onSync(category: ItemCategory = 'saved') {
 <template>
   <div class="relative h-full w-64">
     <aside
-      class="absolute inset-0 mr-auto hidden h-full max-h-full grid-rows-[auto_auto_1fr] content-start gap-4 overflow-hidden pb-2 md:grid"
+      class="absolute mt-4 inset-0 mr-auto hidden h-full max-h-full grid-rows-[auto_auto_1fr] content-start gap-4 overflow-hidden pb-2 md:grid"
     >
       <div class="mx-2 w-60">
         <AccountInput />
