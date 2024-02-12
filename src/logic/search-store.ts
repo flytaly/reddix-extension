@@ -4,6 +4,8 @@ export const search = reactive<SearchQuery>({
   author: '',
   hideComments: false,
   hidePosts: false,
+  hideSaved: false,
+  hideUpvoted: false,
   query: '',
   subreddit: '',
   tags: [],

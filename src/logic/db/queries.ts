@@ -11,8 +11,10 @@ export type PaginationDetails = {
 
 export type SearchQuery = {
   author: string
-  hideComments: boolean
-  hidePosts: boolean
+  hideComments?: boolean
+  hidePosts?: boolean
+  hideSaved?: boolean
+  hideUpvoted?: boolean
   query: string
   subreddit: string
   tags: string[]
@@ -55,18 +57,19 @@ export async function getPostsFromDB(
   return res.map((item) => new WrappedItem(item))
 }
 
-type RedditItemWithName = { name: string }
-
 function makeFilterFn(details: SearchQuery) {
-  return (item: RedditItemWithName) => {
-    if (details.hidePosts && details.hideComments) {
+  return (item: SavedRedditItem) => {
+    if (details.hideSaved && item._category.includes('saved')) {
       return false
     }
-    if (details.hidePosts) {
-      return !item.name.startsWith(RedditObjectKind.link)
+    if (details.hideUpvoted && item._category.includes('upvoted')) {
+      return false
     }
-    if (details.hideComments) {
-      return !item.name.startsWith(RedditObjectKind.comment)
+    if (details.hidePosts && item.name.startsWith(RedditObjectKind.link)) {
+      return false
+    }
+    if (details.hideComments && item.name.startsWith(RedditObjectKind.comment)) {
+      return false
     }
 
     return true

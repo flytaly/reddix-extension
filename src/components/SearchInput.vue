@@ -26,22 +26,69 @@ watch(commentsOn, (on) => {
   search.hideComments = !commentsOn.value
 })
 
-const options = ['Posts', 'Comments']
+const itemTypes = ['posts', 'comments']
+const filterTypes = ref([...itemTypes])
 
-const filter = ref([...options])
+watch(filterTypes, (val) => {
+  search.hidePosts = !val.includes('posts')
+  search.hideComments = !val.includes('comments')
+})
 
-watch(filter, (newVal) => {
-  search.hidePosts = !newVal.includes('Posts')
-  search.hideComments = !newVal.includes('Comments')
+const itemCategories: ItemCategory[] = ['saved', 'upvoted']
+const filterCategories = ref([...itemCategories])
+
+watch(filterCategories, (vals) => {
+  search.hideSaved = !vals.includes('saved')
+  search.hideUpvoted = !vals.includes('upvoted')
 })
 </script>
 
 <template>
   <div class="w-full max-w-main-column">
     <div class="flex flex-col">
-      <label for="search-input">
-        <h2 class="mr-2 font-mono text-xl font-semibold text-primary-600 dark:text-primary-400">Search</h2>
-      </label>
+      <div class="mt-2 flex items-center gap-8">
+        <label for="search-input">
+          <h2 class="mr-2 font-mono text-xl font-semibold text-primary-600 dark:text-primary-400">Search</h2>
+        </label>
+        <SelectButton
+          v-model="filterCategories"
+          :pt="{
+            root: 'rounded hover:dark:ring-1 dark:ring-sky-900 hover:bg-sky-100 hover:dark:bg-transparent',
+            button: ({ context }) => ({
+              class: [
+                'm-0.5 !py-0.5 !px-1 !rounded !text-xs bg-surface-100 dark:border dark:border-surface-700 dark:bg-surface-800',
+                {
+                  'text-dark/80 dark:text-sky-500 !bg-sky-400/20 dark:border-sky-600 dark:!bg-transparent':
+                    context.active,
+                },
+              ],
+            }),
+          }"
+          :pt-options="{ mergeProps: true }"
+          :options="itemCategories"
+          multiple
+          aria-labelledby="multiple"
+        />
+        <SelectButton
+          v-model="filterTypes"
+          :pt="{
+            root: 'rounded hover:dark:ring-1 dark:ring-amber-900 hover:bg-amber-100 hover:dark:bg-transparent',
+            button: ({ context }) => ({
+              class: [
+                'm-0.5 !py-0.5 !px-1 !rounded !text-xs bg-surface-100 dark:border dark:border-surface-700 dark:bg-surface-800',
+                {
+                  'text-dark/70 bg-orange-200/80 dark:!bg-transparent dark:border-amber-500 dark:!text-amber-500':
+                    context.active,
+                },
+              ],
+            }),
+          }"
+          :pt-options="{ mergeProps: true }"
+          :options="itemTypes"
+          multiple
+          aria-labelledby="multiple"
+        />
+      </div>
       <InputText
         id="search-input"
         :value="search.query"
@@ -49,26 +96,6 @@ watch(filter, (newVal) => {
         autofocus
         @input="update"
       />
-      <div class="mt-2 flex items-center gap-2">
-        <div class="card flex justify-center">
-          <SelectButton
-            v-model="filter"
-            :pt="{
-              root: 'rounded hover:bg-surface-300 dark:hover:bg-surface-700',
-              button: ({ context }) => ({
-                class: [
-                  'm-0.5 !py-0.5 !px-1 !rounded !text-xs bg-surface-100 dark:bg-surface-800',
-                  { 'text-dark dark:text-light !bg-primary-200 dark:!bg-primary-700': context.active },
-                ],
-              }),
-            }"
-            :pt-options="{ mergeProps: true }"
-            :options="options"
-            multiple
-            aria-labelledby="multiple"
-          />
-        </div>
-      </div>
     </div>
   </div>
 </template>
