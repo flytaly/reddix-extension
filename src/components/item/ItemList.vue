@@ -94,7 +94,7 @@ const toggleTagMenu = (event: Event) => {
           @author-click="setAuthor"
         >
           <template #start>
-            <div class="flex h-full items-center">
+            <div class="relative flex h-full items-center">
               <Checkbox
                 v-model="checked"
                 :pt="{
