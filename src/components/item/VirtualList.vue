@@ -22,9 +22,14 @@ const onResize = () => {
   hasScroll.value = el.scrollHeight > el.clientHeight
 }
 
+defineExpose({
+  onResize,
+})
+
 onMounted(() => {
   document.body.style.overflowY = 'hidden'
 })
+
 onUnmounted(() => {
   document.body.style.overflowY = ''
 })

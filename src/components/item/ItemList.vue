@@ -73,10 +73,17 @@ const toggleTagMenu = (event: Event) => {
   redditId.value = li?.dataset.redditName || ''
   tagMenuRef.value.toggle(event)
 }
+
+const virualList = ref<InstanceType<typeof VirtualList>>()
+
+watch(()=>props.listType, ()=>{
+    virualList.value?.onResize()
+})
+
 </script>
 
 <template>
-  <VirtualList :items="items" @scroll-end="emit('scroll-end')">
+  <VirtualList ref="virualList" :items="items" @scroll-end="emit('scroll-end')">
     <template #item="{ item }">
       <div :data-reddit-name="item.redditId" class="mx-auto max-w-main-column">
         <ItemCardCompact v-if="listType === 'compact'" :key="item.dbId" :item="item">
