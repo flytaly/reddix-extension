@@ -77,7 +77,7 @@ watch(filterCategories, (vals) => {
               class: [
                 'm-0.5 !py-0.5 !px-1 !rounded !text-xs bg-surface-100 dark:border dark:border-surface-700 dark:bg-surface-800',
                 {
-                  'text-dark/70 bg-orange-200/80 dark:!bg-transparent dark:border-amber-500 dark:!text-amber-500':
+                  'text-dark/70 bg-orange-200/80 !bg-amber-100 dark:!bg-transparent dark:border-amber-500 dark:!text-amber-500':
                     context.active,
                 },
               ],
