@@ -26,12 +26,32 @@ defineExpose({
   onResize,
 })
 
+const listener = (ev: KeyboardEvent) => {
+  if (!ev.shiftKey) return
+  switch (ev.key) {
+    case 'ArrowUp':
+      ;(scroller.value.$el as HTMLElement).scrollBy(0, -height.value * 0.1)
+      break
+    case 'ArrowDown':
+      ;(scroller.value.$el as HTMLElement).scrollBy(0, height.value * 0.1)
+      break
+    case 'PageUp':
+      ;(scroller.value.$el as HTMLElement).scrollBy(0, -height.value * 0.9)
+      break
+    case 'PageDown':
+      ;(scroller.value.$el as HTMLElement).scrollBy(0, height.value * 0.9)
+      break
+  }
+}
+
 onMounted(() => {
   document.body.style.overflowY = 'hidden'
+  document.body.addEventListener('keydown', listener)
 })
 
 onUnmounted(() => {
   document.body.style.overflowY = ''
+  document.body.removeEventListener('keydown', listener)
 })
 </script>
 
