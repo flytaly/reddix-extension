@@ -55,7 +55,7 @@ const expandPostOrPreview = (event: Event) => {
     <div class="flex h-full w-6 flex-col">
       <button
         v-if="togglePreview || overflowen || expanded"
-        class="h-full w-full group-hover:bg-surface-100 group-hover:hover:bg-surface-200 group-hover:dark:bg-surface-800 group-hover:hover:dark:bg-surface-700"
+        class="btn h-full w-full group-hover:bg-surface-100 group-hover:hover:bg-surface-200 group-hover:dark:bg-surface-800 group-hover:hover:dark:bg-surface-700"
         title="Expand or Collapse the item"
         @click="expandPostOrPreview"
       />
@@ -109,13 +109,13 @@ const expandPostOrPreview = (event: Event) => {
         ></span>
         <button
           v-if="overflowen && !expanded"
-          class="mask absolute bottom-0 left-0 flex w-full items-center justify-center gap-1 bg-white pt-2 dark:bg-surface-900"
+          class="btn mask absolute bottom-0 left-0 flex w-full items-center justify-center gap-1 bg-white pt-2 dark:bg-surface-900"
           @click="expanded = true"
         >
           <PhArrowsOutSimple />
           expand
         </button>
-        <button v-if="expanded" class="flex w-full items-center justify-center gap-1" @click="expanded = false">
+        <button v-if="expanded" class="btn flex w-full items-center justify-center gap-1" @click="expanded = false">
           <PhArrowsOutSimple />
           collapse
         </button>
@@ -124,7 +124,7 @@ const expandPostOrPreview = (event: Event) => {
       <!-- Footer -->
       <footer class="item-footer dimmed-1 mt-1 flex items-center gap-2 pt-0.5 text-xs">
         <ul class="mr-auto flex flex-wrap gap-1">
-          <button class="mr-1 h-3 w-3 shrink-0" title="Edit tags" @click="onAddTags">
+          <button class="btn mr-1 h-3 w-3 shrink-0" title="Edit tags" @click="onAddTags">
             <PhTagDuotone />
           </button>
           <li v-for="tag in item.tags" :key="tag">

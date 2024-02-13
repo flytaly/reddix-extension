@@ -88,7 +88,7 @@ watch(()=>props.listType, ()=>{
       <div :data-reddit-name="item.redditId" class="mx-auto max-w-main-column">
         <ItemCardCompact v-if="listType === 'compact'" :key="item.dbId" :item="item">
           <template #end>
-            <button class="flex h-full items-center" title="Actions" aria-haspopup="true" @click="toggleActionMenu">
+            <button class="btn flex h-full items-center" title="Actions" aria-haspopup="true" @click="toggleActionMenu">
               <PhDotsThreeBold class="h-auto w-5" />
             </button>
           </template>
@@ -119,7 +119,7 @@ watch(()=>props.listType, ()=>{
             </div>
           </template>
           <template #end>
-            <button class="flex h-full items-center" title="Actions" aria-haspopup="true" @click="toggleActionMenu">
+            <button class="btn flex h-full items-center" title="Actions" aria-haspopup="true" @click="toggleActionMenu">
               <PhDotsThreeBold class="h-auto w-5" />
             </button>
           </template>
@@ -134,7 +134,7 @@ watch(()=>props.listType, ()=>{
           @author-click="setAuthor"
         >
           <template #footer-end>
-            <button class="ml-2" title="Actions" aria-haspopup="true" @click="toggleActionMenu">
+            <button class="btn ml-2" title="Actions" aria-haspopup="true" @click="toggleActionMenu">
               <PhDotsThreeBold class="h-auto w-5" />
             </button>
           </template>

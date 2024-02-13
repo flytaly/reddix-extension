@@ -157,7 +157,7 @@ const checkedItems = defineModel<number[]>({ default: [] })
         </template>
       </SelectButton>
 
-      <button class="ml-4" @click="sortOverlay.toggle">
+      <button class="btn ml-4" @click="sortOverlay.toggle">
         <ph-sort-descending v-if="search.direction === 'desc'" class="h-5 w-5" />
         <ph-sort-ascending v-else class="h-5 w-5" />
       </button>
@@ -173,7 +173,7 @@ const checkedItems = defineModel<number[]>({ default: [] })
     >
       <span v-if="isEnd === false" class="whitespace-nowrap">
         [<button
-          class="underline decoration-dashed underline-offset-2"
+          class="btn underline decoration-dashed underline-offset-2"
           :disabled="isLoading"
           @click="() => loadMore(true)"
         >
@@ -202,12 +202,12 @@ const checkedItems = defineModel<number[]>({ default: [] })
   >
     <ul class="flex min-w-28 flex-col gap-2 py-2 text-base">
       <li>
-        <button class="flex items-center gap-1 px-2" @click="search.direction = 'asc'">
+        <button class="btn flex items-center gap-1 px-2" @click="search.direction = 'asc'">
           <ph-sort-ascending :class="{ 'text-primary-500 dark:text-primary-400': search.direction === 'asc' }" />asc
         </button>
       </li>
       <li>
-        <button class="flex items-center gap-1 px-2" @click="search.direction = 'desc'">
+        <button class="btn flex items-center gap-1 px-2" @click="search.direction = 'desc'">
           <ph-sort-descending :class="{ 'text-primary-500 dark:text-primary-400': search.direction === 'desc' }" />desc
         </button>
       </li>

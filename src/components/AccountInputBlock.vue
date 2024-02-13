@@ -52,7 +52,7 @@ function showEdit() {
     <div v-if="!showEdit()" class="flex w-full items-center gap-2 text-surface-400">
       <PhRedditLogoDuotone class="h-4 w-4 text-surface-400 dark:text-surface-400" />
       <span>{{ userName }}</span>
-      <button title="edit username" class="icon-button ml-auto" @click="isEdit = true">
+      <button title="edit username" class="btn ml-auto" @click="isEdit = true">
         <PhPencilSimpleDuotone class="h-4 w-4" />
       </button>
     </div>
@@ -74,7 +74,7 @@ function showEdit() {
             @input="isEdit = true"
           />
           <button
-            class="icon-button absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2"
+            class="btn absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2"
             title="fetch current login username from reddit"
             :disabled="state.isFetching || fetchingUsername"
             @click="fetchUsername"
@@ -97,8 +97,5 @@ function showEdit() {
 <style lang="postcss" scoped>
 .error {
   @apply ring-red-600 dark:ring-red-300;
-}
-.icon-button {
-  @apply text-surface-400 hover:text-primary-700 dark:text-surface-500 hover:dark:text-primary-400;
 }
 </style>

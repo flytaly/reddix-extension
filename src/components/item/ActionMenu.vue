@@ -95,4 +95,8 @@ const updateItem = async () => {
   </ul>
 </template>
 
-<style lang="postcss" scoped></style>
+<style lang="postcss" scoped>
+button {
+  @apply text-dark hover:text-primary-500 active:text-primary-400 dark:text-light dark:hover:text-primary-400 dark:active:text-primary-300;
+}
+</style>

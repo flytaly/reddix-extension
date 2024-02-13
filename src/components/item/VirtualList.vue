@@ -75,7 +75,7 @@ onUnmounted(() => {
 
       <template #after>
         <div v-if="hasScroll" class="mt-4 max-w-full">
-          <button class="group mx-auto flex gap-1" @click="scroller.scrollToItem(0)">
+          <button class="btn group mx-auto flex gap-1" @click="scroller.scrollToItem(0)">
             Scroll to the top<ph-arrow-up class="transition-transform group-hover:-translate-y-[2px]" />
           </button>
         </div>

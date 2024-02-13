@@ -63,19 +63,19 @@ const accSidebarOn = ref(false)
       </template>
       <template #end>
         <div class="flex gap-1">
-          <button title="Toggle theme" @click="toggleTheme">
+          <button class="btn" title="Toggle theme" @click="toggleTheme">
             <ph-sun v-if="!isDark" class="h-5 w-5" />
             <ph-moon v-else class="h-5 w-5" />
           </button>
           <button
-            class="flex w-max items-center rounded px-1 py-0.5 text-sm text-surface-600 md:hidden dark:text-surface-400"
+            class="btn flex w-max items-center rounded px-1 py-0.5 text-sm text-surface-600 md:hidden dark:text-surface-400"
             title="show tags"
             @click="tagSidebarOn = true"
           >
             <ph-hash class="h-5 w-5 flex-shrink-0" />
           </button>
           <button
-            class="flex w-max items-center rounded px-1 py-0.5 text-sm text-surface-600 md:hidden dark:text-surface-400"
+            class="btn flex w-max items-center rounded px-1 py-0.5 text-sm text-surface-600 md:hidden dark:text-surface-400"
             title="account"
             @click="accSidebarOn = true"
           >

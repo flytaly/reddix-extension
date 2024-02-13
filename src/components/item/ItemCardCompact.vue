@@ -28,7 +28,7 @@ const toggle = () => {
       <div class="flex h-full w-6 flex-col">
         <button
           v-if="expandable"
-          class="h-full w-full group-hover:bg-surface-100 group-hover:hover:bg-surface-200 group-hover:dark:bg-surface-800 group-hover:hover:dark:bg-surface-700"
+          class="btn h-full w-full group-hover:bg-surface-100 group-hover:hover:bg-surface-200 group-hover:dark:bg-surface-800 group-hover:hover:dark:bg-surface-700"
           title="Expand or Collapse the item"
           @click="toggle"
         />
@@ -80,7 +80,7 @@ const toggle = () => {
           :class="{ 'max-h-24': !expanded }"
           v-html="item.body"
         ></span>
-        <button class="flex w-full items-center justify-center gap-1" @click="expanded = false">
+        <button class="btn flex w-full items-center justify-center gap-1" @click="expanded = false">
           <PhArrowsOutSimple />
           collapse
         </button>
