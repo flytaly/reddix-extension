@@ -23,16 +23,26 @@ const re = new RegExp(
   'ui',
 )
 
+type VoteDirection = 'up' | 'down' | 'none'
+
 export function extractIds(rows: string[][]) {
-  let idIdx = rows[0].findIndex((col) => col === 'id')
-  let linkIdx = rows[0].findIndex((col) => col === 'permalink')
+  const idIdx = rows[0].findIndex((col) => col === 'id')
+  const linkIdx = rows[0].findIndex((col) => col === 'permalink')
+
+  const voteDirectionIdx = rows[0].findIndex((col) => col === 'direction')
+  const category: ItemCategory = voteDirectionIdx === -1 ? 'saved' : 'upvoted'
+
   const postsIds = [] as string[]
   const commentsIds = [] as string[]
 
   rows.forEach((row) => {
     const id = row[idIdx]
     const permalink = row[linkIdx]
+    const voteDir: VoteDirection | '' = category === 'upvoted' ? (row[voteDirectionIdx] as VoteDirection) : ''
     if (!id || !permalink) return
+    if (category === 'upvoted' && voteDir !== 'up') {
+      return
+    }
     if (id.startsWith(RedditObjectKind.link + '_')) {
       postsIds.push(id)
       return
@@ -57,5 +67,6 @@ export function extractIds(rows: string[][]) {
   return {
     postsIds,
     commentsIds,
+    category,
   }
 }

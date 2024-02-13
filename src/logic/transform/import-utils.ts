@@ -11,9 +11,9 @@ import { type RateLimits } from '~/reddit/rate-limits'
 import { RedditCommentData, RedditPostData } from '~/reddit/reddit-types'
 import { SavedRedditItem, isComment, isPost } from '../db'
 
-export async function fetchInfo(ids: string[]) {
+export async function fetchInfo(ids: string[], category: ItemCategory = 'saved') {
   if (!ids.length) return
-  addMessage(`Started getting information about the posts`)
+  addMessage(`Started getting information about the ${category} items`)
   const take = IMPORT_TAKE
   let rateLimits: RateLimits = {}
   const onRateLimitsWrap = (rl: RateLimits) => {
@@ -35,7 +35,7 @@ export async function fetchInfo(ids: string[]) {
       return
     }
     info.data.children.forEach((item) => idsSet.delete(item.data?.name))
-    const saved = (await savePosts(info)) || 0
+    const saved = (await savePosts(info, category)) || 0
     addMessage(`Added ${saved} items`)
     imported += saved
     batch = ids.slice(i, i + take)
@@ -46,7 +46,7 @@ export async function fetchInfo(ids: string[]) {
   }
 }
 
-export async function importCSV(file: File) {
+export async function parseCSV(file: File) {
   const content = await file.text()
   const rows = csvStringToArray(content)
   if (!rows?.length) return
@@ -60,7 +60,7 @@ export async function importCSV(file: File) {
     return
   }
 
-  const { postsIds, commentsIds } = extractIds(rows)
+  const { postsIds, commentsIds, category } = extractIds(rows)
 
   addMessage(`[${file.name}] contains ${postsIds.length} posts, ${commentsIds.length} comments`)
 
@@ -68,21 +68,18 @@ export async function importCSV(file: File) {
   const commentsInDb = new Set(commentsIds.length > 0 ? await getItems(commentsIds) : [])
 
   if (postsInDb.size > 0) {
-    addMessage(`Found ${postsInDb.size} posts in the database`)
+    addMessage(`• ${postsInDb.size} existed posts in the database`)
   }
   if (commentsInDb.size > 0) {
-    addMessage(`Found ${commentsInDb.size} comments in the database`)
+    addMessage(`• ${commentsInDb.size} existed comments in the database`)
   }
 
   const filteredPosts = postsIds.filter((id) => !postsInDb.has(id))
   const filteredComments = commentsIds.filter((id) => !commentsInDb.has(id))
-  const items = filteredPosts.concat(filteredComments)
+  const newItems = filteredPosts.concat(filteredComments)
 
-  addMessage(`${items.length} new items`)
-
-  if (items.length) {
-    await fetchInfo(items)
-  }
+  addMessage(`• ${newItems.length} new items`)
+  return { newItems, category }
 }
 
 const commonProperties: Array<keyof RedditPostData & keyof RedditCommentData> = [
