@@ -36,13 +36,39 @@ async function processItems(onPost: (item: SavedRedditItem) => void, onComment: 
 
 const getDate = () => new Date().toISOString().split('T')[0].replace(/-/g, '_')
 
+function isSaved(obj: SavedRedditItem) {
+  if (!obj._category?.length) return true
+  return obj._category.includes('saved')
+}
+
+function isUpvoted(obj: SavedRedditItem) {
+  if (!obj._category?.length) return false
+  return obj._category.includes('upvoted')
+}
+
 async function exportJson() {
   const savedPosts: ExportedItem[] = []
+  const upvotedPosts: ExportedItem[] = []
   const savedComments: ExportedItem[] = []
+  const upvotedComments: ExportedItem[] = []
 
   await processItems(
-    (obj) => savedPosts.push(filterProperties(obj)),
-    (obj) => savedComments.push(filterProperties(obj)),
+    (obj) => {
+      if (isSaved(obj)) {
+        savedPosts.push(filterProperties(obj))
+      }
+      if (isUpvoted(obj)) {
+        upvotedPosts.push(filterProperties(obj))
+      }
+    },
+    (obj) => {
+      if (isSaved(obj)) {
+        savedComments.push(filterProperties(obj))
+      }
+      if (isUpvoted(obj)) {
+        upvotedComments.push(filterProperties(obj))
+      }
+    },
   )
 
   const zip = new JSZip()
@@ -53,23 +79,41 @@ async function exportJson() {
     zip.file(name, blob, { compression: 'DEFLATE' })
   }
 
-  addFile('saved_posts.json', savedPosts)
-  addFile('saved_comments.json', savedComments)
+  savedPosts.length && addFile('saved_posts.json', savedPosts)
+  savedComments.length && addFile('saved_comments.json', savedComments)
+  upvotedPosts.length && addFile('upvoted_posts.json', upvotedPosts)
+  upvotedComments.length && addFile('upvoted_comments.json', upvotedComments)
 
   const blob = await zip.generateAsync({ type: 'blob' })
 
   downloadBlob(blob, `reddit_saved_items_(json)_${getDate()}.zip`)
 }
 
-type CSVRows = { id: string; permalink: string }
+type CSVRows = { id: string; permalink: string } | { id: string; permalink: string; direction: 'up' | 'down' | 'none' }
 
 async function exportCsv() {
   const savedPosts: CSVRows[] = []
   const savedComments: CSVRows[] = []
+  const upvotedPosts: CSVRows[] = []
+  const upvotedComments: CSVRows[] = []
 
   await processItems(
-    (obj) => savedPosts.push({ id: obj.name, permalink: getFullLink(obj.permalink) }),
-    (obj) => savedComments.push({ id: obj.name, permalink: getFullLink(obj.permalink) }),
+    (obj) => {
+      if (isSaved(obj)) {
+        savedPosts.push({ id: obj.name, permalink: getFullLink(obj.permalink) })
+      }
+      if (isUpvoted(obj)) {
+        upvotedPosts.push({ id: obj.name, permalink: getFullLink(obj.permalink), direction: 'up' })
+      }
+    },
+    (obj) => {
+      if (isSaved(obj)) {
+        savedComments.push({ id: obj.name, permalink: getFullLink(obj.permalink) })
+      }
+      if (isUpvoted(obj)) {
+        upvotedComments.push({ id: obj.name, permalink: getFullLink(obj.permalink), direction: 'up' })
+      }
+    },
   )
 
   const zip = new JSZip()
@@ -80,8 +124,10 @@ async function exportCsv() {
     zip.file(name, blob, { compression: 'DEFLATE' })
   }
 
-  addFile('saved_posts.csv', savedPosts)
-  addFile('saved_comments.csv', savedComments)
+  savedPosts.length && addFile('saved_posts.csv', savedPosts)
+  savedComments.length && addFile('saved_comments.csv', savedComments)
+  upvotedPosts.length && addFile('post_votes.csv', upvotedPosts)
+  upvotedComments.length && addFile('comment_votes.csv', upvotedComments)
 
   const blob = await zip.generateAsync({ type: 'blob' })
 
