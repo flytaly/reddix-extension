@@ -53,12 +53,11 @@ watch(filterCategories, (vals) => {
         <SelectButton
           v-model="filterCategories"
           :pt="{
-            root: 'rounded hover:dark:ring-1 dark:ring-sky-900 hover:bg-sky-100 hover:dark:bg-transparent',
             button: ({ context }) => ({
               class: [
-                'm-0.5 !py-0.5 !px-1 !rounded !text-xs bg-surface-100 dark:border dark:border-surface-700 dark:bg-surface-800',
+                'm-0.5 !py-0.5 !px-1 !rounded !text-xs text-dark/60 dark:text-light/60 bg-surface-100 border border-surface-300 dark:border-surface-700 dark:bg-surface-800',
                 {
-                  'text-dark/80 dark:text-sky-500 !bg-sky-400/20 dark:border-sky-600 dark:!bg-transparent':
+                  'text-dark/80 dark:!text-sky-500 !bg-sky-400/20 dark:!bg-transparent !border-sky-200 dark:!border-sky-600 hover:dark:!bg-sky-950':
                     context.active,
                 },
               ],
@@ -72,12 +71,11 @@ watch(filterCategories, (vals) => {
         <SelectButton
           v-model="filterTypes"
           :pt="{
-            root: 'rounded hover:dark:ring-1 dark:ring-amber-900 hover:bg-amber-100 hover:dark:bg-transparent',
             button: ({ context }) => ({
               class: [
-                'm-0.5 !py-0.5 !px-1 !rounded !text-xs bg-surface-100 dark:border dark:border-surface-700 dark:bg-surface-800',
+                'm-0.5 !py-0.5 !px-1 !rounded !text-xs text-dark/60 dark:text-light/60 bg-surface-100 border border-surface-300 dark:border-surface-700 dark:bg-surface-800',
                 {
-                  'text-dark/70 bg-orange-200/80 !bg-amber-100 dark:!bg-transparent dark:border-amber-500 dark:!text-amber-500':
+                  '!text-dark/80 dark:!text-amber-500 !bg-orange-200/80 dark:!bg-transparent !border-orange-200 dark:!border-amber-500 hover:dark:!bg-amber-950':
                     context.active,
                 },
               ],
