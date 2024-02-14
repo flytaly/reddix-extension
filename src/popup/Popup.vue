@@ -1,15 +1,14 @@
 <script setup lang="ts">
-function openOptionsPage() {
-  browser.runtime.openOptionsPage()
-}
+import SearchInput from '~/components/SearchInput.vue'
+import ItemsContainer from '~/components/item/ItemsContainer.vue'
 </script>
 
 <template>
-  <main class="w-[300px] px-4 py-5 text-center text-gray-700">
-    <Logo />
-    <div>Popup</div>
-    <SharedSubtitle />
-
-    <button class="btn mt-2" @click="openOptionsPage">Open Options</button>
+  <Toast />
+  <main class="h-[600px] w-[700px] text-gray-700">
+    <div class="px-2 pt-1">
+      <SearchInput />
+    </div>
+    <ItemsContainer />
   </main>
 </template>
