@@ -8,14 +8,14 @@ import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 import { setupTheme } from '~/logic/theme'
 
-export function setupApp(app: App) {
+export function setupApp(app: App, appContext: { context?: string } = {}) {
   setupTheme()
 
   // Inject a globally available `$app` object in template
   app.config.globalProperties.$app = {
     context: '',
+    ...appContext,
   }
-
   // Provide access to `app` in script setup with `const app = inject('app')`
   app.provide('app', app.config.globalProperties.$app)
 

@@ -5,6 +5,6 @@ import { setupApp } from '~/logic/common-setup'
 import '../styles'
 
 const app = createApp(App)
-setupApp(app)
+setupApp(app, { context: 'popup' })
 app.use(ToastService)
 app.mount('#app')

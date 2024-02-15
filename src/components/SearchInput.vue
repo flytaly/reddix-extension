@@ -91,6 +91,7 @@ watch(filterCategories, (vals) => {
         id="search-input"
         :value="search.query"
         placeholder="filter posts and comments"
+        :size="$app.context === 'popup' ? 'small' : undefined"
         autofocus
         @input="update"
       />

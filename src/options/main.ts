@@ -6,7 +6,7 @@ import App from './Options.vue'
 import { router } from './routes'
 
 const app = createApp(App)
-setupApp(app)
+setupApp(app, { context: 'options' })
 app.use(router)
 app.use(ToastService)
 app.mount('#app')
