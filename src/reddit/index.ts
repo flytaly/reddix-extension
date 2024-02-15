@@ -1,13 +1,6 @@
 import { requestInfo } from '~/logic'
 import { RateLimits, getRateLimits } from './rate-limits'
-import {
-  RedditCommentData,
-  RedditItem,
-  RedditObjectKind,
-  RedditPostData,
-  type RedditError,
-  type RedditItemResponse,
-} from './reddit-types'
+import { RedditObjectKind } from './reddit-types'
 
 export const baseUrl = 'https://www.reddit.com'
 

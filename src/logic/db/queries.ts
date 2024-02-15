@@ -1,6 +1,6 @@
 import Dexie, { IndexableType, PromiseExtended, WhereClause } from 'dexie'
 import { ITEMS_ON_PAGE } from '~/constants'
-import { SavedRedditItem, db } from '~/logic/db'
+import { DbRedditItem, db } from '~/logic/db'
 import { RedditObjectKind } from '~/reddit/reddit-types'
 import { WrappedItem } from '../wrapped-item'
 
@@ -24,11 +24,11 @@ export type SearchQuery = {
 }
 
 export async function getItems(ids: string[]) {
-  const idsInDb = await db.savedItems.where('name').anyOf(ids).keys()
+  const idsInDb = await db.redditItems.where('name').anyOf(ids).keys()
   return idsInDb as string[]
 }
 
-function getCollection(where: WhereClause<SavedRedditItem, IndexableType>, id: number, q: SearchQuery) {
+function getCollection(where: WhereClause<DbRedditItem, IndexableType>, id: number, q: SearchQuery) {
   if (q.direction === 'desc') {
     return where.below(id || Infinity).reverse()
   }
@@ -45,7 +45,7 @@ export async function getPostsFromDB(
   const { lastItem, limit = ITEMS_ON_PAGE } = pagination
   const lastId = lastItem?.dbId || 0
   if (!query) {
-    const where = db.savedItems.where('_id')
+    const where = db.redditItems.where('_id')
     const items = await getCollection(where, lastId, queryDetails)
       .filter(makeFilterFn(queryDetails)) //
       .limit(limit)
@@ -58,7 +58,7 @@ export async function getPostsFromDB(
 }
 
 function makeFilterFn(details: SearchQuery) {
-  return (item: SavedRedditItem) => {
+  return (item: DbRedditItem) => {
     if (details.hideSaved && item._category.includes('saved')) {
       return false
     }
@@ -80,40 +80,40 @@ export function find(
   details: SearchQuery,
   { lastId = 0, limit = ITEMS_ON_PAGE }: { lastId?: number; limit?: number } = {},
 ) {
-  let pagination = (item: SavedRedditItem) => item._id > lastId
+  let pagination = (item: DbRedditItem) => item._id > lastId
   if (details.direction === 'desc') {
     lastId = lastId || Infinity
-    pagination = (item: SavedRedditItem) => item._id < lastId
+    pagination = (item: DbRedditItem) => item._id < lastId
   }
   const filter = makeFilterFn(details)
 
-  return db.transaction('r', db.savedItems, async () => {
+  return db.transaction('r', db.redditItems, async () => {
     // Parallell search for all prefixes - just select resulting primary keys
     let dbQueries = [] as PromiseExtended<IndexableType[]>[]
 
     // words in title and body
     dbQueries = details.words.map((p) =>
-      db.savedItems.where('_body_words').startsWith(p).or('_title_words').startsWith(p).primaryKeys(),
+      db.redditItems.where('_body_words').startsWith(p).or('_title_words').startsWith(p).primaryKeys(),
     )
 
     // title
     if (details.title.length != 0) {
-      dbQueries.push(...details.title.map((t) => db.savedItems.where('_title_words').startsWith(t).primaryKeys()))
+      dbQueries.push(...details.title.map((t) => db.redditItems.where('_title_words').startsWith(t).primaryKeys()))
     }
 
     // tags
     if (details.tags.length != 0) {
-      dbQueries.push(...details.tags.map((t) => db.savedItems.where('_tags').equals(t).primaryKeys()))
+      dbQueries.push(...details.tags.map((t) => db.redditItems.where('_tags').equals(t).primaryKeys()))
     }
 
     // author
     if (details.author) {
-      dbQueries.push(db.savedItems.where('author').startsWithIgnoreCase(details.author).primaryKeys())
+      dbQueries.push(db.redditItems.where('author').startsWithIgnoreCase(details.author).primaryKeys())
     }
 
     // subreddit
     if (details.subreddit) {
-      dbQueries.push(db.savedItems.where('subreddit').startsWithIgnoreCase(details.subreddit).primaryKeys())
+      dbQueries.push(db.redditItems.where('subreddit').startsWithIgnoreCase(details.subreddit).primaryKeys())
     }
 
     const results = await Dexie.Promise.all(dbQueries)
@@ -128,7 +128,7 @@ export function find(
       return a.filter((k) => set.has(k))
     })
 
-    let collection = db.savedItems
+    let collection = db.redditItems
       .where(':id')
       .anyOf(reduced)
       .filter((item) => {

@@ -24,7 +24,7 @@ async function commit(tags: TagList) {
   const set = new Set(tags.map((v) => v[0]))
   const ids = props.items.map((it) => it.dbId)
   try {
-    await db.savedItems
+    await db.redditItems
       .where('_id')
       .anyOf(ids)
       .modify((item) => {

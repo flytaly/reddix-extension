@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import JSZip from 'jszip'
 
 import MainLayout from '~/components/pages/MainLayout.vue'
-import { SavedRedditItem, db, isComment, isPost } from '~/logic/db'
+import { DbRedditItem, db, isComment, isPost } from '~/logic/db'
 import { filterProperties, type ExportedItem } from '~/logic/transform/export-utils'
 import { objectsToCsv } from '~/logic/transform/export-csv'
 import { getFullLink } from '~/logic/convert-link'
@@ -22,8 +22,8 @@ async function downloadBlob(blob: Blob, name: string) {
   URL.revokeObjectURL(url)
 }
 
-async function processItems(onPost: (item: SavedRedditItem) => void, onComment: (item: SavedRedditItem) => void) {
-  await db.savedItems.each((obj) => {
+async function processItems(onPost: (item: DbRedditItem) => void, onComment: (item: DbRedditItem) => void) {
+  await db.redditItems.each((obj) => {
     if (isPost(obj)) {
       onPost(obj)
       return
@@ -36,12 +36,12 @@ async function processItems(onPost: (item: SavedRedditItem) => void, onComment: 
 
 const getDate = () => new Date().toISOString().split('T')[0].replace(/-/g, '_')
 
-function isSaved(obj: SavedRedditItem) {
+function isSaved(obj: DbRedditItem) {
   if (!obj._category?.length) return true
   return obj._category.includes('saved')
 }
 
-function isUpvoted(obj: SavedRedditItem) {
+function isUpvoted(obj: DbRedditItem) {
   if (!obj._category?.length) return false
   return obj._category.includes('upvoted')
 }

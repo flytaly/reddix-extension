@@ -1,9 +1,8 @@
 // db.ts
 import Dexie, { type Table } from 'dexie'
-import type { RedditCommentData, RedditPostData } from '~/reddit/reddit-types'
 import { RedditObjectKind } from '~/reddit/reddit-types'
 
-type DBProperties = {
+export type DbOnlyProperties = {
   _title_words: string[]
   _body_words: string[]
   _id: number
@@ -13,20 +12,21 @@ type DBProperties = {
   _category: ItemCategory[]
 }
 
-export type SavedRedditPost = RedditPostData & DBProperties
-export type SavedRedditComment = RedditCommentData & DBProperties
-export type SavedRedditItem = SavedRedditPost | SavedRedditComment
+export type DbRedditPost = RedditPostData & DbOnlyProperties
+export type DbRedditComment = RedditCommentData & DbOnlyProperties
+export type DbRedditItem = DbRedditPost | DbRedditComment
 
 export class MySubClassedDexie extends Dexie {
-  // 'friends' is added by dexie when declaring the stores()
+  // The store is added by dexie when declaring the stores()
   // We just tell the typing system this is the case
-  savedItems!: Table<SavedRedditItem>
+  redditItems!: Table<DbRedditItem>
 
   constructor() {
-    super('saved-items')
+    super('reddit-items')
     this.version(1).stores({
-      // Primary key and indexed props. 'name' is a reddit unique identifier startting with t1_, t2_, t3_...
-      savedItems:
+      // Primary key and indexed props.
+      redditItems:
+        // 'name' is a reddit unique identifier startting with t1_, t2_, t3_...
         '++_id, *_title_words, *_body_words, *_tags, &name, _created_at, _updated_at, *_category, author, subreddit, created_utc',
     })
   }
@@ -34,16 +34,16 @@ export class MySubClassedDexie extends Dexie {
 
 export const db = new MySubClassedDexie()
 
-export function isPost(data: SavedRedditItem): data is SavedRedditPost {
+export function isPost(data: DbRedditItem): data is DbRedditPost {
   return data.name.startsWith(RedditObjectKind.link)
 }
 
-export function isComment(data: SavedRedditItem): data is SavedRedditComment {
+export function isComment(data: DbRedditItem): data is DbRedditComment {
   return data.name.startsWith(RedditObjectKind.comment)
 }
 
 // Add hooks that will index for full-text search:
-db.savedItems.hook('creating', (_primKey, obj) => {
+db.redditItems.hook('creating', (_primKey, obj) => {
   if (isPost(obj) && typeof obj.title == 'string') {
     obj._title_words = tokenize(obj.title)
   }
@@ -61,11 +61,11 @@ db.savedItems.hook('creating', (_primKey, obj) => {
   obj._updated_at = ts
 })
 
-db.savedItems.hook('updating', (mods, _primKey, obj, _trans): Partial<SavedRedditItem> | undefined => {
-  const updated = {} as Partial<SavedRedditItem>
+db.redditItems.hook('updating', (mods, _primKey, obj, _trans): Partial<DbRedditItem> | undefined => {
+  const updated = {} as Partial<DbRedditItem>
 
-  type P = Record<keyof SavedRedditPost, unknown>
-  type C = Record<keyof SavedRedditComment, unknown>
+  type P = Record<keyof DbRedditPost, unknown>
+  type C = Record<keyof DbRedditComment, unknown>
   if (Object.prototype.hasOwnProperty.call(mods, 'title')) {
     updated._title_words = tokenizeProp((mods as P).title)
   }

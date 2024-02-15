@@ -40,7 +40,7 @@ export const getTagsArray = () => {
 
 export async function setupStatsStore() {
   const tagsObs = liveQuery(async () => {
-    const tags = await db.savedItems.orderBy('_tags').keys((keys) => {
+    const tags = await db.redditItems.orderBy('_tags').keys((keys) => {
       const count = {} as Record<string, number>
       keys.forEach((key) => {
         const k = key.toString()
@@ -48,7 +48,7 @@ export async function setupStatsStore() {
       })
       return count
     })
-    const total = await db.savedItems.count()
+    const total = await db.redditItems.count()
     return [tags, total] as const
   })
 

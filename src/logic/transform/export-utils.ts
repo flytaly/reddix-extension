@@ -1,4 +1,4 @@
-import { SavedRedditItem } from '../db'
+import { DbRedditItem } from '../db'
 
 const properties = [
   '_id', //
@@ -9,12 +9,12 @@ const properties = [
   '_title_words',
 ] as const
 
-export type ExportedItem = Omit<SavedRedditItem, (typeof properties)[number]>
+export type ExportedItem = Omit<DbRedditItem, (typeof properties)[number]>
 
-export function filterProperties(item: SavedRedditItem): ExportedItem {
+export function filterProperties(item: DbRedditItem): ExportedItem {
   const filtered: ExportedItem = {} as ExportedItem
   Object.keys(item).forEach((key) => {
-    const keyName = key as keyof SavedRedditItem
+    const keyName = key as keyof DbRedditItem
     // @ts-ignore
     if (!properties.includes(keyName)) {
       // @ts-ignore

@@ -1,19 +1,18 @@
-import { SavedRedditItem, db } from '~/logic/db'
-import { RedditItem, RedditItemResponse } from '~/reddit/reddit-types'
+import { DbRedditItem, db } from '~/logic/db'
 
 export type RedditItemWithCategory = RedditItem & { _category?: ItemCategory[] }
 
 export async function deleteItems(ids: number[]) {
-  return db.savedItems.bulkDelete(ids)
+  return db.redditItems.bulkDelete(ids)
 }
 
-export async function updateItem(id: number, props: Partial<SavedRedditItem>) {
-  return db.savedItems.update(id, props)
+export async function updateItem(id: number, props: Partial<DbRedditItem>) {
+  return db.redditItems.update(id, props)
 }
 
-function merge(updatedItem: RedditItemWithCategory, dbItem?: SavedRedditItem): SavedRedditItem {
+function merge(updatedItem: RedditItemWithCategory, dbItem?: DbRedditItem): DbRedditItem {
   if (!dbItem) {
-    return updatedItem as SavedRedditItem
+    return updatedItem as DbRedditItem
   }
   const concat = dbItem._category.concat(updatedItem._category || [])
   return { ...dbItem, ...updatedItem, _category: Array.from(new Set(concat)) }
@@ -22,20 +21,20 @@ function merge(updatedItem: RedditItemWithCategory, dbItem?: SavedRedditItem): S
 export async function upsertItems(items: RedditItemWithCategory[]) {
   let savedNew = 0
 
-  await db.transaction('rw', db.savedItems, async () => {
-    const itemsInDB = await db.savedItems
+  await db.transaction('rw', db.redditItems, async () => {
+    const itemsInDB = await db.redditItems
       .where('name')
       .anyOf(items.map((item) => item.name))
       .toArray()
 
-    const itemMap = {} as Record<string, SavedRedditItem>
+    const itemMap = {} as Record<string, DbRedditItem>
     itemsInDB.forEach((item) => {
       itemMap[item.name] = item
     })
 
     const updated = items.map((item) => merge(item, itemMap[item.name]))
 
-    await db.savedItems.bulkPut(updated)
+    await db.redditItems.bulkPut(updated)
 
     savedNew = items.length - itemsInDB.length
   })

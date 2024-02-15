@@ -1,6 +1,5 @@
 import { unescape } from 'lodash-es'
 import { isPostData } from '~/reddit'
-import { ImageSource, RedditItem, RedditPostData } from './reddit-types'
 
 export type GenericThumbnail = 'default' | 'nsfw' | 'spoiler' | 'self'
 

@@ -1,14 +1,13 @@
 import { unescape } from 'lodash-es'
-import { SavedRedditItem, SavedRedditPost } from '~/logic/db/index'
+import { DbRedditItem, DbRedditPost } from '~/logic/db/index'
 import { isPostData } from '~/reddit'
 import { PostMedia, extractMedia } from '~/reddit/post-media'
-import { RedditCommentData, RedditPostData } from '~/reddit/reddit-types'
 
 export class WrappedItem {
-  item: SavedRedditItem
+  item: DbRedditItem
   media: PostMedia
 
-  constructor(item: SavedRedditItem) {
+  constructor(item: DbRedditItem) {
     this.item = item
     this.media = extractMedia(this.item)
   }
@@ -42,11 +41,11 @@ export class WrappedItem {
   }
 
   get isVideo() {
-    return (this.item as SavedRedditPost).is_video || this.media.video
+    return (this.item as DbRedditPost).is_video || this.media.video
   }
 
   get isGallery() {
-    return (this.item as SavedRedditPost).is_gallery
+    return (this.item as DbRedditPost).is_gallery
   }
 
   get hasBody() {
@@ -54,11 +53,11 @@ export class WrappedItem {
   }
 
   get isLink() {
-    return (this.item as SavedRedditPost).post_hint == 'link' && !this.hasBody && this.url
+    return (this.item as DbRedditPost).post_hint == 'link' && !this.hasBody && this.url
   }
 
   get url() {
-    return (this.item as SavedRedditPost).url || ''
+    return (this.item as DbRedditPost).url || ''
   }
 
   set tags(newTags: string[]) {
@@ -69,7 +68,7 @@ export class WrappedItem {
     return this.item._tags || []
   }
 
-  update(updates: Partial<SavedRedditItem>) {
+  update(updates: Partial<DbRedditItem>) {
     Object.assign(this.item, updates)
   }
 

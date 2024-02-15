@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SavedRedditItem, db } from '~/logic/db'
+import { DbRedditItem, db } from '~/logic/db'
 import { WrappedItem } from '~/logic/wrapped-item'
 import TagsInputAutocomplete from '~/components/tags/TagsInputAutocomplete.vue'
 
@@ -18,10 +18,10 @@ function exit(tags: TagList) {
 
 async function commit(tags: TagList) {
   const set = new Set(tags.map((v) => v[0]))
-  await db.savedItems
+  await db.redditItems
     .where('_id')
     .equals(props.item.dbId)
-    .modify({ _tags: Array.from(set) } as Partial<SavedRedditItem>)
+    .modify({ _tags: Array.from(set) } as Partial<DbRedditItem>)
 }
 </script>
 

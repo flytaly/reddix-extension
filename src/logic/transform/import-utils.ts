@@ -8,8 +8,7 @@ import { waitRateLimits } from '~/logic/wait-limits'
 import { onRateLimits } from '~/reddit'
 import { getItemsInfo } from '~/reddit/index'
 import { type RateLimits } from '~/reddit/rate-limits'
-import { RedditCommentData, RedditPostData } from '~/reddit/reddit-types'
-import { SavedRedditItem, isComment, isPost } from '../db'
+import { DbRedditItem, isComment, isPost } from '../db'
 
 export async function fetchInfo(ids: string[], category: ItemCategory = 'saved') {
   if (!ids.length) return
@@ -91,16 +90,16 @@ const commonProperties: Array<keyof RedditPostData & keyof RedditCommentData> = 
 const postProperties: Array<keyof RedditPostData> = ['selftext', 'title']
 const commentProperties: Array<keyof RedditCommentData> = ['body']
 
-function isValidItem(item: SavedRedditItem) {
+function isValidItem(item: DbRedditItem) {
   const keys = Object.keys(item)
   if (commonProperties.some((k) => !keys.includes(k))) {
     console.log('not valid', item)
     return false
   }
-  if (isPost(item as SavedRedditItem)) {
+  if (isPost(item as DbRedditItem)) {
     return postProperties.every((k) => keys.includes(k))
   }
-  if (isComment(item as SavedRedditItem)) {
+  if (isComment(item as DbRedditItem)) {
     return commentProperties.every((k) => keys.includes(k))
   }
   return false
@@ -108,7 +107,7 @@ function isValidItem(item: SavedRedditItem) {
 
 async function saveExportedItem(items: ExportedItem[]) {
   try {
-    return (await upsertItems(items as SavedRedditItem[])) || 0
+    return (await upsertItems(items as DbRedditItem[])) || 0
   } catch (error) {
     console.error(error)
   }
@@ -123,7 +122,7 @@ export async function importJSON(file: File) {
     let imported = 0
     let batch = data.slice(0, take)
     for (let i = take; batch.length; i += take) {
-      batch = batch.filter((item) => isValidItem(item as SavedRedditItem))
+      batch = batch.filter((item) => isValidItem(item as DbRedditItem))
       const saved = await saveExportedItem(batch)
       imported += saved
       batch = data.slice(i, i + take)

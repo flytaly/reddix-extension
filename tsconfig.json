@@ -14,7 +14,7 @@
     "resolveJsonModule": true,
     "noUnusedLocals": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["vite/client", "unplugin-icons/types/vue"],
+    "types": ["vite/client", "unplugin-icons/types/vue", "./src/reddit/reddit-types.ts"],
     "paths": {
       "~/*": ["src/*"]
     }
