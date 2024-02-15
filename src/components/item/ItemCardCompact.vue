@@ -62,7 +62,10 @@ const toggle = () => {
         </div>
 
         <h4 class="wrap-anywhere">
-          <a class="flex items-center gap-2 text-sm font-medium text-dark dark:text-light" :href="item.fullLink">
+          <a
+            class="line-clamp-1 text-sm font-medium text-dark sm:line-clamp-none dark:text-light"
+            :href="item.fullLink"
+          >
             {{ item.title }}
           </a>
         </h4>

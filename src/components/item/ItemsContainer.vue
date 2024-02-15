@@ -143,7 +143,7 @@ const checkedItems = defineModel<number[]>({ default: [] })
 
 <template>
   <div class="flex flex-col items-center justify-center">
-    <div class="mx-auto my-2 flex w-full max-w-main-column items-center justify-end gap-2 pr-4">
+    <div class="mx-auto my-1 flex w-full max-w-main-column items-center justify-end gap-2 pr-4 sm:my-2">
       <SelectButton
         v-model="view"
         :options="viewOptions"
@@ -151,15 +151,17 @@ const checkedItems = defineModel<number[]>({ default: [] })
         data-key="value"
         aria-labelledby="title"
         :allow-empty="false"
+        :pt="{ button: '!px-2 !py-1 sm:!px-2.5 sm:!py-1.5 text-sm' }"
+        :pt-options="{ mergeProps: true }"
       >
         <template #option="slotProps">
           <component :is="slotProps.option.iconCmp"></component>
         </template>
       </SelectButton>
 
-      <button class="btn ml-4" @click="sortOverlay.toggle">
-        <ph-sort-descending v-if="search.direction === 'desc'" class="h-5 w-5" />
-        <ph-sort-ascending v-else class="h-5 w-5" />
+      <button class="btn ml-4 text-sm" @click="sortOverlay.toggle">
+        <ph-sort-descending v-if="search.direction === 'desc'" />
+        <ph-sort-ascending v-else />
       </button>
     </div>
 

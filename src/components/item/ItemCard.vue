@@ -86,7 +86,10 @@ const expandPostOrPreview = (event: Event) => {
         </div>
 
         <h4 class="wrap-anywhere">
-          <a class="flex items-center gap-2 text-base font-medium text-dark dark:text-light" :href="item.fullLink">
+          <a
+            class="line-clamp-1 gap-2 text-sm font-medium text-dark sm:line-clamp-none sm:text-base dark:text-light"
+            :href="item.fullLink"
+          >
             {{ item.title }}
           </a>
         </h4>
@@ -104,7 +107,7 @@ const expandPostOrPreview = (event: Event) => {
         <span
           ref="bodyElemRef"
           class="item-body-html overflow-hidden"
-          :class="{ 'max-h-24': !expanded }"
+          :class="{ 'max-h-20 sm:max-h-24': !expanded }"
           v-html="item.body"
         ></span>
         <button
@@ -122,7 +125,7 @@ const expandPostOrPreview = (event: Event) => {
       </div>
 
       <!-- Footer -->
-      <footer class="item-footer dimmed-1 mt-1 flex items-center gap-2 pt-0.5 text-xs">
+      <footer class="item-footer dimmed-1 flex items-center gap-2 pt-0.5 text-xs">
         <ul class="mr-auto flex flex-wrap gap-1">
           <button class="btn mr-1 h-3 w-3 shrink-0" title="Edit tags" @click="onAddTags">
             <PhTagDuotone />

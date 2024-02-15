@@ -26,8 +26,8 @@ const href = computed(() => (isLink.value ? props.item.url : ''))
       :href="href"
       v-on="clickHandler ? { click: clickHandler } : {}"
     >
-      <img v-if="media.thumbnail" class="h-[4.5rem] w-24 rounded object-cover" :src="media.thumbnail" />
-      <div v-else-if="media.generic" class="flex h-[4.5rem] w-24 items-center justify-center">
+      <img v-if="media.thumbnail" class="h-16 w-20 rounded object-cover sm:h-[4.5rem] sm:w-24" :src="media.thumbnail" />
+      <div v-else-if="media.generic" class="flex h-16 w-20 items-center justify-center sm:h-[4.5rem] sm:w-24">
         <div v-if="media.generic === 'nsfw'" class="font-bold text-surface-500 dark:text-surface-500">NSFW</div>
         <PhLink v-else-if="media.generic === 'default'" class="h-7 w-7 text-surface-500 dark:text-surface-500" />
         <PhFileTextLight v-else class="h-7 w-7 text-surface-500 dark:text-surface-500" />
