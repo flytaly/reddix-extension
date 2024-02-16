@@ -3,16 +3,22 @@ import { RateLimits } from '~/reddit/rate-limits'
 
 export const themeStorage = useWebExtensionStorage<'auto' | 'dark' | 'light'>('theme', 'auto')
 
-export const optionsStorage = useWebExtensionStorage('options', {
+const memoInputs = {
   username: '',
-})
+  categories: ['saved', 'upvoted'] as ItemCategory[],
+  itemTypes: ['post', 'comment'] as ItemType[],
+  currentView: 'list' as ViewType,
+  sortDirection: 'asc' as SearchDirection,
+}
+
+export const memo = useWebExtensionStorage('memo', memoInputs)
 
 export const userName = computed({
   get() {
-    return optionsStorage.value.username
+    return memo.value.username
   },
   set(value) {
-    optionsStorage.value.username = value.trim()
+    memo.value.username = value.trim()
   },
 })
 

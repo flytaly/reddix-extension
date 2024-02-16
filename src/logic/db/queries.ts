@@ -20,7 +20,7 @@ export type SearchQuery = {
   tags: string[]
   title: string[]
   words: string[]
-  direction?: 'asc' | 'desc'
+  direction?: SearchDirection
 }
 
 export async function getItems(ids: string[]) {

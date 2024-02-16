@@ -1,45 +1,49 @@
 <script setup lang="ts">
 import { debounce } from 'lodash-es'
-import { defineModel } from 'vue'
+import { memo } from '~/logic'
 import { search, setSearchQuery } from '~/logic/search-store'
-
-const postsOn = defineModel<boolean>('postsOn', { default: true })
-const commentsOn = defineModel<boolean>('commentsOn', { default: true })
 
 const update = debounce((e: Event) => {
   const query = (e.target as HTMLInputElement)?.value
   setSearchQuery(query)
 }, 200)
 
-watch(postsOn, (on) => {
-  if (!on && !commentsOn.value) commentsOn.value = true
+const itemTypes: { name: string; value: ItemType }[] = [
+  { name: 'posts', value: 'post' },
+  { name: 'comments', value: 'comment' },
+]
 
-  search.hidePosts = !postsOn.value
-  search.hideComments = !commentsOn.value
-})
-
-watch(commentsOn, (on) => {
-  if (!on && !postsOn.value) {
-    postsOn.value = true
-  }
-  search.hidePosts = !postsOn.value
-  search.hideComments = !commentsOn.value
-})
-
-const itemTypes = ['posts', 'comments']
 const filterTypes = ref([...itemTypes])
 
+watch(
+  () => memo.value.itemTypes,
+  (newVal) => {
+    filterTypes.value = itemTypes.filter((v) => newVal.includes(v.value))
+  },
+  { immediate: false, once: true },
+)
+
 watch(filterTypes, (val) => {
-  search.hidePosts = !val.includes('posts')
-  search.hideComments = !val.includes('comments')
+  search.hidePosts = !val.find((v) => v.value === 'post')
+  search.hideComments = !val.find((v) => v.value === 'comment')
+  memo.value.itemTypes = val.map((v) => v.value)
 })
 
 const itemCategories: ItemCategory[] = ['saved', 'upvoted']
 const filterCategories = ref([...itemCategories])
 
+watch(
+  () => memo.value.categories,
+  (newVal) => {
+    filterCategories.value = itemCategories.filter((v) => newVal.includes(v))
+  },
+  { immediate: false, once: true },
+)
+
 watch(filterCategories, (vals) => {
   search.hideSaved = !vals.includes('saved')
   search.hideUpvoted = !vals.includes('upvoted')
+  memo.value.categories = vals
 })
 </script>
 
@@ -83,6 +87,7 @@ watch(filterCategories, (vals) => {
           }"
           :pt-options="{ mergeProps: true }"
           :options="itemTypes"
+          option-label="name"
           multiple
           aria-labelledby="multiple"
         />

@@ -1,4 +1,3 @@
-k
 <script setup lang="ts">
 import PhList from '~icons/ph/list'
 import PhNotePencil from '~icons/ph/note-pencil'
@@ -15,6 +14,7 @@ import { getItemsInfo } from '~/reddit'
 import { getPostsFromDB } from '~/logic/db/queries'
 import { search } from '~/logic/search-store'
 import { state } from '~/logic/options-stores'
+import { memo } from '~/logic'
 
 const lastItem = shallowRef<WrappedItem | null>(null)
 const isEnd = ref<boolean | null>(null)
@@ -128,17 +128,38 @@ async function onItemUpdate(item: WrappedItem) {
   toast.add({ severity: 'info', summary: 'Info', detail: 'Item updated', life: 1000 })
 }
 
-type viewType = 'list' | 'compact' | 'edit'
-const viewOptions: { iconCmp: FunctionalComponent; value: viewType; title: string }[] = [
+const viewOptions: { iconCmp: FunctionalComponent; value: ViewType; title: string }[] = [
   { iconCmp: PhRows, value: 'list', title: 'List' },
   { iconCmp: PhList, value: 'compact', title: 'Compact list' },
   { iconCmp: PhNotePencil, value: 'edit', title: 'Edit' },
 ]
+
 const view = ref(viewOptions[0])
+
+watch(
+  () => memo.value.currentView,
+  (newView) => {
+    view.value = viewOptions.find((v) => v.value === newView) || viewOptions[0]
+  },
+  { once: true },
+)
+
+watch(view, () => (memo.value.currentView = view.value.value))
+
+watch(
+  () => memo.value.sortDirection,
+  (dir) => (search.direction = dir),
+  { once: true },
+)
 
 const sortOverlay = ref()
 
 const checkedItems = defineModel<number[]>({ default: [] })
+
+function setSortDirection(dir: SearchDirection) {
+  search.direction = dir
+  memo.value.sortDirection = dir
+}
 </script>
 
 <template>
@@ -204,12 +225,12 @@ const checkedItems = defineModel<number[]>({ default: [] })
   >
     <ul class="flex min-w-28 flex-col gap-2 py-2 text-base">
       <li>
-        <button class="btn flex items-center gap-1 px-2" @click="search.direction = 'asc'">
+        <button class="btn flex items-center gap-1 px-2" @click="setSortDirection('asc')">
           <ph-sort-ascending :class="{ 'text-primary-500 dark:text-primary-400': search.direction === 'asc' }" />asc
         </button>
       </li>
       <li>
-        <button class="btn flex items-center gap-1 px-2" @click="search.direction = 'desc'">
+        <button class="btn flex items-center gap-1 px-2" @click="setSortDirection('desc')">
           <ph-sort-descending :class="{ 'text-primary-500 dark:text-primary-400': search.direction === 'desc' }" />desc
         </button>
       </li>
