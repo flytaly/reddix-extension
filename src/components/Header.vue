@@ -8,7 +8,7 @@ import PhDownloadBold from '~icons/ph/download-bold'
 import TagList from '~/components/TagList.vue'
 import AccountInputBlock from '~/components/AccountInputBlock.vue'
 import { RoutePath } from '~/options/routes'
-import { themeStorage } from '~/logic/storage'
+import { optionsStorage } from '~/logic/browser-storage'
 
 const items = [
   { label: 'Search', route: RoutePath.Search, iconCmp: PhMagnifyingGlassBold },
@@ -25,11 +25,12 @@ const items = [
 const preferDark = usePreferredDark()
 
 const isDark = computed(() => {
-  return themeStorage.value === 'auto' ? preferDark.value : themeStorage.value === 'dark'
+  const theme = optionsStorage.value.theme
+  return theme === 'auto' ? preferDark.value : theme === 'dark'
 })
 
 function toggleTheme() {
-  themeStorage.value = isDark.value ? 'light' : 'dark'
+  optionsStorage.value.theme = isDark.value ? 'light' : 'dark'
 }
 
 const tagSidebarOn = ref(false)

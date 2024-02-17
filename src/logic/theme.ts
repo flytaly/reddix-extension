@@ -1,4 +1,5 @@
-type Theme = 'auto' | 'dark' | 'light'
+import { optionsStorage } from '~/logic/browser-storage'
+import { Theme } from '~/logic/extension-options'
 
 const matchDark = () => window.matchMedia('(prefers-color-scheme: dark)')
 
@@ -14,22 +15,10 @@ export function setClass(theme: Theme) {
   }
 }
 
-async function getThemeFromStorage(): Promise<Theme> {
-  return (await browser.storage.local.get('theme')).theme || 'auto'
-}
-
 export async function setupTheme() {
-  browser.storage.onChanged.addListener((changes) => {
-    if (!changes.theme?.newValue) return
-    const nextTheme = changes.theme.newValue as 'auto' | 'dark' | 'light'
-    setClass(nextTheme)
-  })
-
-  const theme = await getThemeFromStorage()
-  setClass(theme)
+  watch(() => optionsStorage.value.theme, setClass, { immediate: true })
 
   matchDark().addEventListener('change', async () => {
-    const theme = await getThemeFromStorage()
-    setClass(theme)
+    setClass(optionsStorage.value.theme)
   })
 }

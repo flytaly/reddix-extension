@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { debounce } from 'lodash-es'
-import { memo } from '~/logic'
+import { memo } from '~/logic/browser-storage'
 import { search, setSearchQuery } from '~/logic/search-store'
 
 const update = debounce((e: Event) => {

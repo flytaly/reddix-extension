@@ -1,4 +1,4 @@
-import { requestInfo } from '~/logic'
+import { requestInfo } from '~/logic/browser-storage'
 import { RateLimits, getRateLimits } from './rate-limits'
 import { RedditObjectKind } from './reddit-types'
 

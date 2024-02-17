@@ -4,7 +4,7 @@ import { sendMessage } from 'webext-bridge/options'
 import FetchButton from '~/components/FetchButton.vue'
 import { getUserInfo } from '~/reddit/me'
 import { state } from '~/logic/options-stores'
-import { userName } from '~/logic/storage'
+import { userName } from '~/logic/browser-storage'
 
 const status = ref('')
 const isEdit = ref(false)

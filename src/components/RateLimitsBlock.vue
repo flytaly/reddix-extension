@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { requestInfo } from '~/logic/storage'
+import { requestInfo } from '~/logic/browser-storage'
 
 function isInThePast(ts?: number | null) {
   if (!ts) return true

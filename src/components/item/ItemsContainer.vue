@@ -14,7 +14,7 @@ import { getItemsInfo } from '~/reddit'
 import { getPostsFromDB } from '~/logic/db/queries'
 import { search } from '~/logic/search-store'
 import { state } from '~/logic/options-stores'
-import { memo } from '~/logic'
+import { memo } from '~/logic/browser-storage'
 
 const lastItem = shallowRef<WrappedItem | null>(null)
 const isEnd = ref<boolean | null>(null)

@@ -1,7 +1,10 @@
 import { useWebExtensionStorage } from '~/composables/useWebExtensionStorage'
 import { RateLimits } from '~/reddit/rate-limits'
+import { ExtensionOptions, defaultOptions } from './extension-options'
 
-export const themeStorage = useWebExtensionStorage<'auto' | 'dark' | 'light'>('theme', 'auto')
+export const optionsStorage = useWebExtensionStorage<ExtensionOptions>('options', defaultOptions, {
+  mergeDefaults: true,
+})
 
 const memoInputs = {
   username: '',
