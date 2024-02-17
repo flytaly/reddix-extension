@@ -5,6 +5,7 @@ import devSetup from './dev-setup'
 import { state, type BgState } from './bg-state'
 import { RateLimits } from '~/reddit/rate-limits'
 import { waitRateLimits } from '~/logic/wait-limits'
+import { requestInfo } from '~/logic/browser-storage'
 
 devSetup()
 
@@ -17,9 +18,35 @@ function setStateAndNotify(updates: Partial<BgState>) {
   sendMessage('state-update', state, { context: 'options', tabId: -1 })
 }
 
-async function fetchItems(username: string, category: ItemCategory) {
+function getLastId(category: ItemCategory) {
+  if (category === 'saved') {
+    return requestInfo.value.lastSavedItemId
+  } else if (category === 'upvoted') {
+    return requestInfo.value.lastUpvotedItemId
+  }
+}
+
+function setLastId(category: ItemCategory, id: string) {
+  if (category === 'saved') {
+    requestInfo.value.lastSavedItemId = id
+  } else if (category === 'upvoted') {
+    requestInfo.value.lastUpvotedItemId = id
+  }
+}
+
+function setFetchDate(category: ItemCategory) {
+  if (category === 'saved') {
+    requestInfo.value.lastSavedItemFetchTime = Date.now()
+  } else if (category === 'upvoted') {
+    requestInfo.value.lastUpvotedItemFetchTime = Date.now()
+  }
+}
+
+async function fetchItems(username: string, category: ItemCategory, fetchAll = false) {
   let rateLimits: RateLimits | undefined
   let after: string = ''
+
+  const stopAtId = fetchAll ? null : getLastId(category)
 
   const onRateLimitsWrap = (rl: RateLimits) => {
     rl = onRateLimits(rl)
@@ -45,25 +72,32 @@ async function fetchItems(username: string, category: ItemCategory) {
       savedNew: state.savedNew + (savedNew || 0),
     })
 
+    if (!after) setLastId(category, listing.data.children[0].data.name)
+
     const nextAfter = listing.data.after
     end = !nextAfter || nextAfter === after || listing.data.children.length < 100
     after = nextAfter || ''
 
+    if (stopAtId && !end) {
+      end = listing.data.children.findIndex((it) => it.data.name === stopAtId) !== -1
+    }
+
     await waitRateLimits(rateLimits, console.log)
   }
+  setFetchDate(category)
 }
 
-async function startFetching(username: string, category: ItemCategory) {
+async function startFetching(username: string, category: ItemCategory, fetchAll = false) {
   if (state.isFetching) {
     return
   }
   setStateAndNotify({ isFetching: true, fetchError: '', loaded: 0, savedNew: 0 })
-  await fetchItems(username, category)
+  await fetchItems(username, category, fetchAll)
   setStateAndNotify({ isFetching: false })
 }
 
 onMessage('fetch-items', async (msg) => {
-  void startFetching(msg.data.username, msg.data.category)
+  void startFetching(msg.data.username, msg.data.category, msg.data.options?.fetchAll)
   return state
 })
 

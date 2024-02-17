@@ -28,6 +28,10 @@ export const userName = computed({
 type RequestInfo = {
   rateLimits: RateLimits
   timestamp: number
+  lastSavedItemId?: string
+  lastUpvotedItemId?: string
+  lastSavedItemFetchTime?: number
+  lastUpvotedItemFetchTime?: number
 }
 
 const reqInfoStorage = useWebExtensionStorage<RequestInfo>('request-info', {

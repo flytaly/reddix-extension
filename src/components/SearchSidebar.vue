@@ -8,13 +8,17 @@ import FetchButton from '~/components/FetchButton.vue'
 
 const visible = ref(false)
 
-async function onSync(category: ItemCategory = 'saved') {
+async function onSync(category: ItemCategory = 'saved', fetchAll = false) {
   if (state.isFetching) return
   if (!userName.value || state.fetchError) {
     visible.value = true
     return
   }
-  const res = await sendMessage('fetch-items', { username: userName.value, category }, 'background')
+  const res = await sendMessage(
+    'fetch-items',
+    { username: userName.value, category, options: { fetchAll } },
+    'background',
+  )
   state.isFetching = res.isFetching
 }
 </script>

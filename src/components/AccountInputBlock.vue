@@ -19,13 +19,17 @@ watch(
   { immediate: false },
 )
 
-async function fetchPosts(category: ItemCategory = 'saved') {
+async function fetchPosts(category: ItemCategory = 'saved', fetchAll = false) {
   if (state.isFetching) return
   if (!userName.value) {
     status.value = 'username is required'
     return
   }
-  const res = await sendMessage('fetch-items', { username: userName.value, category }, 'background')
+  const res = await sendMessage(
+    'fetch-items',
+    { username: userName.value, category, options: { fetchAll } },
+    'background',
+  )
   state.isFetching = res.isFetching
 }
 
