@@ -34,6 +34,7 @@ async function commit() {
         v-model="currentTags"
         multiple
         dropdown
+        auto-option-focus
         :suggestions="completeItems"
         :complete-on-focus="true"
         :delay="200"
