@@ -20,6 +20,7 @@ export type SearchQuery = {
   tags: string[]
   title: string[]
   words: string[]
+  body: string[]
   direction?: SearchDirection
 }
 
@@ -99,6 +100,11 @@ export function find(
     // title
     if (details.title.length != 0) {
       dbQueries.push(...details.title.map((t) => db.redditItems.where('_title_words').startsWith(t).primaryKeys()))
+    }
+
+    // body
+    if (details.body.length != 0) {
+      dbQueries.push(...details.body.map((w) => db.redditItems.where('_body_words').startsWith(w).primaryKeys()))
     }
 
     // tags

@@ -11,6 +11,7 @@ export const search = reactive<SearchQuery>({
   tags: [],
   title: [],
   words: [],
+  body: [],
   direction: 'asc',
 })
 
@@ -20,6 +21,7 @@ export function clearSearch() {
   search.words = []
   search.author = ''
   search.title = []
+  search.body = []
   search.subreddit = ''
 }
 
@@ -44,8 +46,20 @@ export function setSearchQuery(query: string) {
       search.author = piece.slice(2)
       continue
     }
+    if (piece.startsWith('t:')) {
+      search.title.push(piece.slice(2).toLowerCase())
+      continue
+    }
     if (piece.startsWith('title:')) {
       search.title.push(piece.slice(6).toLowerCase())
+      continue
+    }
+    if (piece.startsWith('b:')) {
+      search.body.push(piece.slice(2).toLowerCase())
+      continue
+    }
+    if (piece.startsWith('body:')) {
+      search.body.push(piece.slice(5).toLowerCase())
       continue
     }
     if (piece.startsWith('subreddit:')) {
