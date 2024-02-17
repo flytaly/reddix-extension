@@ -77,6 +77,21 @@ function makeFilterFn(details: SearchQuery) {
   }
 }
 
+// if prefix ends with \, search as it's a whole word
+function havePrefix(indexes: string[], p: string) {
+  const isPrefix = !p.endsWith('\\')
+  if (!isPrefix) {
+    p = p.slice(0, -1)
+  }
+  let collection = isPrefix
+    ? db.redditItems.where(indexes[0]).startsWith(p)
+    : db.redditItems.where(indexes[0]).equals(p)
+  for (let i = 1; i < indexes.length; i++) {
+    collection = isPrefix ? collection.or(indexes[i]).startsWith(p) : collection.or(indexes[i]).equals(p)
+  }
+  return collection.primaryKeys()
+}
+
 export function find(
   details: SearchQuery,
   { lastId = 0, limit = ITEMS_ON_PAGE }: { lastId?: number; limit?: number } = {},
@@ -92,19 +107,16 @@ export function find(
     // Parallell search for all prefixes - just select resulting primary keys
     let dbQueries = [] as PromiseExtended<IndexableType[]>[]
 
-    // words in title and body
-    dbQueries = details.words.map((p) =>
-      db.redditItems.where('_body_words').startsWith(p).or('_title_words').startsWith(p).primaryKeys(),
-    )
+    dbQueries = details.words.map((p) => havePrefix(['_body_words', '_title_words'], p))
 
     // title
     if (details.title.length != 0) {
-      dbQueries.push(...details.title.map((t) => db.redditItems.where('_title_words').startsWith(t).primaryKeys()))
+      dbQueries.push(...details.title.map((p) => havePrefix(['_title_words'], p)))
     }
 
     // body
     if (details.body.length != 0) {
-      dbQueries.push(...details.body.map((w) => db.redditItems.where('_body_words').startsWith(w).primaryKeys()))
+      dbQueries.push(...details.body.map((p) => havePrefix(['_body_words'], p)))
     }
 
     // tags
