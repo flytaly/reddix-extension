@@ -1,4 +1,4 @@
-import { requestInfo } from '~/logic/browser-storage'
+import { reqInfoStorage } from '~/logic/browser-storage'
 import { RateLimits, getRateLimits } from './rate-limits'
 import { RedditObjectKind } from './reddit-types'
 
@@ -81,7 +81,7 @@ export function onRateLimits(rl: RateLimits) {
   if (rl.reset) {
     rl.reset = new Date(Date.now() + rl.reset * 1000).getTime()
   }
-  requestInfo.value = { rateLimits: rl }
+  reqInfoStorage.value.rateLimits = rl
   return rl
 }
 

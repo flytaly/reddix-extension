@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { requestInfo } from '~/logic/browser-storage'
+import { reqInfoStorage } from '~/logic/browser-storage'
 
 function isInThePast(ts?: number | null) {
   if (!ts) return true
@@ -15,15 +15,15 @@ function formatTime(ts?: number | null) {
 
 <template>
   <article class="mt-4 hidden text-xs sm:block">
-    <div v-if="!isInThePast(requestInfo.rateLimits?.reset)">
+    <div v-if="!isInThePast(reqInfoStorage.rateLimits?.reset)">
       <h3 class="text-sm font-bold">Rate Limits</h3>
       <div class="grid grid-cols-2 gap-x-4">
         <span>used</span>
-        <span>{{ requestInfo.rateLimits?.used }}</span>
+        <span>{{ reqInfoStorage.rateLimits?.used }}</span>
         <span>remaining</span>
-        <span>{{ requestInfo.rateLimits?.remaining }}</span>
+        <span>{{ reqInfoStorage.rateLimits?.remaining }}</span>
         <span>reset at</span>
-        <span>{{ formatTime(requestInfo.rateLimits?.reset) }}</span>
+        <span>{{ formatTime(reqInfoStorage.rateLimits?.reset) }}</span>
       </div>
     </div>
   </article>

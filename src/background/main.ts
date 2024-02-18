@@ -5,7 +5,7 @@ import devSetup from './dev-setup'
 import { state, type BgState } from './bg-state'
 import { RateLimits } from '~/reddit/rate-limits'
 import { waitRateLimits } from '~/logic/wait-limits'
-import { requestInfo } from '~/logic/browser-storage'
+import { reqInfoStorage } from '~/logic/browser-storage'
 
 devSetup()
 
@@ -20,25 +20,25 @@ function setStateAndNotify(updates: Partial<BgState>) {
 
 function getLastId(category: ItemCategory) {
   if (category === 'saved') {
-    return requestInfo.value.lastSavedItemId
+    return reqInfoStorage.value.lastSavedItemId
   } else if (category === 'upvoted') {
-    return requestInfo.value.lastUpvotedItemId
+    return reqInfoStorage.value.lastUpvotedItemId
   }
 }
 
 function setLastId(category: ItemCategory, id: string) {
   if (category === 'saved') {
-    requestInfo.value.lastSavedItemId = id
+    reqInfoStorage.value.lastSavedItemId = id
   } else if (category === 'upvoted') {
-    requestInfo.value.lastUpvotedItemId = id
+    reqInfoStorage.value.lastUpvotedItemId = id
   }
 }
 
 function setFetchDate(category: ItemCategory) {
   if (category === 'saved') {
-    requestInfo.value.lastSavedItemFetchTime = Date.now()
+    reqInfoStorage.value.lastSavedItemFetchTime = Date.now()
   } else if (category === 'upvoted') {
-    requestInfo.value.lastUpvotedItemFetchTime = Date.now()
+    reqInfoStorage.value.lastUpvotedItemFetchTime = Date.now()
   }
 }
 
