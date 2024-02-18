@@ -33,6 +33,7 @@ type RequestInfo = {
   lastUpvotedItemId?: string
   lastSavedItemFetchTime?: number
   lastUpvotedItemFetchTime?: number
+  timestamp?: number
 }
 
 export const reqInfoStorage = useWebExtensionStorage<RequestInfo>(
@@ -43,6 +44,7 @@ export const reqInfoStorage = useWebExtensionStorage<RequestInfo>(
     lastUpvotedItemId: '',
     lastSavedItemFetchTime: 0,
     lastUpvotedItemFetchTime: 0,
+    timestamp: 0
   },
   // prevent race conditions https://github.com/antfu/vitesse-webext/issues/162
   { eventFilter: throttleFilter(200) },

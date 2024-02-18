@@ -5,7 +5,7 @@ import devSetup from './dev-setup'
 import { state, type BgState } from './bg-state'
 import { RateLimits } from '~/reddit/rate-limits'
 import { waitRateLimits } from '~/logic/wait-limits'
-import { reqInfoStorage } from '~/logic/browser-storage'
+import { optionsStorage, reqInfoStorage, userName } from '~/logic/browser-storage'
 
 devSetup()
 
@@ -35,10 +35,12 @@ function setLastId(category: ItemCategory, id: string) {
 }
 
 function setFetchDate(category: ItemCategory) {
+  const ts = Date.now()
+  reqInfoStorage.value.timestamp = ts
   if (category === 'saved') {
-    reqInfoStorage.value.lastSavedItemFetchTime = Date.now()
+    reqInfoStorage.value.lastSavedItemFetchTime = ts
   } else if (category === 'upvoted') {
-    reqInfoStorage.value.lastUpvotedItemFetchTime = Date.now()
+    reqInfoStorage.value.lastUpvotedItemFetchTime = ts
   }
 }
 
@@ -103,4 +105,44 @@ onMessage('fetch-items', async (msg) => {
 
 onMessage('get-state', async () => {
   return state
+})
+
+async function updateAndSchedule() {
+  const interval = optionsStorage.value.updateInterval
+  const lastUpdate = reqInfoStorage.value.timestamp || 0
+  let nextUpdate = lastUpdate + interval
+
+  if (lastUpdate && Date.now() < nextUpdate) {
+    browser.alarms.create('update', { when: nextUpdate })
+    console.log('DEBUG: too early, schedule next update', new Date(nextUpdate).toLocaleTimeString())
+    return
+  }
+
+  if (userName.value && optionsStorage.value.autoUpdateUpvoted) {
+    await startFetching(userName.value, 'saved', false)
+    console.log('DEBUG: saved items updated', new Date().toLocaleString())
+  }
+
+  if (userName.value && optionsStorage.value.autoUpdateSaved) {
+    await startFetching(userName.value, 'upvoted', false)
+    console.log('DEBUG: upvoted posts updated', new Date().toLocaleTimeString())
+  }
+
+  nextUpdate = Date.now() + interval
+  browser.alarms.create('update', { when: nextUpdate })
+  console.log('DEBUG: schedule next update at', new Date(nextUpdate).toLocaleString())
+}
+
+watch(
+  optionsStorage,
+  (opts) => {
+    if (opts.autoUpdateSaved || opts.autoUpdateUpvoted) {
+      updateAndSchedule()
+    }
+  },
+  { once: true },
+)
+
+browser.alarms.onAlarm.addListener(({ name }) => {
+  if (name === 'update') void updateAndSchedule()
 })
