@@ -13,8 +13,8 @@ export const state = reactive<BgState>({
 
 export async function setupMessageHandlers() {
   sendMessage('get-state', null) //
-    .then((state) => {
-      Object.assign(state, state)
+    .then((updated) => {
+      Object.assign(state, updated)
     })
 
   onMessage('state-update', ({ data }) => {
