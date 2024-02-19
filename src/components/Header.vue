@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { usePreferredDark } from '@vueuse/core'
 import PhUploadBold from '~icons/ph/upload-bold'
 import PhMagnifyingGlassBold from '~icons/ph/magnifying-glass-bold'
 import PhClockCounterClockwiseBold from '~icons/ph/clock-counter-clockwise-bold'
@@ -8,7 +7,7 @@ import PhDownloadBold from '~icons/ph/download-bold'
 import TagList from '~/components/TagList.vue'
 import AccountInputBlock from '~/components/AccountInputBlock.vue'
 import { RoutePath } from '~/options/routes'
-import { optionsStorage } from '~/logic/browser-storage'
+import { useThemeToggle } from '~/composables/useThemeToggle'
 
 const items = [
   { label: 'Search', route: RoutePath.Search, iconCmp: PhMagnifyingGlassBold },
@@ -22,16 +21,7 @@ const items = [
   },
 ]
 
-const preferDark = usePreferredDark()
-
-const isDark = computed(() => {
-  const theme = optionsStorage.value.theme
-  return theme === 'auto' ? preferDark.value : theme === 'dark'
-})
-
-function toggleTheme() {
-  optionsStorage.value.theme = isDark.value ? 'light' : 'dark'
-}
+const { isDark, toggleTheme } = useThemeToggle()
 
 const tagSidebarOn = ref(false)
 const accSidebarOn = ref(false)
@@ -64,7 +54,7 @@ const accSidebarOn = ref(false)
       </template>
       <template #end>
         <div class="flex gap-1">
-          <button class="btn" title="Toggle theme" @click="toggleTheme">
+          <button class="link-like" title="Toggle theme" @click="toggleTheme">
             <ph-sun v-if="!isDark" class="h-5 w-5" />
             <ph-moon v-else class="h-5 w-5" />
           </button>

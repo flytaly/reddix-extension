@@ -6,6 +6,8 @@ import { getUserInfo } from '~/reddit/me'
 import { state } from '~/logic/options-stores'
 import { userName } from '~/logic/browser-storage'
 
+const props = defineProps<{ startFetching?: boolean }>()
+
 const status = ref('')
 const isEdit = ref(false)
 
@@ -43,6 +45,20 @@ async function fetchUsername() {
   fetchingUsername.value = false
   if (!error) isEdit.value = false
 }
+
+watch(
+  () => props.startFetching,
+  async (value) => {
+    if (!value) return
+    if (!userName.value) {
+      await fetchUsername()
+    }
+    if (userName.value) {
+      await fetchPosts('saved', false)
+    }
+  },
+  { immediate: true },
+)
 
 function showEdit() {
   return isEdit.value || !userName.value || status.value || state.fetchError

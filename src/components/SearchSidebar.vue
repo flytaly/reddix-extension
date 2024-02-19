@@ -1,10 +1,13 @@
 <script setup lang="ts">
+import { useRoute, useRouter } from 'vue-router'
+import { sendMessage } from 'webext-bridge/options'
+
 import { state, stats } from '~/logic/options-stores'
 import AccountInput from '~/components/AccountInputBlock.vue'
 import TagList from '~/components/TagList.vue'
 import { userName } from '~/logic/browser-storage'
-import { sendMessage } from 'webext-bridge/options'
 import FetchButton from '~/components/FetchButton.vue'
+import { useMediaQuery } from '@vueuse/core'
 
 const visible = ref(false)
 
@@ -21,15 +24,35 @@ async function onSync(category: ItemCategory = 'saved', fetchAll = false) {
   )
   state.isFetching = res.isFetching
 }
+
+const route = useRoute()
+const router = useRouter()
+
+const fetchOnStart = ref(false)
+
+// watch media query programmatically to not render sidebar
+const isLargeScreen = useMediaQuery('(min-width: 960px)')
+
+onMounted(() => {
+  setTimeout(() => {
+    if (route.hash === '#fetch') {
+      fetchOnStart.value = true
+      visible.value = true
+      router.replace({ hash: '' })
+    }
+    // wait for username to be set from storage
+  }, 200)
+})
 </script>
 
 <template>
   <div class="relative h-full w-64">
     <aside
-      class="absolute inset-0 mr-auto mt-4 hidden h-full max-h-full grid-rows-[auto_auto_1fr] content-start gap-4 overflow-hidden pb-2 md:grid"
+      v-if="isLargeScreen"
+      class="absolute inset-0 mr-auto mt-4 grid h-full max-h-full grid-rows-[auto_auto_1fr] content-start gap-4 overflow-hidden pb-2"
     >
       <div class="mx-2 w-60">
-        <AccountInput />
+        <AccountInput :start-fetching="fetchOnStart" />
       </div>
       <div class="mx-2 w-60">
         <div class="mt-2 flex justify-between text-surface-500 dark:text-surface-400">
@@ -40,10 +63,10 @@ async function onSync(category: ItemCategory = 'saved', fetchAll = false) {
       <TagList />
     </aside>
   </div>
-  <div class="mx-4 flex w-full justify-end px-6 md:hidden">
+  <div v-if="!isLargeScreen" class="mx-4 flex w-full justify-end px-6">
     <FetchButton :is-fetching="state.isFetching" @fetch-items="onSync" />
     <Sidebar v-model:visible="visible">
-      <AccountInput />
+      <AccountInput :start-fetching="fetchOnStart" />
     </Sidebar>
   </div>
 </template>

@@ -4,7 +4,7 @@ export default {
   darkMode: 'class',
   theme: {
     screens: {
-      sm: '710px', // should be > popup width
+      sm: '670px', // should be > popup width
       md: '960px',
       lg: '1440px',
     },
