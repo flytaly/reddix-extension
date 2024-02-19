@@ -107,6 +107,10 @@ onMessage('get-state', async () => {
   return state
 })
 
+onMessage('clear-fetch-error', () => {
+  state.fetchError = ''
+})
+
 async function updateAndSchedule() {
   const interval = optionsStorage.value.updateInterval
   const lastUpdate = reqInfoStorage.value.timestamp || 0

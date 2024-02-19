@@ -25,16 +25,14 @@ async function fetchPosts(category: ItemCategory = 'saved', fetchAll = false) {
     status.value = 'username is required'
     return
   }
-  const res = await sendMessage(
-    'fetch-items',
-    { username: userName.value, category, options: { fetchAll } },
-    'background',
-  )
-  state.isFetching = res.isFetching
+  await sendMessage('fetch-items', { username: userName.value, category, options: { fetchAll } }, 'background')
 }
 
 watch(userName, () => {
-  if (state.fetchError) state.fetchError = ''
+  if (state.fetchError) {
+    state.fetchError = ''
+    sendMessage('clear-fetch-error', null, 'background')
+  }
 })
 
 async function fetchUsername() {

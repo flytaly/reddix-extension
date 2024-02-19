@@ -17,5 +17,6 @@ declare module 'webext-bridge' {
     >
     'get-state': ProtocolWithReturn<null, BgState>
     'state-update': BgState
+    'clear-fetch-error': ProtocolWithReturn<null, void>
   }
 }
