@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import MainLayout from '~/components/pages/MainLayout.vue'
-import PhDownloadBold from '~icons/ph/upload-bold'
 import RateLimitsBlock from '~/components/RateLimitsBlock.vue'
 import LogList from '~/components/LogList.vue'
 import { fetchInfo, parseCSV, importJSON } from '~/logic/transform/import-utils'
@@ -53,41 +52,55 @@ async function confirmImport() {
 
 <template>
   <MainLayout>
-    <main class="mx-auto grid max-w-screen-md grid-cols-[auto_1fr] grid-rows-[auto_1fr]">
-      <div />
-      <h2 class="mt-8 flex justify-center">
-        <span>Import</span>
-      </h2>
-      <aside class="mr-auto px-4">
-        <RateLimitsBlock />
-      </aside>
-      <div class="mx-auto flex w-full flex-col items-center gap-6 p-4">
-        <div v-if="needConfirmCategory" class="space-y-2 text-sm">
-          <div>Importing {{ nameList.length }} new items.</div>
-          <div>Please, confirm the item category:</div>
-          <Dropdown
-            v-model="selectedCategory"
-            :options="categories"
-            placeholder="Select a category"
-            class="mt-2 text-sm"
-          />
-          <div class="flex gap-4">
-            <Button outlined @click="cancelImport">Cancel</Button>
-            <Button @click="confirmImport">Import</Button>
+    <Card class="mx-auto mt-2 min-w-[320px] max-w-screen-md">
+      <template #title>
+        <h2 class="flex items-center">
+          <ph-download-bold class="mr-2 h-5 w-5" />
+          Import
+        </h2>
+      </template>
+      <template #content>
+        <main class="grid grid-cols-[auto_1fr]">
+          <aside class="mr-auto px-4">
+            <RateLimitsBlock />
+          </aside>
+          <div>
+            <div class="mx-auto max-w-max">
+              <label
+                class="flex rounded-sm bg-primary-500 px-2.5 py-1.5 text-sm font-semibold text-light shadow-sm hover:bg-primary-600 dark:bg-primary-400 dark:text-surface-900 dark:hover:bg-primary-300"
+              >
+                <ph-download-bold class="mr-2 h-5 w-5" />
+                <span>{{ isImporting || needConfirmCategory ? 'Importing...' : 'Choose' }}</span>
+                <input
+                  type="file"
+                  class="hidden"
+                  accept=".json,.csv"
+                  :disabled="isImporting || needConfirmCategory"
+                  @change="update"
+                />
+              </label>
+            </div>
+            <div class="mx-auto flex w-full flex-col items-center gap-6 p-4">
+              <div v-if="needConfirmCategory" class="space-y-2 text-sm">
+                <div>Importing {{ nameList.length }} new items.</div>
+                <div>Please, confirm the item category:</div>
+                <Dropdown
+                  v-model="selectedCategory"
+                  :options="categories"
+                  placeholder="Select a category"
+                  class="mt-2 text-sm"
+                />
+                <div class="flex gap-4">
+                  <Button outlined @click="cancelImport">Cancel</Button>
+                  <Button @click="confirmImport">Import</Button>
+                </div>
+              </div>
+            </div>
+            <LogList />
           </div>
-        </div>
-        <div v-if="!isImporting && !needConfirmCategory">
-          <label
-            class="flex rounded-sm bg-primary-500 px-2.5 py-1.5 text-sm font-semibold text-light shadow-sm hover:bg-primary-600 dark:bg-primary-400 dark:text-surface-900 dark:hover:bg-primary-300"
-          >
-            <PhDownloadBold class="mr-2 h-5 w-5" />
-            <span>Choose</span>
-            <input type="file" class="hidden" accept=".json,.csv" :disabled="isImporting" @change="update" />
-          </label>
-        </div>
-        <LogList />
-      </div>
-    </main>
+        </main>
+      </template>
+    </Card>
   </MainLayout>
 </template>
 

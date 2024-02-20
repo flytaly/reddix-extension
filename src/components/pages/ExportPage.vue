@@ -148,28 +148,34 @@ async function exportItems() {
 
 <template>
   <MainLayout>
-    <main>
-      <div class="mx-auto flex w-full max-w-[60rem] flex-col items-center p-4">
+    <Card class="mx-auto mt-2 min-w-[320px] max-w-screen-md">
+      <template #title>
         <h2 class="flex items-center">
-          <PhUploadBold class="mr-2 h-5 w-5" />
-          <span> Export </span>
+          <ph-upload-bold class="mr-2 h-5 w-5" />
+          <span>Export</span>
         </h2>
-        <div class="my-8 flex flex-col flex-wrap gap-3">
-          <div class="flex items-center">
-            <RadioButton v-model="selected" input-id="CSV" name="CSV" value="CSV" />
-            <label for="CSV" class="ml-2">as CSV (only item id and link)</label>
+      </template>
+      <template #content>
+        <main>
+          <div class="mx-auto flex w-full flex-col items-center p-4">
+            <div class="my-8 flex flex-col flex-wrap gap-3">
+              <div class="flex items-center">
+                <RadioButton v-model="selected" input-id="CSV" name="CSV" value="CSV" />
+                <label for="CSV" class="ml-2">as CSV (only item id and link)</label>
+              </div>
+              <div class="flex items-center">
+                <RadioButton v-model="selected" input-id="JSON" name="JSON" value="JSON" />
+                <label for="JSON" class="ml-2">as JSON (full data)</label>
+              </div>
+            </div>
+            <div class="space-y-1 text-center">
+              <div>{{ stats.total }} items</div>
+              <Button label="Export" :disabled="!stats.total" @click="exportItems" />
+            </div>
           </div>
-          <div class="flex items-center">
-            <RadioButton v-model="selected" input-id="JSON" name="JSON" value="JSON" />
-            <label for="JSON" class="ml-2">as JSON (full data)</label>
-          </div>
-        </div>
-        <div class="space-y-1 text-center">
-          <div>{{ stats.total }} items</div>
-          <Button label="Export" :disabled="!stats.total" @click="exportItems" />
-        </div>
-      </div>
-    </main>
+        </main>
+      </template>
+    </Card>
   </MainLayout>
 </template>
 

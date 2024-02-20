@@ -12,6 +12,7 @@ watch(messages, () => {
 
 <template>
   <ul
+    v-if="messages.length"
     ref="elem"
     class="max-h-96 w-full max-w-xl overflow-auto break-all bg-surface-100 p-2 ring-1 ring-surface-200 dark:bg-surface-900 dark:ring-surface-700"
   >
