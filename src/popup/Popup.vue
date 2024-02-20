@@ -71,7 +71,7 @@ async function fetchClick() {
         <ph-cloud-arrow-down v-if="!state.isFetching" class="icon" />
         <ph-spinner-gap v-if="state.isFetching" class="icon animate-spin" />
       </button>
-      <a :href="getUrl('/options')" title="Options">
+      <a :href="getUrl('/settings')" title="Settings">
         <ph-gear class="icon" />
       </a>
       <button class="link-like" title="Toggle theme" @click="toggleTheme">

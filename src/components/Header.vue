@@ -3,6 +3,7 @@ import PhUploadBold from '~icons/ph/upload-bold'
 import PhMagnifyingGlassBold from '~icons/ph/magnifying-glass-bold'
 import PhClockCounterClockwiseBold from '~icons/ph/clock-counter-clockwise-bold'
 import PhDownloadBold from '~icons/ph/download-bold'
+import PhGear from '~icons/ph/gear'
 
 import TagList from '~/components/TagList.vue'
 import AccountInputBlock from '~/components/AccountInputBlock.vue'
@@ -11,6 +12,7 @@ import { useThemeToggle } from '~/composables/useThemeToggle'
 
 const items = [
   { label: 'Search', route: RoutePath.Search, iconCmp: PhMagnifyingGlassBold },
+  { label: 'Settings', route: RoutePath.Settings, iconCmp: PhGear },
   {
     label: 'Backup',
     iconCmp: PhClockCounterClockwiseBold,
@@ -40,7 +42,7 @@ const accSidebarOn = ref(false)
         </router-link>
       </template>
       <template #item="{ item, props }">
-        <router-link v-if="item.route" :to="item.route" v-bind="props.action" class="flex items-center gap-x-1">
+        <router-link v-if="item.route" :to="item.route" v-bind="props.action" class="flex items-center gap-x-0.5">
           <component :is="item.iconCmp" class="h-5 w-5" />
           <span>{{ item.label }}</span>
         </router-link>
