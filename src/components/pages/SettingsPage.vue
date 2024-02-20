@@ -22,7 +22,9 @@ const updateIntervalValues = ref<{ name: string; value: number }[]>([
 
 const pt: SelectButtonPassThroughOptions = {
   root: 'max-w-max',
-  button: ({ context }) => ({ class: { '!bg-primary-300 dark:!bg-primary-700': context.active } }),
+  button: ({ context }) => ({
+    class: { '!bg-primary-500 dark:!bg-primary-400 text-white dark:text-black': context.active },
+  }),
 }
 
 watch(optionsStorage, (opts) => {
