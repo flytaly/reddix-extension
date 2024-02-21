@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import PhUploadBold from '~icons/ph/upload-bold'
-import PhMagnifyingGlassBold from '~icons/ph/magnifying-glass-bold'
-import PhClockCounterClockwiseBold from '~icons/ph/clock-counter-clockwise-bold'
+import PhCircleWavyQuestion from '~icons/ph/circle-wavy-question'
+import PhClockCounterClockwiseBold from '~icons/ph/clock-counter-clockwise'
 import PhDownloadBold from '~icons/ph/download-bold'
 import PhGear from '~icons/ph/gear'
+import PhMagnifyingGlassBold from '~icons/ph/magnifying-glass'
+import PhUploadBold from '~icons/ph/upload-bold'
 
 import TagList from '~/components/TagList.vue'
 import AccountInputBlock from '~/components/AccountInputBlock.vue'
@@ -21,6 +22,7 @@ const items = [
       { label: 'Export', route: RoutePath.Export, iconCmp: PhUploadBold },
     ],
   },
+  { label: 'Help', route: RoutePath.Help, iconCmp: PhCircleWavyQuestion },
 ]
 
 const { isDark, toggleTheme } = useThemeToggle()
@@ -33,7 +35,7 @@ const accSidebarOn = ref(false)
   <header>
     <Menubar
       :model="items"
-      :pt="{ root: 'min-h-[2rem] bg-surface-50 dark:bg-surface-950', menu: '!py-0.5' }"
+      :pt="{ root: 'min-h-[1.5rem] bg-surface-50 dark:bg-surface-950', menu: '!py-0.5' }"
       :pt-options="{ mergeProps: true }"
     >
       <template #start>
