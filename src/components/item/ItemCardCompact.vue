@@ -65,6 +65,7 @@ const toggle = () => {
           <a
             class="line-clamp-1 text-sm font-medium text-dark sm:line-clamp-none dark:text-light"
             :href="item.fullLink"
+            :title="item.title"
           >
             {{ item.title }}
           </a>

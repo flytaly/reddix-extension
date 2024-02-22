@@ -89,6 +89,7 @@ const expandPostOrPreview = (event: Event) => {
           <a
             class="line-clamp-1 gap-2 text-sm font-medium text-dark sm:line-clamp-none sm:text-base dark:text-light"
             :href="item.fullLink"
+            :title="item.title"
           >
             {{ item.title }}
           </a>
