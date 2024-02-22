@@ -3,6 +3,8 @@ import { RoutePath } from '~/options/routes'
 function getUrl(path: string) {
   return browser.runtime.getURL(path)
 }
+
+const eg = h('span', { class: 'font-mono text-primary-700 dark:text-primary-500' })
 </script>
 
 <template>
@@ -11,8 +13,8 @@ function getUrl(path: string) {
       <Card class="mt-2 w-full">
         <template #title>Help</template>
         <template #content>
-          <Accordion :multiple="true" :active-index="[3]" class="text-sm">
-            <AccordionTab header="How does it work?">
+          <Accordion :multiple="true" :active-index="[0]" class="text-sm">
+            <AccordionTab header="About the extension">
               <p>
                 The extension allows you to store your saved/upvoted posts and comments from Reddit in your browser's
                 storage, so you can quickly access them and perform a quick incremental search.
@@ -45,11 +47,11 @@ function getUrl(path: string) {
               To bypass these restrictions, read the next section.
             </AccordionTab>
             <AccordionTab header="Importing data">
-              Reddit API doesn't allow
-              <a href="https://www.reddit.com/r/TheoryOfReddit/comments/rfo7bt/comment/hoiqtpy/"
-                >to fetch more than 1000 items</a
-              >
-              and fetch upvoted comments. However, if you need them, you can get your data from
+              The Reddit API
+              <a href="https://www.reddit.com/r/TheoryOfReddit/comments/rfo7bt/comment/hoiqtpy/">
+                does not allow you to fetch more than 1,000 items</a
+              >, and it also does not provide information about upvoted comments. However, if you need them, you can get
+              your data from
               <a href="https://www.reddit.com/settings/data-request">reddit.com/settings/data-request</a>. Submit a
               request there with "I want data from my full time at Reddit" option and wait untill Reddit sends you the
               data on your email. The data will be in the form of a ZIP archive containing various files. Once you have
@@ -68,7 +70,34 @@ function getUrl(path: string) {
                 <span>should contain <i>id</i>, <i>permalink</i> and <i>direction</i> columns</span>
               </div>
             </AccordionTab>
-            <AccordionTab header="Search keywords"> TODO: </AccordionTab>
+            <AccordionTab header="Search">
+              <b>Keywords</b>
+              <br />
+              <p>Use the following prefixes to filter search results:</p>
+              <div class="grid grid-cols-[auto,1fr] gap-x-4">
+                <div><eg>author:</eg> or <eg>u/</eg></div>
+                <div>post or comment author (e.g. <eg>u/reddituser</eg> or <eg>author:reddituser</eg>)</div>
+                <div><eg>title:</eg> or <eg>t:</eg></div>
+                <div>a word in posts titles (e.g. <eg>title:chatgpt</eg> or <eg>t:chatgpt</eg>)</div>
+                <div><eg>body:</eg> or <eg>b:</eg></div>
+                <div>a word in posts/comments text (e.g. <eg>body:chatgpt</eg> or <eg>b:chatgpt</eg>)</div>
+                <div><eg>subreddit:</eg> or <eg>r/</eg></div>
+                <div>a name of the subreddit (e.g. <eg>r/formula1</eg>)</div>
+                <div><eg>#</eg></div>
+                <div>your custom tag (e.g. <eg>#images</eg>)</div>
+              </div>
+              <b>Escaping</b>
+              <br />
+              <p>
+                Use the backslash <eg>\</eg> to escape the next keyword. For example, <eg>\r/ChatGPT</eg>, if you want
+                to search for the word "r/ChatGPT" instead of the subreddit itself.
+              </p>
+              <p>
+                By default, the search treats your input as a prefix. For instance, <eg>title:go</eg> will match all
+                posts with titles that contain words that start with "go" such as "good", "got", "google", e.t.c. To
+                prevent this, you can add a backslash at the end of your search term: <eg>title:go\</eg>.
+              </p>
+            </AccordionTab>
           </Accordion>
         </template>
       </Card>
