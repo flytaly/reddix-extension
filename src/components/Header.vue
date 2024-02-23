@@ -5,6 +5,7 @@ import PhDownloadBold from '~icons/ph/download-bold'
 import PhGear from '~icons/ph/gear'
 import PhMagnifyingGlassBold from '~icons/ph/magnifying-glass'
 import PhUploadBold from '~icons/ph/upload-bold'
+import PhHandHeart from '~icons/ph/hand-heart-duotone'
 
 import TagList from '~/components/TagList.vue'
 import AccountInputBlock from '~/components/AccountInputBlock.vue'
@@ -23,6 +24,7 @@ const items = [
     ],
   },
   { label: 'Help', route: RoutePath.Help, iconCmp: PhCircleWavyQuestion },
+  { label: 'Support', route: RoutePath.Support, iconCmp: PhHandHeart },
 ]
 
 const { isDark, toggleTheme } = useThemeToggle()

@@ -9,6 +9,8 @@ import IconsResolver from 'unplugin-icons/resolver'
 import Components from 'unplugin-vue-components/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import { PrimeVueResolver } from 'unplugin-vue-components/resolvers'
+import svgLoader from 'vite-svg-loader'
+
 import { isDev, port, r } from './scripts/utils'
 import packageJson from './package.json'
 
@@ -25,6 +27,7 @@ export const sharedConfig: UserConfig = {
   },
   plugins: [
     Vue(),
+    svgLoader(),
 
     AutoImport({
       imports: [

@@ -4,6 +4,7 @@ import ImportPage from '~/components/pages/ImportPage.vue'
 import SearchPage from '~/components/pages/SearchPage.vue'
 import SettingsPage from '~/components/pages/SettingsPage.vue'
 import HelpPage from '~/components/pages/HelpPage.vue'
+import DonatePage from '~/components/pages/DonatePage.vue'
 
 export enum RoutePath {
   Search = '/',
@@ -11,6 +12,7 @@ export enum RoutePath {
   Export = '/export',
   Settings = '/settings',
   Help = '/help',
+  Support = '/support',
 }
 
 export const routes = [
@@ -19,6 +21,7 @@ export const routes = [
   { path: RoutePath.Export, component: ExportPage },
   { path: RoutePath.Settings, component: SettingsPage },
   { path: RoutePath.Help, component: HelpPage },
+  { path: RoutePath.Support, component: DonatePage },
 ]
 
 export const router = VueRouter.createRouter({
