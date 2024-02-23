@@ -63,7 +63,7 @@ onMounted(() => {
       <TagList />
     </aside>
   </div>
-  <div v-if="!isLargeScreen" class="mx-4 flex w-full justify-end px-6">
+  <div v-if="!isLargeScreen" class="flex w-full justify-end px-6">
     <FetchButton :is-fetching="state.isFetching" @fetch-items="onSync" />
     <Sidebar v-model:visible="visible">
       <AccountInput :start-fetching="fetchOnStart" />

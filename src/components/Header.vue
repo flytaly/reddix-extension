@@ -35,7 +35,7 @@ const accSidebarOn = ref(false)
   <header>
     <Menubar
       :model="items"
-      :pt="{ root: '!min-h-[2.5rem] bg-surface-50 dark:bg-surface-950', menu: '!py-0.5' }"
+      :pt="{ root: '!min-h-[2.5rem] bg-surface-50 dark:bg-surface-950 !px-1 sm:!px-4', menu: '!py-0.5' }"
       :pt-options="{ mergeProps: true }"
     >
       <template #start>
@@ -58,10 +58,6 @@ const accSidebarOn = ref(false)
       </template>
       <template #end>
         <div class="flex gap-1">
-          <button class="link-like" title="Toggle theme" @click="toggleTheme">
-            <ph-sun v-if="!isDark" class="h-5 w-5" />
-            <ph-moon v-else class="h-5 w-5" />
-          </button>
           <button
             class="btn flex w-max items-center rounded px-1 py-0.5 text-sm text-surface-600 md:hidden dark:text-surface-400"
             title="show tags"
@@ -75,6 +71,10 @@ const accSidebarOn = ref(false)
             @click="accSidebarOn = true"
           >
             <ph-user class="h-5 w-5 flex-shrink-0" />
+          </button>
+          <button class="link-like" title="Toggle theme" @click="toggleTheme">
+            <ph-sun v-if="!isDark" class="h-5 w-5" />
+            <ph-moon v-else class="h-5 w-5" />
           </button>
         </div>
 

@@ -50,9 +50,9 @@ const expandPostOrPreview = (event: Event) => {
 </script>
 
 <template>
-  <article class="group grid grid-cols-[auto_1fr] gap-1 pr-2">
+  <article class="group grid grid-cols-[auto_1fr] gap-1">
     <!-- Toggle Bar -->
-    <div class="flex h-full w-6 flex-col">
+    <div class="flex h-full w-4 flex-col xs:w-6">
       <button
         v-if="togglePreview || overflowen || expanded"
         class="btn h-full w-full group-hover:bg-surface-100 group-hover:hover:bg-surface-200 group-hover:dark:bg-surface-800 group-hover:hover:dark:bg-surface-700"
@@ -61,7 +61,7 @@ const expandPostOrPreview = (event: Event) => {
       />
     </div>
 
-    <div class="item w-full py-2 pl-1 pr-2" :class="{ 'item__with-body': item.body }">
+    <div class="item w-full py-2 pl-1 pr-0.5 xs:pr-2" :class="{ 'item__with-body': item.body }">
       <!-- Thumbnail  --->
       <Thumbnail class="item-thumbnail" :media="item.media" :item="item" @click="togglePreview" />
 
@@ -74,8 +74,8 @@ const expandPostOrPreview = (event: Event) => {
             <a class="dimmed-1" href="#" @click.prevent="$emit('subreddit-click', item.item.subreddit)">{{
               item.item.subreddit_name_prefixed
             }}</a>
-            <span class="dimmed-2"> by </span>
-            <a class="dimmed-1" href="#" @click.prevent="$emit('author-click', item.item.author)"
+            <span class="dimmed-2 hidden xs:inline"> by </span>
+            <a class="dimmed-1 hidden xs:inline" href="#" @click.prevent="$emit('author-click', item.item.author)"
               >u/{{ item.item.author }}</a
             >
           </span>

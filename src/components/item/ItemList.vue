@@ -76,10 +76,12 @@ const toggleTagMenu = (event: Event) => {
 
 const virualList = ref<InstanceType<typeof VirtualList>>()
 
-watch(()=>props.listType, ()=>{
+watch(
+  () => props.listType,
+  () => {
     virualList.value?.onResize()
-})
-
+  },
+)
 </script>
 
 <template>
@@ -89,7 +91,7 @@ watch(()=>props.listType, ()=>{
         <ItemCardCompact v-if="listType === 'compact'" :key="item.dbId" :item="item">
           <template #end>
             <button class="btn flex h-full items-center" title="Actions" aria-haspopup="true" @click="toggleActionMenu">
-              <PhDotsThreeBold class="h-auto w-5" />
+              <ph-dots-three-vertical class="h-4 w-auto xs:h-5" />
             </button>
           </template>
         </ItemCardCompact>
@@ -120,7 +122,7 @@ watch(()=>props.listType, ()=>{
           </template>
           <template #end>
             <button class="btn flex h-full items-center" title="Actions" aria-haspopup="true" @click="toggleActionMenu">
-              <PhDotsThreeBold class="h-auto w-5" />
+              <ph-dots-three-vertical class="h-4 w-auto xs:h-5" />
             </button>
           </template>
         </ItemCardCompact>
@@ -135,7 +137,7 @@ watch(()=>props.listType, ()=>{
         >
           <template #footer-end>
             <button class="btn ml-2" title="Actions" aria-haspopup="true" @click="toggleActionMenu">
-              <PhDotsThreeBold class="h-auto w-5" />
+              <ph-dots-three-vertical class="h-4 w-auto" />
             </button>
           </template>
         </ItemCard>

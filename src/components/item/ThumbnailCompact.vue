@@ -17,7 +17,7 @@ const href = computed(() => (props.item.isLink ? props.item.url : ''))
     :is="htmlTag"
     :title="title"
     :href="href"
-    class="flex h-full w-10 items-center justify-center rounded hover:bg-surface-100 hover:dark:bg-surface-800"
+    class="flex h-full w-8 items-center justify-center rounded hover:bg-surface-100 xs:w-10 hover:dark:bg-surface-800"
     v-on="clickHandler ? { click: clickHandler } : {}"
   >
     <PhChatText v-if="item.itemType === 'comment'" class="icon" />

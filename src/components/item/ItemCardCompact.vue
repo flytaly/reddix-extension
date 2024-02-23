@@ -22,10 +22,10 @@ const toggle = () => {
 </script>
 
 <template>
-  <article class="group grid grid-cols-[auto_1fr] gap-1 bg-cover pr-2">
+  <article class="group grid grid-cols-[auto_1fr] gap-1 bg-cover">
     <slot name="start">
       <!-- Toggle Bar -->
-      <div class="flex h-full w-6 flex-col">
+      <div class="flex h-full w-4 flex-col xs:w-6">
         <button
           v-if="expandable"
           class="btn h-full w-full group-hover:bg-surface-100 group-hover:hover:bg-surface-200 group-hover:dark:bg-surface-800 group-hover:hover:dark:bg-surface-700"
@@ -35,7 +35,7 @@ const toggle = () => {
       </div>
     </slot>
 
-    <div class="item w-full py-2 pr-2" :class="{ 'item__with-body': expanded }">
+    <div class="item w-full py-1 pr-0.5 xs:py-2 xs:pr-2" :class="{ 'item__with-body': expanded }">
       <!-- Thumbnail  --->
       <ThumbnailCompact :item="item" @click="toggle">
         <PhFileTextLight class="h-7 w-7 text-surface-500 dark:text-surface-500" />
@@ -50,8 +50,8 @@ const toggle = () => {
             <a class="dimmed-1" href="#" @click.prevent="$emit('subreddit-click', item.item.subreddit)">{{
               item.item.subreddit_name_prefixed
             }}</a>
-            <span class="dimmed-2"> by </span>
-            <a class="dimmed-1" href="#" @click.prevent="$emit('author-click', item.item.author)"
+            <span class="dimmed-2 hidden xs:inline"> by </span>
+            <a class="dimmed-1 hidden xs:inline" href="#" @click.prevent="$emit('author-click', item.item.author)"
               >u/{{ item.item.author }}</a
             >
           </span>
