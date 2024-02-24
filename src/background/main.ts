@@ -5,13 +5,9 @@ import devSetup from './dev-setup'
 import { state, type BgState } from './bg-state'
 import { RateLimits } from '~/reddit/rate-limits'
 import { waitRateLimits } from '~/logic/wait-limits'
-import { optionsStorage, reqInfoStorage, userName } from '~/logic/browser-storage'
+import { optionsStorage, reqInfoStorage, setupStorage, userName } from '~/logic/browser-storage'
 
 devSetup()
-
-browser.runtime.onInstalled.addListener((): void => {
-  console.log('Extension installed')
-})
 
 function setStateAndNotify(updates: Partial<BgState>) {
   Object.assign(state, updates)
@@ -20,27 +16,27 @@ function setStateAndNotify(updates: Partial<BgState>) {
 
 function getLastId(category: ItemCategory) {
   if (category === 'saved') {
-    return reqInfoStorage.value.lastSavedItemId
+    return reqInfoStorage.lastSavedItemId
   } else if (category === 'upvoted') {
-    return reqInfoStorage.value.lastUpvotedItemId
+    return reqInfoStorage.lastUpvotedItemId
   }
 }
 
 function setLastId(category: ItemCategory, id: string) {
   if (category === 'saved') {
-    reqInfoStorage.value.lastSavedItemId = id
+    reqInfoStorage.lastSavedItemId = id
   } else if (category === 'upvoted') {
-    reqInfoStorage.value.lastUpvotedItemId = id
+    reqInfoStorage.lastUpvotedItemId = id
   }
 }
 
 function setFetchDate(category: ItemCategory) {
   const ts = Date.now()
-  reqInfoStorage.value.timestamp = ts
+  reqInfoStorage.timestamp = ts
   if (category === 'saved') {
-    reqInfoStorage.value.lastSavedItemFetchTime = ts
+    reqInfoStorage.lastSavedItemFetchTime = ts
   } else if (category === 'upvoted') {
-    reqInfoStorage.value.lastUpvotedItemFetchTime = ts
+    reqInfoStorage.lastUpvotedItemFetchTime = ts
   }
 }
 
@@ -112,8 +108,8 @@ onMessage('clear-fetch-error', () => {
 })
 
 async function updateAndSchedule() {
-  const interval = optionsStorage.value.updateInterval
-  const lastUpdate = reqInfoStorage.value.timestamp || 0
+  const interval = optionsStorage.updateInterval
+  const lastUpdate = reqInfoStorage.timestamp || 0
   let nextUpdate = lastUpdate + interval
 
   if (lastUpdate && Date.now() < nextUpdate) {
@@ -122,12 +118,12 @@ async function updateAndSchedule() {
     return
   }
 
-  if (userName.value && optionsStorage.value.autoUpdateUpvoted) {
+  if (userName.value && optionsStorage.autoUpdateUpvoted) {
     await startFetching(userName.value, 'saved', false)
     console.log('DEBUG: saved items updated', new Date().toLocaleString())
   }
 
-  if (userName.value && optionsStorage.value.autoUpdateSaved) {
+  if (userName.value && optionsStorage.autoUpdateSaved) {
     await startFetching(userName.value, 'upvoted', false)
     console.log('DEBUG: upvoted posts updated', new Date().toLocaleTimeString())
   }
@@ -137,15 +133,20 @@ async function updateAndSchedule() {
   console.log('DEBUG: schedule next update at', new Date(nextUpdate).toLocaleString())
 }
 
-watch(
-  optionsStorage,
-  (opts) => {
-    if (opts.autoUpdateSaved || opts.autoUpdateUpvoted) {
-      updateAndSchedule()
-    }
-  },
-  { once: true },
-)
+setupStorage().then(() => {
+  watch(
+    optionsStorage,
+    (opts) => {
+      if (opts.autoUpdateSaved || opts.autoUpdateUpvoted) {
+        updateAndSchedule()
+      } else {
+        console.log('DEBUG: clear update alarms')
+        browser.alarms.clear('update')
+      }
+    },
+    { immediate: true },
+  )
+})
 
 browser.alarms.onAlarm.addListener(({ name }) => {
   if (name === 'update') void updateAndSchedule()

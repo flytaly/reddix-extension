@@ -5,12 +5,12 @@ export function useThemeToggle() {
   const preferDark = usePreferredDark()
 
   const isDark = computed(() => {
-    const theme = optionsStorage.value.theme
+    const theme = optionsStorage.theme
     return theme === 'auto' ? preferDark.value : theme === 'dark'
   })
 
   function toggleTheme() {
-    optionsStorage.value.theme = isDark.value ? 'light' : 'dark'
+    optionsStorage.theme = isDark.value ? 'light' : 'dark'
   }
 
   return {

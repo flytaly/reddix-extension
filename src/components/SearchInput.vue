@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { debounce } from 'lodash-es'
 
-import { memo } from '~/logic/browser-storage'
+import { inputsStorage } from '~/logic/browser-storage'
 import { search, setSearchQuery } from '~/logic/search-store'
 import SearchHelp from '~/components/help/SearchHelp.vue'
 
@@ -15,37 +15,23 @@ const itemTypes: { name: string; value: ItemType }[] = [
   { name: 'comments', value: 'comment' },
 ]
 
-const filterTypes = ref([...itemTypes])
-
-watch(
-  () => memo.value.itemTypes,
-  (newVal) => {
-    filterTypes.value = itemTypes.filter((v) => newVal.includes(v.value))
-  },
-  { immediate: false, once: true },
-)
+const itemTypesSaved = itemTypes.filter((v) => inputsStorage.itemTypes.includes(v.value))
+const filterTypes = ref(itemTypesSaved)
 
 watch(filterTypes, (val) => {
   search.hidePosts = !val.find((v) => v.value === 'post')
   search.hideComments = !val.find((v) => v.value === 'comment')
-  memo.value.itemTypes = val.map((v) => v.value)
+  inputsStorage.itemTypes = val.map((v) => v.value)
 })
 
 const itemCategories: ItemCategory[] = ['saved', 'upvoted']
-const filterCategories = ref([...itemCategories])
-
-watch(
-  () => memo.value.categories,
-  (newVal) => {
-    filterCategories.value = itemCategories.filter((v) => newVal.includes(v))
-  },
-  { immediate: false, once: true },
-)
+const itemCategoriesSaved = itemCategories.filter((v) => inputsStorage.categories.includes(v))
+const filterCategories = ref(itemCategoriesSaved)
 
 watch(filterCategories, (vals) => {
   search.hideSaved = !vals.includes('saved')
   search.hideUpvoted = !vals.includes('upvoted')
-  memo.value.categories = vals
+  inputsStorage.categories = vals
 })
 
 const tooltip = ref()

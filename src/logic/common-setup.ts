@@ -7,8 +7,10 @@ import PrimePreset from '~/styles/presets/wind'
 import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 import { setupTheme } from '~/logic/theme'
+import { setupStorage } from '~/logic/browser-storage'
 
-export function setupApp(app: App, appContext: { context?: string } = {}) {
+export async function setupApp(app: App, appContext: { context?: string } = {}) {
+  await setupStorage()
   setupTheme()
 
   // Inject a globally available `$app` object in template

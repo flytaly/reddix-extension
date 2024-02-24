@@ -81,7 +81,7 @@ export function onRateLimits(rl: RateLimits) {
   if (rl.reset) {
     rl.reset = new Date(Date.now() + rl.reset * 1000).getTime()
   }
-  reqInfoStorage.value.rateLimits = rl
+  reqInfoStorage.rateLimits = rl
   return rl
 }
 

@@ -1,14 +1,12 @@
-import { useWebExtensionStorage } from '~/composables/useWebExtensionStorage'
+import { assignSerialized, useStorage } from '~/composables/useStorage'
 import { RateLimits } from '~/reddit/rate-limits'
-import { ExtensionOptions, defaultOptions } from './extension-options'
-import { throttleFilter } from '@vueuse/core'
+import { defaultOptions } from './extension-options'
 
-export const optionsStorage = useWebExtensionStorage<ExtensionOptions>('options', defaultOptions, {
-  mergeDefaults: true,
-  eventFilter: throttleFilter(200),
-})
+type StorageKey = 'inputs' | 'requestInfo' | 'options'
 
-const memoInputs = {
+export const optionsStorage = useStorage('options', defaultOptions)
+
+const memoInputsDefault = {
   username: '',
   categories: ['saved', 'upvoted'] as ItemCategory[],
   itemTypes: ['post', 'comment'] as ItemType[],
@@ -16,18 +14,18 @@ const memoInputs = {
   sortDirection: 'asc' as SearchDirection,
 }
 
-export const memo = useWebExtensionStorage('memo', memoInputs, { eventFilter: throttleFilter(100) })
+export const inputsStorage = useStorage('inputs', memoInputsDefault)
 
 export const userName = computed({
   get() {
-    return memo.value.username
+    return inputsStorage.username
   },
   set(value) {
-    memo.value.username = value.trim()
+    inputsStorage.username = value.trim()
   },
 })
 
-type RequestInfo = {
+export type RequestInfo = {
   rateLimits: RateLimits
   lastSavedItemId?: string
   lastUpvotedItemId?: string
@@ -36,16 +34,22 @@ type RequestInfo = {
   timestamp?: number
 }
 
-export const reqInfoStorage = useWebExtensionStorage<RequestInfo>(
-  'request-info',
-  {
-    rateLimits: {},
-    lastSavedItemId: '',
-    lastUpvotedItemId: '',
-    lastSavedItemFetchTime: 0,
-    lastUpvotedItemFetchTime: 0,
-    timestamp: 0
-  },
-  // prevent race conditions https://github.com/antfu/vitesse-webext/issues/162
-  { eventFilter: throttleFilter(200) },
-)
+export const reqInfoStorage = useStorage<RequestInfo>('requestInfo', {
+  rateLimits: {},
+  lastSavedItemId: '',
+  lastUpvotedItemId: '',
+  lastSavedItemFetchTime: 0,
+  lastUpvotedItemFetchTime: 0,
+  timestamp: 0,
+})
+
+export async function setupStorage() {
+  try {
+    const { options, inputs, requestInfo } = (await browser.storage.local.get()) as Record<StorageKey, string>
+    if (options) assignSerialized(optionsStorage, options)
+    if (inputs) assignSerialized(inputsStorage, inputs)
+    if (requestInfo) assignSerialized(reqInfoStorage, requestInfo)
+  } catch (error) {
+    console.error('Error while accessing storage.', error)
+  }
+}

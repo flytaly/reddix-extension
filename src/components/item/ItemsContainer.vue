@@ -14,7 +14,7 @@ import { getItemsInfo } from '~/reddit'
 import { getPostsFromDB } from '~/logic/db/queries'
 import { search } from '~/logic/search-store'
 import { state } from '~/logic/options-stores'
-import { memo } from '~/logic/browser-storage'
+import { inputsStorage } from '~/logic/browser-storage'
 
 const lastItem = shallowRef<WrappedItem | null>(null)
 const isEnd = ref<boolean | null>(null)
@@ -134,22 +134,15 @@ const viewOptions: { iconCmp: FunctionalComponent; value: ViewType; title: strin
   { iconCmp: PhNotePencil, value: 'edit', title: 'Edit' },
 ]
 
-const view = ref(viewOptions[0])
+const viewSaved = viewOptions.find((v) => v.value === inputsStorage.currentView) || viewOptions[0]
+const view = ref(viewSaved)
+
+watch(view, () => (inputsStorage.currentView = view.value.value))
 
 watch(
-  () => memo.value.currentView,
-  (newView) => {
-    view.value = viewOptions.find((v) => v.value === newView) || viewOptions[0]
-  },
-  { once: true },
-)
-
-watch(view, () => (memo.value.currentView = view.value.value))
-
-watch(
-  () => memo.value.sortDirection,
+  () => inputsStorage.sortDirection,
   (dir) => (search.direction = dir),
-  { once: true },
+  { immediate: true },
 )
 
 const sortOverlay = ref()
@@ -158,7 +151,7 @@ const checkedItems = defineModel<number[]>({ default: [] })
 
 function setSortDirection(dir: SearchDirection) {
   search.direction = dir
-  memo.value.sortDirection = dir
+  inputsStorage.sortDirection = dir
 }
 </script>
 

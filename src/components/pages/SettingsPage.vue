@@ -3,7 +3,6 @@ import { Theme } from '~/logic/extension-options'
 import { optionsStorage } from '~/logic/browser-storage'
 import { SelectButtonPassThroughOptions } from 'primevue/selectbutton'
 
-const selectedTheme = ref<Theme>('auto')
 const themeOptions = ref<{ name: string; value: Theme }[]>([
   { name: 'Light', value: 'light' },
   { name: 'Dark', value: 'dark' },
@@ -11,7 +10,6 @@ const themeOptions = ref<{ name: string; value: Theme }[]>([
 ])
 
 const hour = 1000 * 60 * 60
-const updateInterval = ref<number>(12 * hour)
 const updateIntervalValues = ref<{ name: string; value: number }[]>([
   { name: '1h', value: hour },
   { name: '4h', value: 4 * hour },
@@ -26,15 +24,6 @@ const pt: SelectButtonPassThroughOptions = {
     class: { '!bg-primary-500 dark:!bg-primary-400 text-white dark:text-black': context.active },
   }),
 }
-
-watch(optionsStorage, (opts) => {
-  if (opts.theme !== selectedTheme.value) {
-    selectedTheme.value = opts.theme
-  }
-  if (opts.updateInterval !== updateInterval.value) {
-    updateInterval.value = opts.updateInterval
-  }
-})
 </script>
 
 <template>
@@ -47,7 +36,7 @@ watch(optionsStorage, (opts) => {
             <h3>Appearance</h3>
             <div>
               <SelectButton
-                v-model="selectedTheme"
+                v-model="optionsStorage.theme"
                 :options="themeOptions"
                 option-label="name"
                 option-value="value"
@@ -67,7 +56,7 @@ watch(optionsStorage, (opts) => {
                 <InputSwitch v-model="optionsStorage.autoUpdateUpvoted" input-id="auto-update-upvoted" />
                 Update interval
                 <SelectButton
-                  v-model="updateInterval"
+                  v-model="optionsStorage.updateInterval"
                   :options="updateIntervalValues"
                   option-label="name"
                   option-value="value"
