@@ -11,6 +11,7 @@ import TagList from '~/components/TagList.vue'
 import AccountInputBlock from '~/components/AccountInputBlock.vue'
 import { RoutePath } from '~/options/routes'
 import { useThemeToggle } from '~/composables/useThemeToggle'
+import Logo from '~/assets/logo_short.svg?component'
 
 const items = [
   { label: 'Search', route: RoutePath.Search, iconCmp: PhMagnifyingGlassBold },
@@ -37,13 +38,23 @@ const accSidebarOn = ref(false)
   <header>
     <Menubar
       :model="items"
-      :pt="{ root: '!min-h-[2.5rem] bg-surface-50 dark:bg-surface-950 !px-1 sm:!px-4', menu: '!py-0.5' }"
+      :pt="{
+        root: 'relative !min-h-[2.5rem] bg-surface-50 dark:bg-surface-950 !px-1 sm:!px-4 !gap-4',
+        menu: '!py-0.5',
+      }"
       :pt-options="{ mergeProps: true }"
     >
       <template #start>
-        <router-link :to="RoutePath.Search" class="flex items-center">
-          <ph-bookmarks-bold class="h-7 w-7 text-primary-400" />
-        </router-link>
+        <div class="w-[calc(0.5rem+25px)] xs:w-[calc(1rem+30px)]">
+          <router-link
+            :to="RoutePath.Search"
+            class="absolute left-2 top-2 w-[25px] transition-transform hover:translate-y-1 xs:left-4 xs:top-1 xs:w-[30px]"
+          >
+            <Logo
+              class="h-auto w-full text-primary-600 opacity-90 hover:text-primary-700 dark:text-primary-500 hover:dark:text-primary-600"
+            />
+          </router-link>
+        </div>
       </template>
       <template #item="{ item, props }">
         <router-link v-if="item.route" :to="item.route" v-bind="props.action" class="flex items-center gap-x-0.5">

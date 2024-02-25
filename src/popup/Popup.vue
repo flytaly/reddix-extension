@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import PhMagnifyingGlassBold from '~icons/ph/magnifying-glass-bold'
 import PhGear from '~icons/ph/gear'
 import PhCloudArrowDown from '~icons/ph/cloud-arrow-down'
 import { useToast } from 'primevue/usetoast'
@@ -10,6 +9,7 @@ import ItemsContainer from '~/components/item/ItemsContainer.vue'
 import { useThemeToggle } from '~/composables/useThemeToggle'
 import { setupStatsStore, state } from '~/logic/options-stores'
 import { userName } from '~/logic/browser-storage'
+import Logo from '~/assets/logo_short.svg?component'
 
 let subscription = setupStatsStore()
 
@@ -57,9 +57,16 @@ async function fetchClick() {
   <Toast />
   <div class="h-[550px] w-[var(--popup-width)] bg-surface-50 text-dark dark:bg-surface-950 dark:text-light">
     <header class="flex items-center gap-4 border-b border-surface-300 px-2 py-1 font-medium dark:border-surface-600">
-      <ph-bookmarks-bold class="icon text-primary-400" />
-      <a class="flex items-center gap-0.5 text-sm" :href="getUrl('/')" title="Open the search page in a new tab">
-        <ph-magnifying-glass-bold class="icon" />
+      <a
+        class="group relative flex items-center gap-0.5 text-sm"
+        :href="getUrl('/')"
+        title="Open the search page in a new tab"
+      >
+        <div class="w-5">
+          <Logo
+            class="absolute left-0 top-0 h-auto w-5 text-primary-600 opacity-90 transition-transform group-hover:translate-y-0.5 dark:text-primary-500"
+          />
+        </div>
         Open app
       </a>
       <button
