@@ -1,4 +1,4 @@
-import Dexie, { IndexableType, PromiseExtended, WhereClause } from 'dexie'
+import Dexie, { IndexableType, PromiseExtended } from 'dexie'
 import { ITEMS_ON_PAGE } from '~/constants'
 import { DbRedditItem, db } from '~/logic/db'
 import { RedditObjectKind } from '~/reddit/reddit-types'
@@ -21,6 +21,7 @@ export type SearchQuery = {
   title: string[]
   words: string[]
   body: string[]
+  sortBy?: 'created' | 'id'
   direction?: SearchDirection
 }
 
@@ -29,11 +30,27 @@ export async function getItems(ids: string[]) {
   return idsInDb as string[]
 }
 
-function getCollection(where: WhereClause<DbRedditItem, IndexableType>, id: number, q: SearchQuery) {
-  if (q.direction === 'desc') {
-    return where.below(id || Infinity).reverse()
+function getSortKeys(sortBy: SearchQuery['sortBy'], lastItem?: WrappedItem | null) {
+  if (sortBy === 'created') {
+    return { index: 'created_utc', key: lastItem?.item.created_utc || 0 } as const
   }
-  return where.above(id)
+
+  return { index: '_id', key: lastItem?.dbId || 0 } as const
+}
+
+function getCollectionAfter(q: SearchQuery, lastItem?: WrappedItem | null) {
+  const { index, key } = getSortKeys(q.sortBy, lastItem)
+  const where = db.redditItems.where(index)
+
+  if (index === '_id') {
+    return q.direction === 'desc' //
+      ? where.below(key || Infinity).reverse()
+      : where.above(key)
+  }
+
+  return q.direction === 'desc' //
+    ? where.belowOrEqual(key || Infinity).reverse()
+    : where.aboveOrEqual(key)
 }
 
 // with cursor based pagination
@@ -44,21 +61,19 @@ export async function getPostsFromDB(
 ): Promise<WrappedItem[]> {
   const { query } = queryDetails
   const { lastItem, limit = ITEMS_ON_PAGE } = pagination
-  const lastId = lastItem?.dbId || 0
   if (!query) {
-    const where = db.redditItems.where('_id')
-    const items = await getCollection(where, lastId, queryDetails)
-      .filter(makeFilterFn(queryDetails)) //
+    const items = await getCollectionAfter(queryDetails, lastItem)
+      .filter(makeFilterFn(queryDetails, lastItem)) //
       .limit(limit)
       .toArray()
 
     return items.map((item) => new WrappedItem(item))
   }
-  const res = await find(queryDetails, { limit, lastId })
+  const res = await find(queryDetails, pagination)
   return res.map((item) => new WrappedItem(item))
 }
 
-function makeFilterFn(details: SearchQuery) {
+function makeFilterFn(details: SearchQuery, lastItem?: WrappedItem | null) {
   return (item: DbRedditItem) => {
     if (details.hideSaved && item._category.includes('saved')) {
       return false
@@ -70,6 +85,10 @@ function makeFilterFn(details: SearchQuery) {
       return false
     }
     if (details.hideComments && item.name.startsWith(RedditObjectKind.comment)) {
+      return false
+    }
+
+    if (lastItem && lastItem.dbId === item._id) {
       return false
     }
 
@@ -92,16 +111,28 @@ function havePrefix(indexes: string[], p: string) {
   return collection.primaryKeys()
 }
 
-export function find(
+function makePaginationFilter<T extends DbRedditItem>(
   details: SearchQuery,
-  { lastId = 0, limit = ITEMS_ON_PAGE }: { lastId?: number; limit?: number } = {},
-) {
-  let pagination = (item: DbRedditItem) => item._id > lastId
-  if (details.direction === 'desc') {
-    lastId = lastId || Infinity
-    pagination = (item: DbRedditItem) => item._id < lastId
+  lastItem?: WrappedItem | null,
+): (item: T) => boolean {
+  const { index, key } = getSortKeys(details.sortBy, lastItem)
+
+  if (index === 'created_utc') {
+    return details.direction === 'desc' //
+      ? (item: T) => item[index] >= key
+      : (item: T) => item[index] <= (key || Infinity)
   }
-  const filter = makeFilterFn(details)
+
+  return details.direction === 'desc' //
+    ? (item: T) => item[index] > key
+    : (item: T) => item[index] < (key || Infinity)
+}
+
+export function find(details: SearchQuery, { lastItem, limit = ITEMS_ON_PAGE }: PaginationDetails = {}) {
+  const paginationFilter = makePaginationFilter(details, lastItem)
+  const { index: sortIndexKey } = getSortKeys(details.sortBy, lastItem)
+
+  const filter = makeFilterFn(details, lastItem)
 
   return db.transaction('r', db.redditItems, async () => {
     // Parallell search for all prefixes - just select resulting primary keys
@@ -150,7 +181,7 @@ export function find(
       .where(':id')
       .anyOf(reduced)
       .filter((item) => {
-        if (!pagination(item)) {
+        if (!paginationFilter(item)) {
           return false
         }
         return filter(item)
@@ -160,7 +191,7 @@ export function find(
       collection = collection.reverse()
     }
 
-    const items = await collection.sortBy('_id')
+    const items = await collection.sortBy(sortIndexKey)
 
     return items.slice(0, limit)
   })

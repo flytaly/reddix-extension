@@ -12,7 +12,8 @@ export const search = reactive<SearchQuery>({
   title: [],
   words: [],
   body: [],
-  direction: 'asc',
+  direction: 'desc',
+  sortBy: 'created',
 })
 
 export function clearSearch() {

@@ -1,6 +1,7 @@
 import { assignSerialized, useStorage } from '~/composables/useStorage'
 import { RateLimits } from '~/reddit/rate-limits'
 import { defaultOptions } from './extension-options'
+import { type SearchQuery } from '~/logic/db/queries'
 
 type StorageKey = 'inputs' | 'requestInfo' | 'options'
 
@@ -11,7 +12,8 @@ const memoInputsDefault = {
   categories: ['saved', 'upvoted'] as ItemCategory[],
   itemTypes: ['post', 'comment'] as ItemType[],
   currentView: 'list' as ViewType,
-  sortDirection: 'asc' as SearchDirection,
+  sortDirection: 'desc' as SearchDirection,
+  sortBy: 'created' as SearchQuery['sortBy'],
 }
 
 export const inputsStorage = useStorage('inputs', memoInputsDefault)

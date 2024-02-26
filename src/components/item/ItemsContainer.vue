@@ -11,7 +11,7 @@ import { ITEMS_ON_PAGE } from '~/constants'
 import { WrappedItem } from '~/logic/wrapped-item'
 import { deleteItems, updateItem } from '~/logic/db/mutations'
 import { getItemsInfo } from '~/reddit'
-import { getPostsFromDB } from '~/logic/db/queries'
+import { SearchQuery, getPostsFromDB } from '~/logic/db/queries'
 import { search } from '~/logic/search-store'
 import { state } from '~/logic/options-stores'
 import { inputsStorage } from '~/logic/browser-storage'
@@ -145,6 +145,12 @@ watch(
   { immediate: true },
 )
 
+watch(
+  () => inputsStorage.sortBy,
+  (sortBy) => (search.sortBy = sortBy),
+  { immediate: true },
+)
+
 const sortOverlay = ref()
 
 const checkedItems = defineModel<number[]>({ default: [] })
@@ -152,6 +158,10 @@ const checkedItems = defineModel<number[]>({ default: [] })
 function setSortDirection(dir: SearchDirection) {
   search.direction = dir
   inputsStorage.sortDirection = dir
+}
+function setSortBy(sortBy: SearchQuery['sortBy']) {
+  search.sortBy = sortBy
+  inputsStorage.sortBy = sortBy
 }
 </script>
 
@@ -225,6 +235,21 @@ function setSortDirection(dir: SearchDirection) {
       <li>
         <button class="btn flex items-center gap-1 px-2" @click="setSortDirection('desc')">
           <ph-sort-descending :class="{ 'text-primary-500 dark:text-primary-400': search.direction === 'desc' }" />desc
+        </button>
+      </li>
+    </ul>
+    <hr class="mx-auto h-[1px] w-[80%] border-surface-400 dark:border-surface-500" />
+    <ul class="flex min-w-28 flex-col gap-2 py-2 text-base">
+      <li>
+        <button class="btn flex items-center gap-1 px-2" @click="setSortBy('id')">
+          <ph-list :class="{ 'text-primary-500 dark:text-primary-400': search.sortBy === 'id' }" />
+          id
+        </button>
+      </li>
+      <li>
+        <button class="btn flex items-center gap-1 px-2" @click="setSortBy('created')">
+          <ph-calendar :class="{ 'text-primary-500 dark:text-primary-400': search.sortBy === 'created' }" />
+          creation date
         </button>
       </li>
     </ul>
