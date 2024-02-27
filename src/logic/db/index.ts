@@ -99,8 +99,11 @@ function tokenizeProp(property: unknown) {
   return []
 }
 
+// https://www.regular-expressions.info/unicode.html
+export const separator = /[\p{Z}\p{S}\p{P}\p{C}$]+/u
+
 function tokenize(text: string): string[] {
-  const allWordsIncludingDups = text.toLowerCase().split(' ')
+  const allWordsIncludingDups = text.toLowerCase().split(separator)
   const wordSet = new Set(allWordsIncludingDups)
   return [...wordSet.keys()]
 }
