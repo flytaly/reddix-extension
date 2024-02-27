@@ -67,7 +67,7 @@ async function fetchClick() {
             class="absolute left-0 top-0 h-auto w-5 text-primary-600 opacity-90 transition-transform group-hover:translate-y-0.5 dark:text-primary-500"
           />
         </div>
-        Open app
+        Open in a new tab
       </a>
       <button
         class="link-like ml-auto"

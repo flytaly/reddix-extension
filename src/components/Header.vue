@@ -12,6 +12,7 @@ import AccountInputBlock from '~/components/AccountInputBlock.vue'
 import { RoutePath } from '~/options/routes'
 import { useThemeToggle } from '~/composables/useThemeToggle'
 import Logo from '~/assets/logo_short.svg?component'
+import { useRoute, useRouter } from 'vue-router'
 
 const items = [
   { label: 'Search', route: RoutePath.Search, iconCmp: PhMagnifyingGlassBold },
@@ -32,6 +33,8 @@ const { isDark, toggleTheme } = useThemeToggle()
 
 const tagSidebarOn = ref(false)
 const accSidebarOn = ref(false)
+
+const route = useRoute()
 </script>
 
 <template>
@@ -45,16 +48,19 @@ const accSidebarOn = ref(false)
       :pt-options="{ mergeProps: true }"
     >
       <template #start>
-        <div class="w-[calc(0.5rem+25px)] xs:w-[calc(1rem+30px)]">
-          <router-link
-            :to="RoutePath.Search"
-            class="absolute left-2 top-2 w-[25px] transition-transform hover:translate-y-1 xs:left-4 xs:top-1 xs:w-[30px]"
-          >
-            <Logo
-              class="h-auto w-full text-primary-600 opacity-90 hover:text-primary-700 dark:text-primary-500 hover:dark:text-primary-600"
-            />
-          </router-link>
-        </div>
+        <router-link :to="route.path !== RoutePath.Help ? RoutePath.Help : RoutePath.Search" class="group flex">
+          <div class="w-[calc(0.5rem+25px)] xs:w-[calc(1rem+30px)]">
+            <div
+              :to="RoutePath.Search"
+              class="absolute left-2 top-2 w-[25px] transition-transform group-hover:translate-y-1 xs:left-4 xs:top-1 xs:w-[30px]"
+            >
+              <Logo
+                class="h-auto w-full text-primary-600 opacity-90 group-hover:text-primary-700 dark:text-primary-500 group-hover:dark:text-primary-600"
+              />
+            </div>
+          </div>
+          <div class="text-sm font-semibold">Reddix</div>
+        </router-link>
       </template>
       <template #item="{ item, props }">
         <router-link v-if="item.route" :to="item.route" v-bind="props.action" class="flex items-center gap-x-0.5">
