@@ -56,6 +56,9 @@ db.redditItems.hook('creating', (_primKey, obj) => {
   if (!obj._category?.length) {
     obj._category = ['saved']
   }
+
+  obj.subreddit = obj.subreddit?.toLowerCase()
+
   const ts = Math.floor(Date.now() / 1000)
   obj._created_at = ts
   obj._updated_at = ts
@@ -64,8 +67,8 @@ db.redditItems.hook('creating', (_primKey, obj) => {
 db.redditItems.hook('updating', (mods, _primKey, obj, _trans): Partial<DbRedditItem> | undefined => {
   const updated = {} as Partial<DbRedditItem>
 
-  type P = Record<keyof DbRedditPost, unknown>
-  type C = Record<keyof DbRedditComment, unknown>
+  type P = Partial<DbRedditPost>
+  type C = Partial<DbRedditComment>
   if (Object.prototype.hasOwnProperty.call(mods, 'title')) {
     updated._title_words = tokenizeProp((mods as P).title)
   }
@@ -75,12 +78,16 @@ db.redditItems.hook('updating', (mods, _primKey, obj, _trans): Partial<DbRedditI
   if (Object.prototype.hasOwnProperty.call(mods, 'body')) {
     updated._body_words = tokenizeProp((mods as C).body)
   }
+  if (Object.prototype.hasOwnProperty.call(mods, 'subreddit')) {
+    updated.subreddit = (mods as P | C).subreddit?.toLowerCase()
+  }
 
   updated._updated_at = Math.floor(Date.now() / 1000)
 
   return {
     _body_words: updated._body_words || obj._body_words,
     _title_words: updated._title_words || obj._title_words,
+    subreddit: updated.subreddit || obj.subreddit,
   }
 })
 

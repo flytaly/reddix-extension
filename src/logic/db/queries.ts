@@ -1,4 +1,4 @@
-import Dexie, { IndexableType, PromiseExtended } from 'dexie'
+import Dexie, { Collection, IndexableType, PromiseExtended } from 'dexie'
 import { ITEMS_ON_PAGE } from '~/constants'
 import { DbRedditItem, db } from '~/logic/db'
 import { RedditObjectKind } from '~/reddit/reddit-types'
@@ -21,7 +21,7 @@ export type SearchQuery = {
   title: string[]
   words: string[]
   body: string[]
-  sortBy?: 'created' | 'id'
+  sortBy?: 'created' | 'id' | 'subreddit'
   direction?: SearchDirection
 }
 
@@ -31,26 +31,35 @@ export async function getItems(ids: string[]) {
 }
 
 function getSortKeys(sortBy: SearchQuery['sortBy'], lastItem?: WrappedItem | null) {
-  if (sortBy === 'created') {
-    return { index: 'created_utc', key: lastItem?.item.created_utc || 0 } as const
+  switch (sortBy) {
+    case 'created':
+      return { index: 'created_utc', cursor: lastItem?.item.created_utc } as const
+    case 'subreddit':
+      return { index: 'subreddit', cursor: lastItem?.item.subreddit } as const
+    default:
+      return { index: '_id', cursor: lastItem?.dbId } as const
   }
-
-  return { index: '_id', key: lastItem?.dbId || 0 } as const
 }
 
-function getCollectionAfter(q: SearchQuery, lastItem?: WrappedItem | null) {
-  const { index, key } = getSortKeys(q.sortBy, lastItem)
-  const where = db.redditItems.where(index)
+function getCollectionAfter(q: SearchQuery, lastItem?: WrappedItem | null): Collection<DbRedditItem, IndexableType> {
+  const { index, cursor } = getSortKeys(q.sortBy, lastItem)
+  const isDesc = q.direction === 'desc'
 
-  if (index === '_id') {
-    return q.direction === 'desc' //
-      ? where.below(key || Infinity).reverse()
-      : where.above(key)
+  if (!cursor) {
+    return isDesc ? db.redditItems.orderBy(index).reverse() : db.redditItems.orderBy(index)
   }
 
-  return q.direction === 'desc' //
-    ? where.belowOrEqual(key || Infinity).reverse()
-    : where.aboveOrEqual(key)
+  const where = db.redditItems.where(index)
+
+  // unique index
+  if (index === '_id') {
+    return isDesc //
+      ? where.below(cursor).reverse()
+      : where.above(cursor)
+  }
+
+  // non-unique indexes
+  return isDesc ? where.belowOrEqual(cursor).reverse() : where.aboveOrEqual(cursor)
 }
 
 // with cursor based pagination
@@ -74,6 +83,20 @@ export async function getPostsFromDB(
 }
 
 function makeFilterFn(details: SearchQuery, lastItem?: WrappedItem | null) {
+  /** Check for items with non-unique indexes */
+  let isOldItem: (item: DbRedditItem) => boolean = () => false
+
+  if (lastItem && details.sortBy !== 'id') {
+    const { index } = getSortKeys(details.sortBy, lastItem)
+
+    isOldItem = (item: DbRedditItem) => {
+      if (item[index] !== lastItem.item[index]) {
+        return false
+      }
+      return details.direction === 'desc' ? item._id >= lastItem.dbId : item._id <= lastItem.dbId
+    }
+  }
+
   return (item: DbRedditItem) => {
     if (details.hideSaved && item._category.includes('saved')) {
       return false
@@ -88,7 +111,7 @@ function makeFilterFn(details: SearchQuery, lastItem?: WrappedItem | null) {
       return false
     }
 
-    if (lastItem && lastItem.dbId === item._id) {
+    if (isOldItem(item)) {
       return false
     }
 
@@ -115,17 +138,19 @@ function makePaginationFilter<T extends DbRedditItem>(
   details: SearchQuery,
   lastItem?: WrappedItem | null,
 ): (item: T) => boolean {
-  const { index, key } = getSortKeys(details.sortBy, lastItem)
+  const { index, cursor } = getSortKeys(details.sortBy, lastItem)
 
-  if (index === 'created_utc') {
+  if (!cursor) return () => true
+
+  if (index === '_id') {
     return details.direction === 'desc' //
-      ? (item: T) => item[index] >= key
-      : (item: T) => item[index] <= (key || Infinity)
+      ? (item: T) => item[index] > cursor
+      : (item: T) => item[index] < cursor
   }
 
   return details.direction === 'desc' //
-    ? (item: T) => item[index] > key
-    : (item: T) => item[index] < (key || Infinity)
+    ? (item: T) => item[index] >= cursor
+    : (item: T) => item[index] <= cursor
 }
 
 export function find(details: SearchQuery, { lastItem, limit = ITEMS_ON_PAGE }: PaginationDetails = {}) {

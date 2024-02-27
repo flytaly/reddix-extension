@@ -252,6 +252,18 @@ function setSortBy(sortBy: SearchQuery['sortBy']) {
           creation date
         </button>
       </li>
+      <li>
+        <button class="btn flex items-center gap-1 px-2" @click="setSortBy('subreddit')">
+          <div
+            :class="{
+              'text-mono min-w-5 font-bold text-primary-500 dark:text-primary-400': search.sortBy === 'subreddit',
+            }"
+          >
+            r/
+          </div>
+          subreddit
+        </button>
+      </li>
     </ul>
   </OverlayPanel>
 </template>
