@@ -144,13 +144,13 @@ function makePaginationFilter<T extends DbRedditItem>(
 
   if (index === '_id') {
     return details.direction === 'desc' //
-      ? (item: T) => item[index] > cursor
-      : (item: T) => item[index] < cursor
+      ? (item: T) => item[index] < cursor
+      : (item: T) => item[index] > cursor
   }
 
   return details.direction === 'desc' //
-    ? (item: T) => item[index] >= cursor
-    : (item: T) => item[index] <= cursor
+    ? (item: T) => item[index] <= cursor
+    : (item: T) => item[index] >= cursor
 }
 
 export function find(details: SearchQuery, { lastItem, limit = ITEMS_ON_PAGE }: PaginationDetails = {}) {
