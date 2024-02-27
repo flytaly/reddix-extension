@@ -6,6 +6,12 @@
   "type": "module",
   "packageManager": "pnpm@8.3.1",
   "description": "A browser extension that helps you organize and search your saved and upvoted Reddit items",
+  "author": "Vitaly Yerofeyevsky <flytaly@gmail.com>",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/flytaly/reddix-extension.git"
+  },
   "scripts": {
     "dev": "npm run clear && cross-env NODE_ENV=development run-p dev:*",
     "dev-firefox": "npm run clear && cross-env NODE_ENV=development EXTENSION=firefox run-p dev:*",
