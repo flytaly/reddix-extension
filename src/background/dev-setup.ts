@@ -3,8 +3,6 @@ export default function () {
   if (import.meta.hot) {
     // @ts-expect-error for background HMR
     import('/@vite/client')
-    // load latest content script
-    import('./contentScriptHMR')
   }
 
   if (__DEV__) {

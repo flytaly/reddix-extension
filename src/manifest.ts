@@ -12,7 +12,7 @@ export async function getManifest() {
     manifest_version: 3,
     name: pkg.displayName || pkg.name,
     version: pkg.version,
-    description: pkg.description,
+    description: 'Search your saved and upvoted Reddit posts and organize them using tags',
     action: {
       default_icon: './assets/icon_512.png',
       default_popup: './dist/popup/index.html',
@@ -35,20 +35,8 @@ export async function getManifest() {
       48: './assets/icon_48.png',
       128: './assets/icon_512.png',
     },
-    permissions: ['tabs', 'storage', 'activeTab', 'alarms'],
-    host_permissions: ['*://*/*'],
-    content_scripts: [
-      {
-        matches: ['<all_urls>'],
-        js: ['dist/contentScripts/index.global.js'],
-      },
-    ],
-    web_accessible_resources: [
-      {
-        resources: ['dist/contentScripts/style.css'],
-        matches: ['<all_urls>'],
-      },
-    ],
+    permissions: ['activeTab', 'alarms', 'storage', 'unlimitedStorage'],
+    host_permissions: ['https://*.reddit.com/*'],
     content_security_policy: {
       extension_pages: isDev
         ? // this is required on dev for Vite script to load
