@@ -1,17 +1,17 @@
-import { onMessage, sendMessage } from 'webext-bridge/background'
-import { savePosts } from '~/logic/db/mutations'
-import { fetchRedditItems, onRateLimits } from '~/reddit'
-import devSetup from './dev-setup'
-import { state, type BgState } from './bg-state'
-import { RateLimits } from '~/reddit/rate-limits'
-import { waitRateLimits } from '~/logic/wait-limits'
 import { optionsStorage, reqInfoStorage, setupStorage, userName } from '~/logic/browser-storage'
+import { savePosts } from '~/logic/db/mutations'
+import { waitRateLimits } from '~/logic/wait-limits'
+import { fetchRedditItems, onRateLimits } from '~/reddit'
+import { RateLimits } from '~/reddit/rate-limits'
+import { state, type BgState } from './bg-state'
+import devSetup from './dev-setup'
+import { onMessage, sendMessage } from '~/messages'
 
 devSetup()
 
 function setStateAndNotify(updates: Partial<BgState>) {
   Object.assign(state, updates)
-  sendMessage('state-update', state, { context: 'options', tabId: -1 })
+  sendMessage('state-update', state)
 }
 
 function getLastId(category: ItemCategory) {

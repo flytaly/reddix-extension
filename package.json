@@ -84,7 +84,6 @@
     "vue": "^3.4.5",
     "vue-demi": "^0.14.6",
     "web-ext": "^7.9.0",
-    "webext-bridge": "^6.0.1",
     "webextension-polyfill": "^0.10.0"
   },
   "simple-git-hooks": {

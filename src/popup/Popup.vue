@@ -2,16 +2,20 @@
 import PhGear from '~icons/ph/gear'
 import PhCloudArrowDown from '~icons/ph/cloud-arrow-down'
 import { useToast } from 'primevue/usetoast'
-import { sendMessage } from 'webext-bridge/popup'
 
 import SearchInput from '~/components/SearchInput.vue'
 import ItemsContainer from '~/components/item/ItemsContainer.vue'
 import { useThemeToggle } from '~/composables/useThemeToggle'
-import { setupStatsStore, state } from '~/logic/options-stores'
+import { setupMessageHandlers, setupStatsStore, state } from '~/logic/options-stores'
 import { userName } from '~/logic/browser-storage'
 import Logo from '~/assets/logo_short.svg?component'
+import { sendMessage } from '~/messages'
 
 let subscription = setupStatsStore()
+
+onMounted(async () => {
+  setupMessageHandlers()
+})
 
 onUnmounted(async () => {
   ;(await subscription).unsubscribe()
@@ -49,7 +53,7 @@ async function fetchClick() {
     await browser.tabs.create({ url: getUrl('/#fetch') })
     return
   }
-  await sendMessage('fetch-items', { username: userName.value, category: 'saved' }, 'background')
+  await sendMessage('fetch-items', { username: userName.value, category: 'saved' })
 }
 </script>
 

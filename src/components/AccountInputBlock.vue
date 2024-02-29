@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { sendMessage } from 'webext-bridge/options'
-
 import FetchButton from '~/components/FetchButton.vue'
 import { getUserInfo } from '~/reddit/me'
+import { sendMessage } from '~/messages'
 import { state } from '~/logic/options-stores'
 import { userName } from '~/logic/browser-storage'
 
@@ -27,13 +26,13 @@ async function fetchPosts(category: ItemCategory = 'saved', fetchAll = false) {
     status.value = 'username is required'
     return
   }
-  await sendMessage('fetch-items', { username: userName.value, category, options: { fetchAll } }, 'background')
+  await sendMessage('fetch-items', { username: userName.value, category, options: { fetchAll } })
 }
 
 watch(userName, () => {
   if (state.fetchError) {
     state.fetchError = ''
-    sendMessage('clear-fetch-error', null, 'background')
+    sendMessage('clear-fetch-error')
   }
 })
 

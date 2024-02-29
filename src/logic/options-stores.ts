@@ -1,8 +1,9 @@
-import { reactive } from 'vue'
-import { onMessage, sendMessage } from 'webext-bridge/options'
-import { db } from './db/index'
 import { liveQuery } from 'dexie'
+import { reactive } from 'vue'
+
 import type { BgState } from '~/background/bg-state'
+import { onMessage, sendMessage } from '~/messages'
+import { db } from './db/index'
 
 export const state = reactive<BgState>({
   isFetching: false,
@@ -21,8 +22,6 @@ export async function setupMessageHandlers() {
     Object.assign(state, data)
   })
 }
-
-setupMessageHandlers()
 
 type Info = {
   tags: Record<string, number>

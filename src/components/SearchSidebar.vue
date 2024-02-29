@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router'
-import { sendMessage } from 'webext-bridge/options'
-
-import { state, stats } from '~/logic/options-stores'
-import AccountInput from '~/components/AccountInputBlock.vue'
-import TagList from '~/components/TagList.vue'
-import { userName } from '~/logic/browser-storage'
-import FetchButton from '~/components/FetchButton.vue'
 import { useMediaQuery } from '@vueuse/core'
+
+import AccountInput from '~/components/AccountInputBlock.vue'
+import FetchButton from '~/components/FetchButton.vue'
+import TagList from '~/components/TagList.vue'
+import { sendMessage } from '~/messages'
+import { state, stats } from '~/logic/options-stores'
+import { userName } from '~/logic/browser-storage'
 
 const visible = ref(false)
 
@@ -17,11 +17,7 @@ async function onSync(category: ItemCategory = 'saved', fetchAll = false) {
     visible.value = true
     return
   }
-  const res = await sendMessage(
-    'fetch-items',
-    { username: userName.value, category, options: { fetchAll } },
-    'background',
-  )
+  const res = await sendMessage('fetch-items', { username: userName.value, category, options: { fetchAll } })
   state.isFetching = res.isFetching
 }
 

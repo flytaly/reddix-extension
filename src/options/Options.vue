@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { useToast } from 'primevue/usetoast'
-import { setupStatsStore, state } from '~/logic/options-stores'
+import { setupMessageHandlers, setupStatsStore, state } from '~/logic/options-stores'
 
 const toast = useToast()
 
 let subscription = setupStatsStore()
 
 const visible = ref(false)
+
+onMounted(async () => {
+  setupMessageHandlers()
+})
 
 onUnmounted(async () => {
   ;(await subscription).unsubscribe()
