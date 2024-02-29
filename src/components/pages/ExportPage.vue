@@ -7,7 +7,7 @@ import { DbRedditItem, db, isComment, isPost } from '~/logic/db'
 import { filterProperties, type ExportedItem } from '~/logic/transform/export-utils'
 import { objectsToCsv } from '~/logic/transform/export-csv'
 import { getFullLink } from '~/logic/convert-link'
-import { stats } from '~/logic/options-stores'
+import { stats } from '~/logic/stores'
 
 const selected = ref<'JSON' | 'CSV'>('CSV')
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getTagsArray } from '~/logic/options-stores'
+import { getTagsArray } from '~/logic/stores'
 import { setTag } from '~/logic/search-store'
 
 const props = defineProps<{

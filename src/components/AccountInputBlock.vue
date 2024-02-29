@@ -2,7 +2,7 @@
 import FetchButton from '~/components/FetchButton.vue'
 import { getUserInfo } from '~/reddit/me'
 import { sendMessage } from '~/messages'
-import { state } from '~/logic/options-stores'
+import { state } from '~/logic/stores'
 import { userName } from '~/logic/browser-storage'
 
 const props = defineProps<{ startFetching?: boolean }>()

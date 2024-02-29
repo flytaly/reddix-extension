@@ -1,4 +1,4 @@
-import { getTagsArray, stats } from '~/logic/options-stores'
+import { getTagsArray, stats } from '~/logic/stores'
 
 export type TagList = Array<[string, number]>
 

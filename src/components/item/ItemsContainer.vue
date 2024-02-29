@@ -13,7 +13,7 @@ import { deleteItems, updateItem } from '~/logic/db/mutations'
 import { getItemsInfo } from '~/reddit'
 import { SearchQuery, getPostsFromDB } from '~/logic/db/queries'
 import { search } from '~/logic/search-store'
-import { state } from '~/logic/options-stores'
+import { state } from '~/logic/stores'
 import { inputsStorage } from '~/logic/browser-storage'
 
 const lastItem = shallowRef<WrappedItem | null>(null)

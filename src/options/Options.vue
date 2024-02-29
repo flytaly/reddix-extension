@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useToast } from 'primevue/usetoast'
-import { setupMessageHandlers, setupStatsStore, state } from '~/logic/options-stores'
+import { setupMessageHandlers, setupStatsStore, state } from '~/logic/stores'
 
 const toast = useToast()
 

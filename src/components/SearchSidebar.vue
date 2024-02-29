@@ -6,7 +6,7 @@ import AccountInput from '~/components/AccountInputBlock.vue'
 import FetchButton from '~/components/FetchButton.vue'
 import TagList from '~/components/TagList.vue'
 import { sendMessage } from '~/messages'
-import { state, stats } from '~/logic/options-stores'
+import { state, stats } from '~/logic/stores'
 import { userName } from '~/logic/browser-storage'
 
 const visible = ref(false)
