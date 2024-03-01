@@ -12,7 +12,7 @@ import AccountInputBlock from '~/components/AccountInputBlock.vue'
 import { RoutePath } from '~/options/routes'
 import { useThemeToggle } from '~/composables/useThemeToggle'
 import Logo from '~/assets/logo_short.svg?component'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 
 const items = [
   { label: 'Search', route: RoutePath.Search, iconCmp: PhMagnifyingGlassBold },
