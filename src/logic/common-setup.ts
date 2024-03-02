@@ -3,11 +3,13 @@ import ConfirmationService from 'primevue/confirmationservice'
 import Toast from 'primevue/toast'
 import Tooltip from 'primevue/tooltip'
 import type { App } from 'vue'
-import PrimePreset from '~/styles/presets/wind'
 import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
-import { setupTheme } from '~/logic/theme'
+
 import { setupStorage } from '~/logic/browser-storage'
+import { setupTheme } from '~/logic/theme'
+import PrimePreset from '~/styles/presets/wind'
+import pkg from '~/../package.json'
 
 export async function setupApp(app: App, appContext: { context?: string } = {}) {
   await setupStorage()
@@ -16,6 +18,7 @@ export async function setupApp(app: App, appContext: { context?: string } = {}) 
   // Inject a globally available `$app` object in template
   app.config.globalProperties.$app = {
     context: '',
+    version: pkg.version,
     ...appContext,
   }
   // Provide access to `app` in script setup with `const app = inject('app')`

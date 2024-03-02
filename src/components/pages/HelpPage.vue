@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RoutePath } from '~/options/routes'
 import SearchHelp from '~/components/help/SearchHelp.vue'
+import Logo from '~/assets/logo_long.svg?component'
 
 function getUrl(path: string) {
   return browser.runtime.getURL(path)
@@ -10,16 +11,37 @@ function getUrl(path: string) {
 <template>
   <MainLayout>
     <div class="mx-auto flex w-full max-w-[120ch] flex-col">
-      <Card class="mt-2 w-full">
+      <Card class="mt-2">
+        <template #title>About</template>
+        <template #content>
+          <article class="grid grid-cols-[auto,1fr] items-start justify-start gap-2">
+            <Logo class="h-28 w-auto shrink-0" />
+            <div class="flex h-full flex-col gap-2 text-sm">
+              <header class="text-base">
+                <b>Reddix </b><span class="text-sm">v.{{ $app.version }}</span>
+              </header>
+              <div class="flex-grow">
+                Store your saved/upvoted posts and comments from Reddit in your browser's storage, so you can quickly
+                access them and perform a quick incremental search.
+              </div>
+              <div class="mt-auto">
+                <a
+                  class="flex items-center gap-0.5 no-underline"
+                  href="https://github.com/flytaly/reddix-extension"
+                  target="_blank"
+                >
+                  <ph-github-logo class="h-5 w-5" />
+                  GitHub
+                </a>
+              </div>
+            </div>
+          </article>
+        </template>
+      </Card>
+      <Card class="mt-2" :pt="{ content: '!pt-0' }" :pt-options="{ mergeProps: true }">
         <template #title>Help</template>
         <template #content>
-          <Accordion :multiple="true" :active-index="[0]" class="text-sm">
-            <AccordionTab header="About the extension">
-              <p>
-                The extension allows you to store your saved/upvoted posts and comments from Reddit in your browser's
-                storage, so you can quickly access them and perform a quick incremental search.
-              </p>
-            </AccordionTab>
+          <Accordion :multiple="true" class="text-sm">
             <AccordionTab header="Fetching data">
               <p>
                 To fetch saved posts, first make sure you are logged in to Reddit. Next, go to the search page and in
