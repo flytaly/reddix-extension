@@ -1,6 +1,6 @@
 {
   "name": "reddix",
-  "displayName": "Reddix",
+  "displayName": "Reddix - Reddit bookmarks",
   "version": "0.9.0",
   "private": true,
   "type": "module",
