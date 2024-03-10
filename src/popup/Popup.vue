@@ -55,6 +55,8 @@ async function fetchClick() {
   }
   await sendMessage('fetch-items', { username: userName.value, category: 'saved' })
 }
+
+const tagSidebarOn = ref(false)
 </script>
 
 <template>
@@ -82,6 +84,13 @@ async function fetchClick() {
         <ph-cloud-arrow-down v-if="!state.isFetching" class="icon" />
         <ph-spinner-gap v-if="state.isFetching" class="icon animate-spin" />
       </button>
+      <button
+        class="btn flex w-max items-center rounded px-1 py-0.5 text-sm text-surface-600 dark:text-surface-400 md:hidden"
+        title="show tags"
+        @click="tagSidebarOn = true"
+      >
+        <ph-hash class="h-5 w-5 flex-shrink-0" />
+      </button>
       <a :href="getUrl('/settings')" title="Settings">
         <ph-gear class="icon" />
       </a>
@@ -97,6 +106,9 @@ async function fetchClick() {
       <ItemsContainer />
     </main>
   </div>
+  <Sidebar v-model:visible="tagSidebarOn" header="Tags">
+    <TagList @tag-select="() => (tagSidebarOn = false)" />
+  </Sidebar>
 </template>
 
 <style lang="postcss" scoped>
