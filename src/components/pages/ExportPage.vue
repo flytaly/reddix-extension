@@ -148,7 +148,7 @@ async function exportItems() {
 
 <template>
   <MainLayout>
-    <Card class="mx-auto mt-2 min-w-[320px] max-w-screen-md">
+    <Card class="mx-auto mt-2 w-full max-w-[120ch]">
       <template #title>
         <h2 class="flex items-center">
           <ph-upload-bold class="mr-2 h-5 w-5" />

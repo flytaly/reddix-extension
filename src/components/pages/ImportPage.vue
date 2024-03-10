@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import MainLayout from '~/components/pages/MainLayout.vue'
+import ImportHelp from '~/components/help/ImportHelp.vue'
 import RateLimitsBlock from '~/components/RateLimitsBlock.vue'
 import LogList from '~/components/LogList.vue'
 import { fetchInfo, parseCSV, importJSON } from '~/logic/transform/import-utils'
@@ -52,7 +53,7 @@ async function confirmImport() {
 
 <template>
   <MainLayout>
-    <Card class="mx-auto mt-2 min-w-[320px] max-w-screen-md">
+    <Card class="mx-auto mt-2 w-full max-w-[120ch]">
       <template #title>
         <h2 class="flex items-center">
           <ph-download-bold class="mr-2 h-5 w-5" />
@@ -60,7 +61,18 @@ async function confirmImport() {
         </h2>
       </template>
       <template #content>
-        <main class="grid grid-cols-[auto_1fr]">
+        <Accordion pt:accordiontab:header:class="pt-0" class="mx-auto max-w-[90ch]">
+          <AccordionTab header="Importing JSON files">
+            <div>
+              JSON files that have been exported from this extension using the Export page. These files contain full
+              information about your posts and comments.
+            </div>
+          </AccordionTab>
+          <AccordionTab header="Importing Reddit CSV files">
+            <ImportHelp />
+          </AccordionTab>
+        </Accordion>
+        <main class="mt-8 grid grid-cols-[auto_1fr]">
           <aside class="mr-auto px-4">
             <RateLimitsBlock />
           </aside>
