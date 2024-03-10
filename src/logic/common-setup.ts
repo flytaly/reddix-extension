@@ -1,18 +1,18 @@
 import PrimeVue from 'primevue/config'
 import ConfirmationService from 'primevue/confirmationservice'
 import Toast from 'primevue/toast'
+import ToastService from 'primevue/toastservice'
 import Tooltip from 'primevue/tooltip'
 import type { App } from 'vue'
 import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 
-import { setupStorage } from '~/logic/browser-storage'
-import { setupTheme } from '~/logic/theme'
-import PrimePreset from '~/styles/presets/wind'
 import pkg from '~/../package.json'
+import { setupTheme } from '~/logic/theme'
+import { router } from '~/options/routes'
+import PrimePreset from '~/styles/presets/wind'
 
-export async function setupApp(app: App, appContext: { context?: string } = {}) {
-  await setupStorage()
+export function setupApp(app: App, appContext: { context?: string } = {}) {
   setupTheme()
 
   // Inject a globally available `$app` object in template
@@ -33,6 +33,8 @@ export async function setupApp(app: App, appContext: { context?: string } = {}) 
   })
 
   app.use(ConfirmationService)
+  app.use(router)
+  app.use(ToastService)
   app.directive('tooltip', Tooltip)
 
   app.component('DynamicScroller', DynamicScroller)

@@ -1,13 +1,17 @@
 import { createApp } from 'vue'
-import ToastService from 'primevue/toastservice'
+
 import App from './Popup.vue'
 import { setupApp } from '~/logic/common-setup'
 import '../styles'
-import { router } from '~/options/routes'
+import { optionsStorage, setupStorage } from '~/logic/browser-storage'
 
-const app = createApp(App)
-setupApp(app, { context: 'popup' }).then(() => {
-  app.use(router)
-  app.use(ToastService)
+setupStorage().then(() => {
+  if (optionsStorage.onBadgeClick == 'openNewTab') {
+    browser.runtime.openOptionsPage()
+    return
+  }
+
+  const app = createApp(App)
+  setupApp(app, { context: 'popup' })
   app.mount('#app')
 })

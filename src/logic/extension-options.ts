@@ -5,6 +5,7 @@ export type ExtensionOptions = {
   autoUpdateSaved: boolean
   autoUpdateUpvoted: boolean
   updateInterval: number
+  onBadgeClick?: '' | 'openNewTab'
 }
 
 export const defaultOptions: ExtensionOptions = {
@@ -12,4 +13,5 @@ export const defaultOptions: ExtensionOptions = {
   autoUpdateSaved: false,
   autoUpdateUpvoted: false,
   updateInterval: 1000 * 60 * 60 * 8,
+  onBadgeClick: '',
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Theme } from '~/logic/extension-options'
+import { ExtensionOptions, Theme } from '~/logic/extension-options'
 import { optionsStorage } from '~/logic/browser-storage'
 import { SelectButtonPassThroughOptions } from 'primevue/selectbutton'
 
@@ -18,6 +18,19 @@ const updateIntervalValues = ref<{ name: string; value: number }[]>([
   { name: '24h', value: 24 * hour },
 ])
 
+const badgeActions = ref<{ name: string; value: ExtensionOptions['onBadgeClick'] }[]>([
+  { name: 'open in the popup', value: '' },
+  { name: 'open in a new tab', value: 'openNewTab' },
+])
+
+const badgeAction = ref(
+  badgeActions.value.find((v) => v.value === optionsStorage.onBadgeClick) ?? badgeActions.value[0],
+)
+
+watch(badgeAction, () => {
+  optionsStorage.onBadgeClick = badgeAction.value.value
+})
+
 const pt: SelectButtonPassThroughOptions = {
   root: 'max-w-max',
   button: ({ context }) => ({
@@ -33,8 +46,17 @@ const pt: SelectButtonPassThroughOptions = {
         <template #title>Settings</template>
         <template #content>
           <article>
+            <h3>General</h3>
+            <div class="grid grid-cols-[auto,1fr] gap-4">
+              Badge click action
+              <Dropdown v-model="badgeAction" :options="badgeActions" option-label="name" class="max-w-max" />
+            </div>
+          </article>
+
+          <article>
             <h3>Appearance</h3>
-            <div>
+            <div class="grid grid-cols-[auto,1fr] gap-4">
+              Theme
               <SelectButton
                 v-model="optionsStorage.theme"
                 :options="themeOptions"

@@ -1,14 +1,12 @@
-import ToastService from 'primevue/toastservice'
 import { createApp } from 'vue'
+
+import { setupStorage } from '~/logic/browser-storage'
 import { setupApp } from '~/logic/common-setup'
 import '../styles'
 import App from './Options.vue'
-import { router } from './routes'
 
-const app = createApp(App)
-
-setupApp(app, { context: 'options' }).then(() => {
-  app.use(router)
-  app.use(ToastService)
+setupStorage().then(() => {
+  const app = createApp(App)
+  setupApp(app, { context: 'options' })
   app.mount('#app')
 })
