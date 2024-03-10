@@ -82,6 +82,13 @@ watch(
     virualList.value?.onResize()
   },
 )
+
+watch(
+  () => props.items,
+  () => {
+    checked.value = []
+  },
+)
 </script>
 
 <template>
