@@ -95,7 +95,7 @@ const toggleRemoveTags = (event: Event) => {
       - Remove tags
     </Button>
   </div>
-  <OverlayPanel ref="tagsOverlayRef" class="px-0 py-0" :pt="{ content: 'p-2' }">
+  <OverlayPanel ref="tagsOverlayRef" class="px-0 py-0" pt:content:class="p-2">
     <AddTagsToItems v-if="tagsAction === 'add' && selectedItems" :items="selectedItems" @exit="onTagsUpdate" />
     <RemoveTagsToItems
       v-else-if="tagsAction === 'remove' && selectedItems"

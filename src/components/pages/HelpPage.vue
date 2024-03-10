@@ -38,7 +38,7 @@ function getUrl(path: string) {
           </article>
         </template>
       </Card>
-      <Card class="mt-2" :pt="{ content: '!pt-0' }" :pt-options="{ mergeProps: true }">
+      <Card class="mt-2" pt:content:class="!pt-0" :pt-options="{ mergeProps: true }">
         <template #title>Help</template>
         <template #content>
           <Accordion :multiple="true" class="text-sm">

@@ -87,7 +87,7 @@ const expandPostOrPreview = (event: Event) => {
 
         <h4 class="wrap-anywhere">
           <a
-            class="line-clamp-1 gap-2 text-sm font-medium text-dark sm:line-clamp-none sm:text-base dark:text-light"
+            class="line-clamp-1 gap-2 text-sm font-medium text-dark dark:text-light sm:line-clamp-none sm:text-base"
             :href="item.fullLink"
             :title="item.title"
           >
@@ -95,7 +95,7 @@ const expandPostOrPreview = (event: Event) => {
           </a>
         </h4>
 
-        <OverlayPanel ref="overlayRef" :pt="{ content: 'p-0' }">
+        <OverlayPanel ref="overlayRef" pt:content:class="p-0">
           <MediaPreview :item="item" />
         </OverlayPanel>
       </header>

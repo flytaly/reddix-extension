@@ -175,7 +175,7 @@ function setSortBy(sortBy: SearchQuery['sortBy']) {
         data-key="value"
         aria-labelledby="title"
         :allow-empty="false"
-        :pt="{ button: '!px-2 !py-1 sm:!px-2.5 sm:!py-1.5 text-sm' }"
+        pt:button:class="!px-2 !py-1 sm:!px-2.5 sm:!py-1.5 text-sm"
         :pt-options="{ mergeProps: true }"
       >
         <template #option="slotProps">
@@ -221,39 +221,37 @@ function setSortBy(sortBy: SearchQuery['sortBy']) {
   </div>
   <OverlayPanel
     ref="sortOverlay"
-    :pt="{
-      content: 'p-0 bg-surface-100 dark:bg-surface-800 rounded ring-1 ring-surface-400 dark:ring-surface-500',
-      root: 'z-100',
-    }"
+    pt:content:root="z-100"
+    pt:content:class="p-0 bg-surface-100 dark:bg-surface-800 rounded ring-1 ring-surface-400 dark:ring-surface-500"
   >
     <ul class="flex min-w-28 flex-col gap-2 py-2 text-base">
       <li>
-        <button class="btn flex items-center gap-1 px-2" @click="setSortDirection('asc')">
+        <button class="btn flex w-full items-center gap-1 px-2" @click="setSortDirection('asc')">
           <ph-sort-ascending :class="{ 'text-primary-500 dark:text-primary-400': search.direction === 'asc' }" />asc
         </button>
       </li>
       <li>
-        <button class="btn flex items-center gap-1 px-2" @click="setSortDirection('desc')">
+        <button class="btn flex w-full items-center gap-1 px-2" @click="setSortDirection('desc')">
           <ph-sort-descending :class="{ 'text-primary-500 dark:text-primary-400': search.direction === 'desc' }" />desc
         </button>
       </li>
     </ul>
     <hr class="mx-auto h-[1px] w-[80%] border-surface-400 dark:border-surface-500" />
-    <ul class="flex min-w-28 flex-col gap-2 py-2 text-base">
+    <ul class="flex w-full min-w-28 flex-col gap-2 py-2 text-base">
       <li>
-        <button class="btn flex items-center gap-1 px-2" @click="setSortBy('id')">
+        <button class="btn flex w-full items-center gap-1 px-2" @click="setSortBy('id')">
           <ph-list :class="{ 'text-primary-500 dark:text-primary-400': search.sortBy === 'id' }" />
           id
         </button>
       </li>
       <li>
-        <button class="btn flex items-center gap-1 px-2" @click="setSortBy('created')">
+        <button class="btn flex w-full items-center gap-1 px-2" @click="setSortBy('created')">
           <ph-calendar :class="{ 'text-primary-500 dark:text-primary-400': search.sortBy === 'created' }" />
           creation date
         </button>
       </li>
       <li>
-        <button class="btn flex items-center gap-1 px-2" @click="setSortBy('subreddit')">
+        <button class="btn flex w-full items-center gap-1 px-2" @click="setSortBy('subreddit')">
           <div
             :class="{
               'text-mono min-w-5 font-bold text-primary-500 dark:text-primary-400': search.sortBy === 'subreddit',

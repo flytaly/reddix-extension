@@ -154,10 +154,8 @@ watch(
 
   <OverlayPanel
     ref="actionMenuRef"
-    :pt="{
-      content: 'p-0 bg-surface-100 dark:bg-surface-800 rounded ring-1 ring-surface-400 dark:ring-surface-500',
-      root: 'z-100',
-    }"
+    pt:root:class="z-100"
+    pt:content:class="p-0 bg-surface-100 dark:bg-surface-800 rounded ring-1 ring-surface-400 dark:ring-surface-500"
   >
     <ActionMenu
       v-if="selectedItem"
