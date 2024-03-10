@@ -22,6 +22,19 @@ const target = ref()
 async function commit() {
   props.onSelect(currentTags.value)
 }
+
+const autocmpRef = ref()
+
+onMounted(() => {
+  setTimeout(() => {
+    const el = autocmpRef.value.$el as HTMLElement
+    if (!el) return
+    const input = el.querySelector('input')
+    if (input) {
+      input.focus()
+    }
+  }, 100)
+})
 </script>
 
 <template>
@@ -31,6 +44,7 @@ async function commit() {
     </slot>
     <div class="card flex justify-center">
       <AutoComplete
+        ref="autocmpRef"
         v-model="currentTags"
         multiple
         dropdown
