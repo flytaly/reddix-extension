@@ -33,7 +33,7 @@ export const sharedConfig: UserConfig = {
       imports: [
         'vue',
         {
-          'webextension-polyfill': [['*', 'browser']],
+          'webextension-polyfill': [['default', 'browser']],
         },
       ],
       dts: r('src/auto-imports.d.ts'),
