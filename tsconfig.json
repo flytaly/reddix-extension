@@ -1,24 +1,24 @@
 {
   "compilerOptions": {
-    "allowJs": true,
+    "incremental": false,
+    "target": "es2022",
+    "jsx": "preserve",
+    "lib": ["DOM", "ESNext"],
     "baseUrl": ".",
     "module": "ESNext",
-    "target": "es2022",
-    "lib": ["DOM", "ESNext"],
-    "strict": true,
-    "esModuleInterop": true,
-    "incremental": false,
-    "skipLibCheck": true,
-    "jsx": "preserve",
     "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "noUnusedLocals": true,
-    "forceConsistentCasingInFileNames": true,
-    "plugins": [{ "name": "@vue/typescript-plugin" }],
-    "types": ["vite/client", "unplugin-icons/types/vue", "./src/reddit/reddit-types.ts"],
     "paths": {
       "~/*": ["src/*"]
-    }
+    },
+    "resolveJsonModule": true,
+    "types": ["vite/client", "unplugin-icons/types/vue", "./src/reddit/reddit-types.ts"],
+    "allowJs": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "plugins": [{ "name": "@vue/typescript-plugin" }]
   },
   "exclude": ["dist", "node_modules"]
 }

@@ -21,7 +21,8 @@ watch(
 )
 
 async function fetchPosts(category: ItemCategory = 'saved', fetchAll = false) {
-  if (state.isFetching) return
+  if (state.isFetching)
+    return
   if (!userName.value) {
     status.value = 'username is required'
     return
@@ -42,19 +43,20 @@ async function fetchUsername() {
   userName.value = info?.data?.name || ''
   status.value = error || ''
   fetchingUsername.value = false
-  if (!error) isEdit.value = false
+  if (!error)
+    isEdit.value = false
 }
 
 watch(
   () => props.startFetching,
   async (value) => {
-    if (!value) return
-    if (!userName.value) {
+    if (!value)
+      return
+    if (!userName.value)
       await fetchUsername()
-    }
-    if (userName.value) {
+
+    if (userName.value)
       await fetchPosts('saved', false)
-    }
   },
   { immediate: true },
 )

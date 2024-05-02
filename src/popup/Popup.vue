@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { useToast } from 'primevue/usetoast'
 import PhGear from '~icons/ph/gear'
 import PhCloudArrowDown from '~icons/ph/cloud-arrow-down'
-import { useToast } from 'primevue/usetoast'
 
 import SearchInput from '~/components/SearchInput.vue'
 import ItemsContainer from '~/components/item/ItemsContainer.vue'
@@ -11,7 +11,7 @@ import { userName } from '~/logic/browser-storage'
 import Logo from '~/assets/logo_short.svg?component'
 import { sendMessage } from '~/messages'
 
-let subscription = setupStatsStore()
+const subscription = setupStatsStore()
 
 onMounted(async () => {
   setupMessageHandlers()
@@ -21,29 +21,28 @@ onUnmounted(async () => {
   ;(await subscription).unsubscribe()
 })
 
+const toast = useToast()
+
 watch(
   () => state.isFetching,
   (newValue, oldValue) => {
-    if (newValue && !oldValue) {
+    if (newValue && !oldValue)
       toast.add({ severity: 'info', summary: 'Info', detail: 'The fetching has started', life: 2000 })
-    }
   },
 )
 
 watch(
   () => state.fetchError,
   (newValue) => {
-    if (newValue) {
+    if (newValue)
       toast.add({ severity: 'error', summary: 'Error', detail: newValue, life: 4000 })
-    }
+
     browser.tabs.create({ url: getUrl('/') })
   },
 )
 
-const toast = useToast()
-
 function getUrl(url: string) {
-  return browser.runtime.getURL('dist/options/index.html#' + url)
+  return browser.runtime.getURL(`dist/options/index.html#${url}`)
 }
 
 const { isDark, toggleTheme } = useThemeToggle()
@@ -81,7 +80,7 @@ const tagSidebarOn = ref(false)
         :disabled="state.isFetching"
         @click="fetchClick"
       >
-        <ph-cloud-arrow-down v-if="!state.isFetching" class="icon" />
+        <PhCloudArrowDown v-if="!state.isFetching" class="icon" />
         <ph-spinner-gap v-if="state.isFetching" class="icon animate-spin" />
       </button>
       <button
@@ -92,7 +91,7 @@ const tagSidebarOn = ref(false)
         <ph-hash class="h-5 w-5 flex-shrink-0" />
       </button>
       <a :href="getUrl('/settings')" title="Settings">
-        <ph-gear class="icon" />
+        <PhGear class="icon" />
       </a>
       <button class="link-like" title="Toggle theme" @click="toggleTheme">
         <ph-sun v-if="!isDark" class="h-5 w-5" />

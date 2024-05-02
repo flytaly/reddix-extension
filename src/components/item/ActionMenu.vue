@@ -26,8 +26,9 @@ function onUnsave() {
 }
 
 const updating = ref(false)
-const updateItem = async () => {
-  if (updating.value) return
+async function updateItem() {
+  if (updating.value)
+    return
   updating.value = true
   await props.onUpdate(props.item)
   updating.value = false
@@ -67,10 +68,14 @@ const updateItem = async () => {
       </button>
       <div v-if="confirmUnsave" class="mr-2" title="Unsave on Reddit. You must be logged in.">
         <span class="text-primary-400">Unsave the item?</span>
-        <br />
-        <button class="ml-2" @click="onUnsave">Yes</button>
+        <br>
+        <button class="ml-2" @click="onUnsave">
+          Yes
+        </button>
         <span class="mx-2">/</span>
-        <button @click="confirmUnsave = false">No</button>
+        <button @click="confirmUnsave = false">
+          No
+        </button>
       </div>
     </li>
 
@@ -86,10 +91,14 @@ const updateItem = async () => {
       </button>
       <div v-if="confirmDelete" class="mr-2" title="Delete the item locally from the extension">
         <span class="text-primary-400">Delete the item?</span>
-        <br />
-        <button class="ml-2" @click="onDelete">Yes</button>
+        <br>
+        <button class="ml-2" @click="onDelete">
+          Yes
+        </button>
         <span class="mx-2">/</span>
-        <button @click="confirmDelete = false">No</button>
+        <button @click="confirmDelete = false">
+          No
+        </button>
       </div>
     </li>
   </ul>

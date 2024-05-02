@@ -1,7 +1,7 @@
-import { assignSerialized, useStorage } from '~/composables/useStorage'
-import { RateLimits } from '~/reddit/rate-limits'
 import { defaultOptions } from './extension-options'
-import { type SearchQuery } from '~/logic/db/queries'
+import { assignSerialized, useStorage } from '~/composables/useStorage'
+import type { RateLimits } from '~/reddit/rate-limits'
+import type { SearchQuery } from '~/logic/db/queries'
 
 type StorageKey = 'inputs' | 'requestInfo' | 'options'
 
@@ -27,7 +27,7 @@ export const userName = computed({
   },
 })
 
-export type RequestInfo = {
+export interface RequestInfo {
   rateLimits: RateLimits
   lastSavedItemId?: string
   lastUpvotedItemId?: string
@@ -48,10 +48,14 @@ export const reqInfoStorage = useStorage<RequestInfo>('requestInfo', {
 export async function setupStorage() {
   try {
     const { options, inputs, requestInfo } = (await browser.storage.local.get()) as Record<StorageKey, string>
-    if (options) assignSerialized(optionsStorage, options)
-    if (inputs) assignSerialized(inputsStorage, inputs)
-    if (requestInfo) assignSerialized(reqInfoStorage, requestInfo)
-  } catch (error) {
+    if (options)
+      assignSerialized(optionsStorage, options)
+    if (inputs)
+      assignSerialized(inputsStorage, inputs)
+    if (requestInfo)
+      assignSerialized(reqInfoStorage, requestInfo)
+  }
+  catch (error) {
     console.error('Error while accessing storage.', error)
   }
 }

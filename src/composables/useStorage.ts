@@ -12,11 +12,13 @@ export function assignSerialized<T extends object>(target: T, serialized: string
   try {
     const data = JSON.parse(serialized)
     for (const [key, value] of Object.entries(data)) {
-      if (isEqual(target[key as keyof T], value)) continue
-      //@ts-ignore
+      if (isEqual(target[key as keyof T], value))
+        continue
+      // @ts-expect-error
       target[key as keyof T] = value
     }
-  } catch (e) {
+  }
+  catch (e) {
     console.error('Error parsing serialized data', e)
   }
 }
@@ -37,9 +39,8 @@ export function useStorage<T extends object>(
   )
 
   const listener = async (changes: Record<string, Storage.StorageChange>) => {
-    if (changes[key]) {
+    if (changes[key])
       assignSerialized(store, changes[key].newValue as string)
-    }
   }
 
   browser.storage.onChanged.addListener(listener)

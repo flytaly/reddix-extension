@@ -1,10 +1,10 @@
-const enum RateLimitHeaders {
-  'remaining' = 'x-ratelimit-remaining',
-  'reset' = 'x-ratelimit-reset',
-  'used' = 'x-ratelimit-used',
+const RateLimitHeaders = {
+  remaining: 'x-ratelimit-remaining',
+  reset: 'x-ratelimit-reset',
+  used: 'x-ratelimit-used',
 }
 
-export type RateLimits = {
+export interface RateLimits {
   remaining?: number | null
   reset?: number | null
   used?: number | null
@@ -18,8 +18,8 @@ export function getRateLimits(response: Response): RateLimits {
   }
 
   return {
-    used: rateLimits.used ? parseInt(rateLimits.used) : null,
-    reset: rateLimits.reset ? parseInt(rateLimits.reset) : null,
-    remaining: rateLimits.remaining ? parseInt(rateLimits.remaining) : null,
+    used: rateLimits.used ? Number.parseInt(rateLimits.used) : null,
+    reset: rateLimits.reset ? Number.parseInt(rateLimits.reset) : null,
+    remaining: rateLimits.remaining ? Number.parseInt(rateLimits.remaining) : null,
   }
 }

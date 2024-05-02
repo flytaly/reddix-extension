@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { extractIds } from './import-csv'
 
-describe('Preprocess importing data', () => {
+describe('preprocess importing data', () => {
   it('saved items: get list of Reddit ids', () => {
     const data = [
       ['id', 'permalink'],
@@ -11,7 +11,7 @@ describe('Preprocess importing data', () => {
       ],
       [
         'kjfio7e',
-        'https://www.reddit.com/r/dataisbeautiful/comments/19ery74/comment/kjfio7e/', //comment
+        'https://www.reddit.com/r/dataisbeautiful/comments/19ery74/comment/kjfio7e/', // comment
       ],
       ['19fbwjw', 'https://www.reddit.com/r/Pikabu/comments/19fbwjw/иногда_нужно_просто_немного_поддержки/'], // unicode
     ]
@@ -38,7 +38,7 @@ describe('Preprocess importing data', () => {
       ],
       [
         'commentid',
-        'https://www.reddit.com/r/subreddit/comments/id/comment/commentid/', 
+        'https://www.reddit.com/r/subreddit/comments/id/comment/commentid/',
         'up',
       ],
       ['19fbwjw', 'https://www.reddit.com/r/Pikabu/comments/19fbwjw/иногда_нужно_просто_немного_поддержки/', 'none'],

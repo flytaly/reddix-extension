@@ -36,7 +36,6 @@ const items = [
       :model="items"
       :disabled="isFetching"
       @click="() => onFetchItems('saved', false)"
-    >
-    </SplitButton>
+    />
   </div>
 </template>

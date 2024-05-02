@@ -5,7 +5,6 @@ export default function () {
     import('/@vite/client')
   }
 
-  if (__DEV__) {
+  if (__DEV__)
     void browser.runtime.openOptionsPage()
-  }
 }

@@ -1,6 +1,7 @@
-import { reqInfoStorage } from '~/logic/browser-storage'
-import { RateLimits, getRateLimits } from './rate-limits'
+import type { RateLimits } from './rate-limits'
+import { getRateLimits } from './rate-limits'
 import { RedditObjectKind } from './reddit-types'
+import { reqInfoStorage } from '~/logic/browser-storage'
 
 export const baseUrl = 'https://www.reddit.com'
 
@@ -12,40 +13,40 @@ export function isCommentData(data: RedditItem): data is RedditCommentData {
   return data.name.startsWith(RedditObjectKind.comment)
 }
 
-const getSavedUrl = (user: string) => {
+function getSavedUrl(user: string) {
   return `${baseUrl}/user/${user}/saved.json`
 }
 
-const getUpvotedUrl = (user: string) => {
+function getUpvotedUrl(user: string) {
   return `${baseUrl}/user/${user}/upvoted.json`
 }
 
-const getInfoUrl = (ids: string[]) => {
+function getInfoUrl(ids: string[]) {
   return `${baseUrl}/api/info.json?id=${ids.join(',')}`
 }
 
 function formatError(redditError: RedditError) {
-  if (!redditError || !redditError.message) {
+  if (!redditError || !redditError.message)
     return ''
-  }
+
   let err = `Reddit Error: ${redditError.error} ${redditError.message}.`
 
-  if (redditError.error !== '403') {
+  if (redditError.error !== '403')
     err = `${err}\nMake sure you are logged in to Reddit and have a valid username.`
-  }
+
   return err
 }
 
 function isListing(data: RedditItemResponse | RedditError): data is RedditItemResponse {
-  if (!data) {
+  if (!data)
     return false
-  }
+
   return (data as RedditItemResponse).kind === 'Listing'
 }
 
 export type ResponseOrError<T = RedditItemResponse> = [T | null, null] | [null, string]
 
-export type ItemFetchDetails = {
+export interface ItemFetchDetails {
   username: string
   after?: string
   category: ItemCategory
@@ -57,7 +58,7 @@ export async function fetchRedditItems(
 ): Promise<ResponseOrError> {
   const url = category === 'upvoted' ? getUpvotedUrl(username) : getSavedUrl(username)
 
-  const urlWithParams = url + '?limit=100' + (after ? `&after=${after}` : '')
+  const urlWithParams = `${url}?limit=100${after ? `&after=${after}` : ''}`
 
   let listing: RedditItemResponse
 
@@ -66,11 +67,12 @@ export async function fetchRedditItems(
     onRateLimitsCb?.(getRateLimits(response))
 
     const jsonResponse = (await response.json()) as RedditItemResponse | RedditError
-    if (response.status !== 200 || !isListing(jsonResponse)) {
+    if (response.status !== 200 || !isListing(jsonResponse))
       return [null, formatError(jsonResponse as RedditError) || `${response.status} ${response.statusText}`]
-    }
+
     listing = jsonResponse
-  } catch (error) {
+  }
+  catch (error) {
     return [null, (error as any as Error).message]
   }
 
@@ -78,17 +80,17 @@ export async function fetchRedditItems(
 }
 
 export function onRateLimits(rl: RateLimits) {
-  if (rl.reset) {
+  if (rl.reset)
     rl.reset = new Date(Date.now() + rl.reset * 1000).getTime()
-  }
+
   reqInfoStorage.rateLimits = rl
   return rl
 }
 
 export async function getItemsInfo(redditIds: string[], onRateLimitsCb = onRateLimits): Promise<ResponseOrError> {
-  if (!redditIds?.length) {
+  if (!redditIds?.length)
     return [null, '']
-  }
+
   const url = getInfoUrl(redditIds)
   let listing: RedditItemResponse
   try {
@@ -96,11 +98,12 @@ export async function getItemsInfo(redditIds: string[], onRateLimitsCb = onRateL
     onRateLimitsCb?.(getRateLimits(response))
 
     const jsonResponse = (await response.json()) as RedditItemResponse | RedditError
-    if (response.status !== 200 || !isListing(jsonResponse)) {
+    if (response.status !== 200 || !isListing(jsonResponse))
       return [null, formatError(jsonResponse as RedditError) || `${response.status} ${response.statusText}`]
-    }
+
     listing = jsonResponse
-  } catch (error) {
+  }
+  catch (error) {
     return [null, (error as any as Error).message]
   }
   return [listing, null]

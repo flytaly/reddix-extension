@@ -3,7 +3,7 @@ import { isPostData } from '~/reddit'
 
 export type GenericThumbnail = 'default' | 'nsfw' | 'spoiler' | 'self'
 
-export type PostMedia = {
+export interface PostMedia {
   thumbnail?: string | null
   source?: ImageSource | null
   generic?: GenericThumbnail
@@ -22,14 +22,16 @@ const isImageExt = (link?: string) => link && link.match(/(\.jpg|\.jpeg|\.png|\.
 function getMediaFromGallery(post: RedditPostData): PostMedia {
   const result = {} as PostMedia
 
-  if (!post.media_metadata) return result
+  if (!post.media_metadata)
+    return result
 
   const keys = Object.keys(post.media_metadata)
   const key = keys.find((key) => {
     const data = post.media_metadata?.[key]
     return data && data.s && (data.e === 'Image' || data.e === 'AnimatedImage')
   })
-  if (!key) return result
+  if (!key)
+    return result
 
   const media = post.media_metadata[key]
   if (media?.s) {
@@ -38,29 +40,26 @@ function getMediaFromGallery(post: RedditPostData): PostMedia {
       width: media.s.x,
       height: media.s.y,
     }
-    let p = media.p?.find((p) => p.x > minWidth || p.y > minHeight)
-    if (p) {
+    const p = media.p?.find(p => p.x > minWidth || p.y > minHeight)
+    if (p)
       result.thumbnail = unescape(p.u)
-    }
   }
 
   return result
 }
 
 export function extractMedia(item: RedditItem): PostMedia {
-  if (!isPostData(item)) {
+  if (!isPostData(item))
     return {} as PostMedia
-  }
 
   let result = {} as PostMedia
 
   if (item.thumbnail) {
     const thumbnail = unescape(item.thumbnail)
-    if (thumbnail.startsWith('https')) {
+    if (thumbnail.startsWith('https'))
       result.thumbnail = thumbnail
-    } else {
+    else
       result.generic = thumbnail as GenericThumbnail
-    }
   }
 
   const source = item.preview?.images?.[0].source
@@ -71,17 +70,15 @@ export function extractMedia(item: RedditItem): PostMedia {
 
   const resolutions = (item as RedditPostData).preview?.images?.[0].resolutions
   if (resolutions) {
-    let thumbnail = resolutions.find((img) => {
+    const thumbnail = resolutions.find((img) => {
       return img.width > minWidth || img.height > minHeight
     })
-    if (thumbnail) {
+    if (thumbnail)
       result.thumbnail = unescape(thumbnail.url)
-    }
   }
 
-  if (!result.thumbnail && isImageExt(item.url_overridden_by_dest)) {
+  if (!result.thumbnail && isImageExt(item.url_overridden_by_dest))
     result.thumbnail = unescape(item.url_overridden_by_dest)
-  }
 
   if (item.is_video && item.media?.reddit_video) {
     result.video = {
@@ -91,9 +88,8 @@ export function extractMedia(item: RedditItem): PostMedia {
     }
   }
 
-  if (item.is_gallery) {
+  if (item.is_gallery)
     result = { ...result, ...getMediaFromGallery(item) }
-  }
 
   return result
 }

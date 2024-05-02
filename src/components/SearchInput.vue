@@ -10,22 +10,22 @@ const update = debounce((e: Event) => {
   setSearchQuery(query.trim())
 }, 200)
 
-const itemTypes: { name: string; value: ItemType }[] = [
+const itemTypes: { name: string, value: ItemType }[] = [
   { name: 'posts', value: 'post' },
   { name: 'comments', value: 'comment' },
 ]
 
-const itemTypesSaved = itemTypes.filter((v) => inputsStorage.itemTypes.includes(v.value))
+const itemTypesSaved = itemTypes.filter(v => inputsStorage.itemTypes.includes(v.value))
 const filterTypes = ref(itemTypesSaved)
 
 watch(filterTypes, (val) => {
-  search.hidePosts = !val.find((v) => v.value === 'post')
-  search.hideComments = !val.find((v) => v.value === 'comment')
-  inputsStorage.itemTypes = val.map((v) => v.value)
+  search.hidePosts = !val.find(v => v.value === 'post')
+  search.hideComments = !val.find(v => v.value === 'comment')
+  inputsStorage.itemTypes = val.map(v => v.value)
 })
 
 const itemCategories: ItemCategory[] = ['saved', 'upvoted']
-const itemCategoriesSaved = itemCategories.filter((v) => inputsStorage.categories.includes(v))
+const itemCategoriesSaved = itemCategories.filter(v => inputsStorage.categories.includes(v))
 const filterCategories = ref(itemCategoriesSaved)
 
 watch(filterCategories, (vals) => {
@@ -36,10 +36,10 @@ watch(filterCategories, (vals) => {
 
 const tooltip = ref()
 
-const showTooltip = (ev: MouseEvent) => {
+function showTooltip(ev: MouseEvent) {
   tooltip.value.toggle(ev)
 }
-const hideTooltip = (ev: MouseEvent) => {
+function hideTooltip(ev: MouseEvent) {
   tooltip.value.hide(ev)
 }
 </script>

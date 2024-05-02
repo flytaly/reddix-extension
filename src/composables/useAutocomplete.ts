@@ -16,12 +16,12 @@ export function useTagsAutocomplete(forbidNew = false) {
       allTags.value.forEach(([tag, count]) => {
         for (let i = 0; i < tag.length; i++) {
           const substr = tag.slice(0, i + 1)
-          if (!parts.value[substr]) {
+          if (!parts.value[substr])
             parts.value[substr] = []
-          }
-          if (parts.value[substr].length >= 10) {
+
+          if (parts.value[substr].length >= 10)
             continue
-          }
+
           parts.value[substr] = [...parts.value[substr], [tag, count]]
         }
       })
@@ -30,7 +30,7 @@ export function useTagsAutocomplete(forbidNew = false) {
   )
 
   const search = (event: { query: string }) => {
-    let tags = parts.value[event.query]
+    const tags = parts.value[event.query]
     if (forbidNew) {
       completeItems.value = !event.query ? allTags.value.slice(0, 30) : tags
       return
@@ -39,7 +39,7 @@ export function useTagsAutocomplete(forbidNew = false) {
       completeItems.value = !event.query ? allTags.value.slice(0, 30) : [[event.query, stats.tags[event.query]]]
       return
     }
-    if (!event.query || tags[0][0] == event.query) {
+    if (!event.query || tags[0][0] === event.query) {
       completeItems.value = tags
       return
     }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useToast } from 'primevue/usetoast'
 
-import { setTag, setSubreddit, setAuthor } from '~/logic/search-store'
+import { setAuthor, setSubreddit, setTag } from '~/logic/search-store'
 import EditItemTags from '~/components/tags/EditItemTags.vue'
 import ItemCard from '~/components/item/ItemCard.vue'
 import ItemCardCompact from '~/components/item/ItemCardCompact.vue'
@@ -21,21 +21,23 @@ const props = defineProps<{
   onUpdate: (item: WrappedItem) => Promise<void>
 }>()
 
-const checked = defineModel<number[]>('checked')
-
 const emit = defineEmits<{
   (e: 'scroll-end'): void
 }>()
 
+const checked = defineModel<number[]>('checked')
+
 function deleteItem(id?: number) {
-  if (!id) return
+  if (!id)
+    return
   props.onDelete([id])
 }
 
 const toast = useToast()
 
 async function unsaveOnReddit(name?: string) {
-  if (!name) return
+  if (!name)
+    return
   const [userInfo, err] = await getUserInfo()
   const modhash = userInfo?.data?.modhash
   if (err || !modhash) {
@@ -47,8 +49,9 @@ async function unsaveOnReddit(name?: string) {
     toast.add({ severity: 'error', summary: 'Error', detail: unsaveError, life: 3000 })
     return
   }
-  let item = props.items.find((item) => item.redditId === name)
-  if (!item) return
+  const item = props.items.find(item => item.redditId === name)
+  if (!item)
+    return
   await updateItem(item.dbId, { saved: false })
   await props.onUnsave(item.dbId)
   toast.add({ severity: 'info', summary: 'Info', detail: 'Unsaved the item', life: 1000 })
@@ -56,19 +59,20 @@ async function unsaveOnReddit(name?: string) {
 
 const redditId = ref('')
 const selectedItem = computed(() => {
-  if (!redditId.value) return
-  return props.items.find((item) => item.redditId === redditId.value)
+  if (!redditId.value)
+    return
+  return props.items.find(item => item.redditId === redditId.value)
 })
 
 const actionMenuRef = ref()
-const toggleActionMenu = (event: Event) => {
+function toggleActionMenu(event: Event) {
   const li = (event.currentTarget as HTMLElement).closest('[data-reddit-name]') as HTMLElement | null
   redditId.value = li?.dataset.redditName || ''
   actionMenuRef.value.toggle(event)
 }
 
 const tagMenuRef = ref()
-const toggleTagMenu = (event: Event) => {
+function toggleTagMenu(event: Event) {
   const li = (event.currentTarget as HTMLElement).closest('[data-reddit-name]') as HTMLElement | null
   redditId.value = li?.dataset.redditName || ''
   tagMenuRef.value.toggle(event)
@@ -116,10 +120,10 @@ watch(
                 :pt="{
                   root: ({ context }) => ({
                     class:
-                      'pl-2 pr-2 flex h-full items-center justify-end ' +
-                      (context.checked
-                        ? 'bg-primary-100 dark:bg-primary-800 hover:bg-primary-300 dark:hover:bg-primary-600'
-                        : 'hover:bg-primary-100 dark:hover:bg-primary-700'),
+                      `pl-2 pr-2 flex h-full items-center justify-end ${
+                        context.checked
+                          ? 'bg-primary-100 dark:bg-primary-800 hover:bg-primary-300 dark:hover:bg-primary-600'
+                          : 'hover:bg-primary-100 dark:hover:bg-primary-700'}`,
                   }),
                 }"
                 name="item"

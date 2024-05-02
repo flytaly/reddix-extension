@@ -1,13 +1,13 @@
 import { ref } from 'vue'
 
-export type LogEntry = {
+export interface LogEntry {
   id: number
   date: Date
   type?: 'info' | 'error'
   message: string
 }
 
-export let messages = ref<LogEntry[]>([])
+export const messages = ref<LogEntry[]>([])
 
 export function addMessage(message: string, type?: 'info' | 'error') {
   messages.value.push({ id: messages.value.at(-1)?.id || 0 + 1, date: new Date(), type, message })

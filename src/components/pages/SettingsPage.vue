@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { ExtensionOptions, Theme } from '~/logic/extension-options'
+import type { SelectButtonPassThroughOptions } from 'primevue/selectbutton'
+import type { ExtensionOptions, Theme } from '~/logic/extension-options'
 import { optionsStorage } from '~/logic/browser-storage'
-import { SelectButtonPassThroughOptions } from 'primevue/selectbutton'
 
-const themeOptions = ref<{ name: string; value: Theme }[]>([
+const themeOptions = ref<{ name: string, value: Theme }[]>([
   { name: 'Light', value: 'light' },
   { name: 'Dark', value: 'dark' },
   { name: 'System', value: 'auto' },
 ])
 
 const hour = 1000 * 60 * 60
-const updateIntervalValues = ref<{ name: string; value: number }[]>([
+const updateIntervalValues = ref<{ name: string, value: number }[]>([
   { name: '1h', value: hour },
   { name: '4h', value: 4 * hour },
   { name: '8h', value: 8 * hour },
@@ -18,13 +18,13 @@ const updateIntervalValues = ref<{ name: string; value: number }[]>([
   { name: '24h', value: 24 * hour },
 ])
 
-const badgeActions = ref<{ name: string; value: ExtensionOptions['onBadgeClick'] }[]>([
+const badgeActions = ref<{ name: string, value: ExtensionOptions['onBadgeClick'] }[]>([
   { name: 'open in the popup', value: '' },
   { name: 'open in a new tab', value: 'openNewTab' },
 ])
 
 const badgeAction = ref(
-  badgeActions.value.find((v) => v.value === optionsStorage.onBadgeClick) ?? badgeActions.value[0],
+  badgeActions.value.find(v => v.value === optionsStorage.onBadgeClick) ?? badgeActions.value[0],
 )
 
 watch(badgeAction, () => {
@@ -43,7 +43,9 @@ const pt: SelectButtonPassThroughOptions = {
   <MainLayout>
     <div class="mx-auto flex w-full max-w-screen-md flex-col">
       <Card class="mt-2 w-full">
-        <template #title>Settings</template>
+        <template #title>
+          Settings
+        </template>
         <template #content>
           <article>
             <h3>General</h3>

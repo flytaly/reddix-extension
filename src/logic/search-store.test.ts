@@ -1,15 +1,15 @@
 import { describe, expect, it } from 'vitest'
-import { search, setSearchQuery, setTag, setSubreddit, setAuthor } from './search-store'
-import { SearchQuery } from './db/queries'
+import { search, setAuthor, setSearchQuery, setSubreddit, setTag } from './search-store'
+import type { SearchQuery } from './db/queries'
 
 function create(s: Partial<SearchQuery> = {}) {
   return { query: '', tags: [], words: [], author: '', hidePosts: false, hideComments: false, ...s } as SearchQuery
 }
 
-describe('Search store', () => {
+describe('search store', () => {
   describe('parse query', () => {
     it('words', () => {
-      let query = 'Hello World'
+      const query = 'Hello World'
       setSearchQuery(query)
       expect(search).toMatchObject(create({ query, words: ['hello', 'world'] }))
     })
@@ -75,7 +75,7 @@ describe('Search store', () => {
     })
   })
 
-  describe('Methods', () => {
+  describe('methods', () => {
     it('should add tag to input', () => {
       document.body.innerHTML = '<input id="search-input" />'
       const input = document.getElementById('search-input')

@@ -26,7 +26,7 @@ const showQR = ref(false)
     </div>
     <div v-if="showQR" class="flex justify-center transition-all duration-700">
       <span class="h-56 w-56">
-        <slot name="qr"></slot>
+        <slot name="qr" />
       </span>
     </div>
   </div>

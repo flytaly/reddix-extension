@@ -38,8 +38,8 @@ export default {
         'surface-900': 'rgb(var(--surface-900) / <alpha-value>)',
         'surface-950': 'rgb(var(--surface-950) / <alpha-value>)',
 
-        light: 'rgb(var(--text-light) / <alpha-value>)',
-        dark: 'rgb(var(--text-dark) / <alpha-value>)',
+        'light': 'rgb(var(--text-light) / <alpha-value>)',
+        'dark': 'rgb(var(--text-dark) / <alpha-value>)',
 
         'error-light': 'var(--error-light)',
         'error-dark': 'var(--error-dark)',

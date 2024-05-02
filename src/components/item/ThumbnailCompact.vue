@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { WrappedItem } from '~/logic/wrapped-item'
+import type { WrappedItem } from '~/logic/wrapped-item'
 
 const props = defineProps<{
   onClick?: (e: Event) => void

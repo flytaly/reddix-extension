@@ -8,7 +8,8 @@ const props = defineProps<{
 
 async function onTagClick(e: MouseEvent) {
   const tag = (e.currentTarget as HTMLElement).dataset.tag
-  if (!tag) return
+  if (!tag)
+    return
   setTag(tag)
   props.onTagSelect?.(tag)
 }

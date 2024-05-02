@@ -1,21 +1,21 @@
 declare global {
   // https://www.reddit.com/dev/api/
   export enum RedditObjectKind {
-    'comment' = 't1',
-    'account' = 't2',
-    'link' = 't3',
-    'message' = 't4',
-    'subreddit' = 't5',
-    'award' = 't6',
+    comment = 't1',
+    account = 't2',
+    link = 't3',
+    message = 't4',
+    subreddit = 't5',
+    award = 't6',
   }
 
-  export type ImageSource = {
+  export interface ImageSource {
     height: number
     width: number
     url: string
   }
 
-  export type VideoSource = {
+  export interface VideoSource {
     fallback_url: string
     has_audio: boolean
     height: number
@@ -30,7 +30,7 @@ declare global {
 
   export type LiteralUnion<LiteralType, BaseType> = LiteralType | (BaseType & Record<never, never>)
 
-  export type MediaMedataPreview = {
+  export interface MediaMedataPreview {
     /** width */
     x: number
     /** height */
@@ -39,7 +39,7 @@ declare global {
     u: string
   }
 
-  export type RedditMediaMetadata = {
+  export interface RedditMediaMetadata {
     status: LiteralUnion<'valid', string>
     id: string
     e: LiteralUnion<'Image' | 'RedditVideo' | 'AnimatedImage', string>
@@ -51,7 +51,7 @@ declare global {
     s?: MediaMedataPreview
   }
 
-  export type RedditPostData = {
+  export interface RedditPostData {
     author: string
     created_utc: number
     created: number
@@ -85,7 +85,7 @@ declare global {
     media_metadata?: Record<string, RedditMediaMetadata>
   }
 
-  export type RedditCommentData = {
+  export interface RedditCommentData {
     author: string
     author_fullname: string
     author_is_blocked: boolean
@@ -105,7 +105,7 @@ declare global {
     subreddit_name_prefixed: string
   }
 
-  export type RedditPost = {
+  export interface RedditPost {
     kind: RedditObjectKind.link
     data: RedditPostData
   }
@@ -115,14 +115,14 @@ declare global {
     data: RedditPostData & Record<string, unknown>
   }
 
-  export type RedditComment = {
+  export interface RedditComment {
     kind: RedditObjectKind.comment
     data: RedditCommentData
   }
 
   export type RedditItem = RedditCommentData | RedditPostData
 
-  export type RedditListingResponse<T> = {
+  export interface RedditListingResponse<T> {
     kind: 'Listing'
     data: {
       /** after / before - only one should be specified. these indicate the fullname of an item in the listing to use as the anchor point of the slice. */
@@ -135,14 +135,14 @@ declare global {
     }
   }
 
-  export type RedditError = {
+  export interface RedditError {
     error?: string
     message?: string
   }
 
   export type RedditItemResponse = RedditListingResponse<RedditPostUnfiltered | RedditComment>
 
-  export type RedditListingRequest = {
+  export interface RedditListingRequest {
     after?: number
     /** after / before - only one should be specified. these indicate the fullname of an item in the listing to use as the anchor point of the slice */
     before?: number

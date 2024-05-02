@@ -1,4 +1,4 @@
-import { SearchQuery } from './db/queries'
+import type { SearchQuery } from './db/queries'
 
 export const search = reactive<SearchQuery>({
   author: '',
@@ -29,7 +29,7 @@ export function clearSearch() {
 export function setSearchQuery(query: string) {
   const pieces = query.split(' ')
   clearSearch()
-  for (let piece of pieces) {
+  for (const piece of pieces) {
     if (piece.startsWith('\\')) {
       // escape
       search.words.push(piece.slice(1).toLowerCase())
@@ -78,7 +78,8 @@ export function setSearchQuery(query: string) {
 
 function focusInput() {
   const input = document.getElementById('search-input')
-  if (input) input.focus()
+  if (input)
+    input.focus()
 }
 
 export function setTag(tag: string) {

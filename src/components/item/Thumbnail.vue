@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { WrappedItem } from '~/logic/wrapped-item'
+import type { WrappedItem } from '~/logic/wrapped-item'
 
 const props = defineProps<{
   onClick?: ((e: Event) => void) | null
@@ -10,9 +10,9 @@ const isLink = computed(() => props.item.isLink)
 const media = computed(() => props.item.media)
 const clickHandler = computed(() => (props.onClick && !isLink.value ? props.onClick : null))
 const htmlTag = computed(() => {
-  if (isLink.value) {
+  if (isLink.value)
     return 'a'
-  }
+
   return clickHandler.value ? 'button' : 'div'
 })
 const href = computed(() => (isLink.value ? props.item.url : ''))
@@ -26,9 +26,11 @@ const href = computed(() => (isLink.value ? props.item.url : ''))
       :href="href"
       v-on="clickHandler ? { click: clickHandler } : {}"
     >
-      <img v-if="media.thumbnail" class="h-16 w-20 rounded object-cover sm:h-[4.5rem] sm:w-24" :src="media.thumbnail" />
+      <img v-if="media.thumbnail" class="h-16 w-20 rounded object-cover sm:h-[4.5rem] sm:w-24" :src="media.thumbnail">
       <div v-else-if="media.generic" class="flex h-16 w-20 items-center justify-center sm:h-[4.5rem] sm:w-24">
-        <div v-if="media.generic === 'nsfw'" class="font-bold text-surface-500 dark:text-surface-500">NSFW</div>
+        <div v-if="media.generic === 'nsfw'" class="font-bold text-surface-500 dark:text-surface-500">
+          NSFW
+        </div>
         <PhLink v-else-if="media.generic === 'default'" class="h-7 w-7 text-surface-500 dark:text-surface-500" />
         <PhFileTextLight v-else class="h-7 w-7 text-surface-500 dark:text-surface-500" />
       </div>

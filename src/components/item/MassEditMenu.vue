@@ -16,27 +16,25 @@ const selectAll = ref<true | false | null>(null)
 
 watch(selectAll, (val) => {
   const len = checked.value?.length || 0
-  if ((val === null && len) || (val === false && len === props.items.length)) {
+  if ((val === null && len) || (val === false && len === props.items.length))
     checked.value = []
-  } else if (val && len != props.items.length) {
-    checked.value = props.items.map((it) => it.dbId)
-  }
+  else if (val && len !== props.items.length)
+    checked.value = props.items.map(it => it.dbId)
 })
 
 watch(checked, (val) => {
   const len = val?.length || 0
-  if (len == 0 && selectAll.value !== null) {
+  if (len === 0 && selectAll.value !== null)
     selectAll.value = null
-  } else if (len == props.items.length && !selectAll.value) {
+  else if (len === props.items.length && !selectAll.value)
     selectAll.value = true
-  } else if (len > 0 && len < props.items.length && selectAll.value !== false) {
+  else if (len > 0 && len < props.items.length && selectAll.value !== false)
     selectAll.value = false
-  }
 })
 
 const confirmDeletion = ref(false)
 
-const deleteItems = async () => {
+async function deleteItems() {
   await props.onDelete(checked.value || [])
   checked.value = []
   confirmDeletion.value = false
@@ -46,13 +44,13 @@ const tagsOverlayRef = ref()
 const tagsAction = ref<'add' | 'remove'>('add')
 
 const selectedItems = shallowRef<WrappedItem[]>([])
-const toggleAddTags = (event: Event) => {
-  selectedItems.value = props.items.filter((it) => checked.value?.includes(it.dbId))
+function toggleAddTags(event: Event) {
+  selectedItems.value = props.items.filter(it => checked.value?.includes(it.dbId))
   tagsAction.value = 'add'
   tagsOverlayRef.value.toggle(event)
 }
-const toggleRemoveTags = (event: Event) => {
-  selectedItems.value = props.items.filter((it) => checked.value?.includes(it.dbId))
+function toggleRemoveTags(event: Event) {
+  selectedItems.value = props.items.filter(it => checked.value?.includes(it.dbId))
   tagsAction.value = 'remove'
   tagsOverlayRef.value.toggle(event)
 }
@@ -74,9 +72,13 @@ const toggleRemoveTags = (event: Event) => {
     </Button>
     <div v-else class="mr-2 flex items-center">
       Delete selected items?
-      <Button text @click="deleteItems">Yes</Button>
+      <Button text @click="deleteItems">
+        Yes
+      </Button>
       <span> / </span>
-      <Button text @click="confirmDeletion = false">No</Button>
+      <Button text @click="confirmDeletion = false">
+        No
+      </Button>
     </div>
     <Button
       text

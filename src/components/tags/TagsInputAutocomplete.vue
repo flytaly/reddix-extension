@@ -28,11 +28,11 @@ const autocmpRef = ref()
 onMounted(() => {
   setTimeout(() => {
     const el = autocmpRef.value.$el as HTMLElement
-    if (!el) return
+    if (!el)
+      return
     const input = el.querySelector('input')
-    if (input) {
+    if (input)
       input.focus()
-    }
   }, 100)
 })
 </script>
@@ -40,7 +40,9 @@ onMounted(() => {
 <template>
   <article ref="target">
     <slot name="heading">
-      <h2 class="mb-0.5 text-sm">Add or remove item tags</h2>
+      <h2 class="mb-0.5 text-sm">
+        Add or remove item tags
+      </h2>
     </slot>
     <div class="card flex justify-center">
       <AutoComplete
@@ -63,7 +65,9 @@ onMounted(() => {
         <template #option="slotProps">
           <div class="flex max-w-48 justify-between gap-2 break-all">
             <div>#{{ slotProps.option[0] }}</div>
-            <div class="ml-auto text-surface-400 dark:text-surface-500">{{ slotProps.option[1] || 'new' }}</div>
+            <div class="ml-auto text-surface-400 dark:text-surface-500">
+              {{ slotProps.option[1] || 'new' }}
+            </div>
           </div>
         </template>
       </AutoComplete>

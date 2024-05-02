@@ -4,7 +4,9 @@ const eg = h('span', { class: 'font-mono text-primary-700 dark:text-primary-500'
 
 <template>
   <article>
-    <div class="mb-1 font-bold">Keywords</div>
+    <div class="mb-1 font-bold">
+      Keywords
+    </div>
     <p>Use the following prefixes to filter search results:</p>
     <div class="grid grid-cols-[auto,1fr] gap-x-4">
       <div><eg>author:</eg> or <eg>u/</eg></div>
@@ -18,7 +20,9 @@ const eg = h('span', { class: 'font-mono text-primary-700 dark:text-primary-500'
       <div><eg>#</eg></div>
       <div>your custom tag (e.g. <eg>#images</eg>)</div>
     </div>
-    <div class="mb-1 mt-3 font-bold">Escaping</div>
+    <div class="mb-1 mt-3 font-bold">
+      Escaping
+    </div>
     <p>
       Use the backslash <eg>\</eg> to escape the next keyword. For example, <eg>\r/ChatGPT</eg>, if you want to search
       for the word "r/ChatGPT" instead of the subreddit itself.

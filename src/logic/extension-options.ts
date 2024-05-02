@@ -1,6 +1,6 @@
 export type Theme = 'auto' | 'dark' | 'light'
 
-export type ExtensionOptions = {
+export interface ExtensionOptions {
   theme: Theme
   autoUpdateSaved: boolean
   autoUpdateUpvoted: boolean

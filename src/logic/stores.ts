@@ -1,9 +1,9 @@
 import { liveQuery } from 'dexie'
 import { reactive } from 'vue'
 
+import { db } from './db/index'
 import type { BgState } from '~/background/bg-state'
 import { onMessage, sendMessage } from '~/messages'
-import { db } from './db/index'
 
 export const state = reactive<BgState>({
   isFetching: false,
@@ -23,7 +23,7 @@ export async function setupMessageHandlers() {
   })
 }
 
-type Info = {
+interface Info {
   tags: Record<string, number>
   total: number
 }
@@ -33,7 +33,7 @@ export const stats = reactive<Info>({
   total: 0,
 })
 
-export const getTagsArray = () => {
+export function getTagsArray() {
   return Object.entries(stats.tags)
 }
 

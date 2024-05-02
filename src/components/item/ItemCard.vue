@@ -8,7 +8,7 @@ const props = defineProps<{
   onAddTags: (e: MouseEvent) => void
 }>()
 
-const emit = defineEmits<{
+defineEmits<{
   (e: 'tag-click', tag: string): void
   (e: 'author-click', author: string): void
   (e: 'subreddit-click', subreddit: string): void
@@ -20,9 +20,8 @@ const expanded = ref(false)
 
 onMounted(() => {
   const element = bodyElemRef.value
-  if (element) {
+  if (element)
     overflowen.value = isOverflowen(element)
-  }
 })
 
 function isOverflowen(element: HTMLElement) {
@@ -32,15 +31,15 @@ function isOverflowen(element: HTMLElement) {
 const overlayRef = ref()
 
 const togglePreview = computed(() => {
-  if (!props.item.media.video && !props.item.media.source) {
+  if (!props.item.media.video && !props.item.media.source)
     return null
-  }
+
   return (event: Event) => {
     overlayRef.value.toggle(event)
   }
 })
 
-const expandPostOrPreview = (event: Event) => {
+function expandPostOrPreview(event: Event) {
   if (overflowen.value || expanded.value) {
     expanded.value = !expanded.value
     return
@@ -75,9 +74,7 @@ const expandPostOrPreview = (event: Event) => {
               item.item.subreddit_name_prefixed
             }}</a>
             <span class="dimmed-2 hidden xs:inline"> by </span>
-            <a class="dimmed-1 hidden xs:inline" href="#" @click.prevent="$emit('author-click', item.item.author)"
-              >u/{{ item.item.author }}</a
-            >
+            <a class="dimmed-1 hidden xs:inline" href="#" @click.prevent="$emit('author-click', item.item.author)">u/{{ item.item.author }}</a>
           </span>
           <a :href="item.fullLink">
             <ph-arrow-square-out />
@@ -110,7 +107,7 @@ const expandPostOrPreview = (event: Event) => {
           class="item-body-html overflow-hidden"
           :class="{ 'max-h-20 sm:max-h-24': !expanded }"
           v-html="item.body"
-        ></span>
+        />
         <button
           v-if="overflowen && !expanded"
           class="btn mask absolute bottom-0 left-0 flex w-full items-center justify-center gap-1 bg-white pt-2 dark:bg-surface-900"
@@ -138,7 +135,7 @@ const expandPostOrPreview = (event: Event) => {
           </li>
         </ul>
 
-        <slot name="footer-end"> </slot>
+        <slot name="footer-end" />
       </footer>
     </div>
   </article>

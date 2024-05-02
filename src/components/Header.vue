@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useRoute } from 'vue-router'
 import PhCircleWavyQuestion from '~icons/ph/circle-wavy-question'
 import PhClockCounterClockwiseBold from '~icons/ph/clock-counter-clockwise'
 import PhDownloadBold from '~icons/ph/download-bold'
@@ -12,7 +13,6 @@ import AccountInputBlock from '~/components/AccountInputBlock.vue'
 import { RoutePath } from '~/options/routes'
 import { useThemeToggle } from '~/composables/useThemeToggle'
 import Logo from '~/assets/logo_short.svg?component'
-import { useRoute } from 'vue-router'
 
 const items = [
   { label: 'Search', route: RoutePath.Search, iconCmp: PhMagnifyingGlassBold },
@@ -57,7 +57,9 @@ const route = useRoute()
               />
             </div>
           </div>
-          <div class="text-sm font-semibold">Reddix</div>
+          <div class="text-sm font-semibold">
+            Reddix
+          </div>
         </router-link>
       </template>
       <template #item="{ item, props }">

@@ -1,4 +1,4 @@
-export type BgState = {
+export interface BgState {
   isFetching: boolean
   fetchError: string | null
   loaded: number

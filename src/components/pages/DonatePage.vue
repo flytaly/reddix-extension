@@ -36,10 +36,14 @@ const addresses = [
         <template #content>
           <main>
             <section>
-              <h2 class="mb-4 text-lg font-bold">Crypto</h2>
+              <h2 class="mb-4 text-lg font-bold">
+                Crypto
+              </h2>
               <div class="ml-8 space-y-8">
                 <div>
-                  <h3 class="mb-4 text-sm" data-l10n-id="donateNowPayments">in any cryptocurrency via NOWPayments</h3>
+                  <h3 class="mb-4 text-sm" data-l10n-id="donateNowPayments">
+                    in any cryptocurrency via NOWPayments
+                  </h3>
                   <a
                     href="https://nowpayments.io/donation/flytaly"
                     class="inline"
@@ -51,7 +55,7 @@ const addresses = [
                       class="h-16 w-auto"
                       src="https://nowpayments.io/images/embeds/donation-button-black.svg"
                       alt="Crypto donation button by NOWPayments"
-                    />
+                    >
                   </a>
                 </div>
                 <div>

@@ -12,7 +12,9 @@ function getUrl(path: string) {
   <MainLayout>
     <div class="mx-auto flex w-full max-w-[120ch] flex-col">
       <Card class="mt-2">
-        <template #title>About</template>
+        <template #title>
+          About
+        </template>
         <template #content>
           <article class="grid grid-cols-[auto,1fr] items-start justify-start gap-2">
             <Logo class="h-28 w-auto shrink-0" />
@@ -39,7 +41,9 @@ function getUrl(path: string) {
         </template>
       </Card>
       <Card class="mt-2" pt:content:class="!pt-0" :pt-options="{ mergeProps: true }">
-        <template #title>Help</template>
+        <template #title>
+          Help
+        </template>
         <template #content>
           <Accordion :multiple="true" class="text-sm">
             <AccordionTab header="Fetching data">
@@ -47,12 +51,12 @@ function getUrl(path: string) {
                 To fetch saved posts, first make sure you are logged in to Reddit. Next, go to the search page and in
                 input box click on login icon (or type your username manually).
 
-                <img :src="getUrl('/assets/login.webp')" class="my-2 rounded-md" />
+                <img :src="getUrl('/assets/login.webp')" class="my-2 rounded-md">
 
                 Once you have done this, click "Get new saved items" and wait for the synchronization to complete. To
                 fetch the upvoted posts, open the menu by clicking on the caret symbol and select "Get upvoted posts".
 
-                <img :src="getUrl('/assets/fetch-opts.webp')" class="my-2 rounded-md" />
+                <img :src="getUrl('/assets/fetch-opts.webp')" class="my-2 rounded-md">
 
                 To keep your extension data up-to-date with Reddit, you can enable automatic updates on the Settings
                 page.

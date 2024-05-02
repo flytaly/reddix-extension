@@ -3,8 +3,9 @@ import { ref } from 'vue'
 import JSZip from 'jszip'
 
 import MainLayout from '~/components/pages/MainLayout.vue'
-import { DbRedditItem, db, isComment, isPost } from '~/logic/db'
-import { filterProperties, type ExportedItem } from '~/logic/transform/export-utils'
+import type { DbRedditItem } from '~/logic/db'
+import { db, isComment, isPost } from '~/logic/db'
+import { type ExportedItem, filterProperties } from '~/logic/transform/export-utils'
 import { objectsToCsv } from '~/logic/transform/export-csv'
 import { getFullLink } from '~/logic/convert-link'
 import { stats } from '~/logic/stores'
@@ -28,21 +29,22 @@ async function processItems(onPost: (item: DbRedditItem) => void, onComment: (it
       onPost(obj)
       return
     }
-    if (isComment(obj)) {
+    if (isComment(obj))
       onComment(obj)
-    }
   })
 }
 
 const getDate = () => new Date().toISOString().split('T')[0].replace(/-/g, '_')
 
 function isSaved(obj: DbRedditItem) {
-  if (!obj._category?.length) return true
+  if (!obj._category?.length)
+    return true
   return obj._category.includes('saved')
 }
 
 function isUpvoted(obj: DbRedditItem) {
-  if (!obj._category?.length) return false
+  if (!obj._category?.length)
+    return false
   return obj._category.includes('upvoted')
 }
 
@@ -54,20 +56,18 @@ async function exportJson() {
 
   await processItems(
     (obj) => {
-      if (isSaved(obj)) {
+      if (isSaved(obj))
         savedPosts.push(filterProperties(obj))
-      }
-      if (isUpvoted(obj)) {
+
+      if (isUpvoted(obj))
         upvotedPosts.push(filterProperties(obj))
-      }
     },
     (obj) => {
-      if (isSaved(obj)) {
+      if (isSaved(obj))
         savedComments.push(filterProperties(obj))
-      }
-      if (isUpvoted(obj)) {
+
+      if (isUpvoted(obj))
         upvotedComments.push(filterProperties(obj))
-      }
     },
   )
 
@@ -89,7 +89,7 @@ async function exportJson() {
   downloadBlob(blob, `reddit_saved_items_(json)_${getDate()}.zip`)
 }
 
-type CSVRows = { id: string; permalink: string } | { id: string; permalink: string; direction: 'up' | 'down' | 'none' }
+type CSVRows = { id: string, permalink: string } | { id: string, permalink: string, direction: 'up' | 'down' | 'none' }
 
 async function exportCsv() {
   const savedPosts: CSVRows[] = []
@@ -99,20 +99,18 @@ async function exportCsv() {
 
   await processItems(
     (obj) => {
-      if (isSaved(obj)) {
+      if (isSaved(obj))
         savedPosts.push({ id: obj.name, permalink: getFullLink(obj.permalink) })
-      }
-      if (isUpvoted(obj)) {
+
+      if (isUpvoted(obj))
         upvotedPosts.push({ id: obj.name, permalink: getFullLink(obj.permalink), direction: 'up' })
-      }
     },
     (obj) => {
-      if (isSaved(obj)) {
+      if (isSaved(obj))
         savedComments.push({ id: obj.name, permalink: getFullLink(obj.permalink) })
-      }
-      if (isUpvoted(obj)) {
+
+      if (isUpvoted(obj))
         upvotedComments.push({ id: obj.name, permalink: getFullLink(obj.permalink), direction: 'up' })
-      }
     },
   )
 

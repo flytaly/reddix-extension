@@ -1,27 +1,31 @@
 // https://gist.github.com/select/0e2aa49b98ea81db7c615e6560497c41
 
 function getKeys(obj: any, prefix = ''): string[] {
-  if (typeof obj === 'undefined' || obj === null) return []
+  if (typeof obj === 'undefined' || obj === null)
+    return []
   return [
-    ...Object.keys(obj).map((key) => `${prefix}${key}`),
+    ...Object.keys(obj).map(key => `${prefix}${key}`),
     ...Object.entries(obj).reduce((acc, [key, value]) => {
-      if (typeof value === 'object') return [...acc, ...getKeys(value, `${prefix}${key}.`)]
+      if (typeof value === 'object')
+        return [...acc, ...getKeys(value, `${prefix}${key}.`)]
       return acc
     }, [] as string[]),
   ]
 }
 function flatObject(obj: any, prefix = ''): Record<string, unknown> {
-  if (typeof obj === 'undefined' || obj === null) return {}
+  if (typeof obj === 'undefined' || obj === null)
+    return {}
   return Object.entries(obj).reduce((acc, [key, value]) => {
-    if (typeof value === 'object') return { ...acc, ...flatObject(value, `${prefix}${key}.`) }
+    if (typeof value === 'object')
+      return { ...acc, ...flatObject(value, `${prefix}${key}.`) }
     return { ...acc, [`${prefix}${key}`]: value }
   }, {})
 }
 
 function escapeCsvValue(cell: string) {
-  if (cell.replace(/ /g, '').match(/[\s,"]/)) {
-    return '"' + cell.replace(/"/g, '""') + '"'
-  }
+  if (cell.replace(/ /g, '').match(/[\s,"]/))
+    return `"${cell.replace(/"/g, '""')}"`
+
   return cell
 }
 

@@ -1,4 +1,4 @@
-import { BgState } from '~/background/bg-state'
+import type { BgState } from '~/background/bg-state'
 
 // types derived from webext-bridge: https://github.com/serversideup/webext-bridge
 interface ProtocolWithReturn<Data, Return> {
@@ -20,7 +20,7 @@ declare type GetReturnType<K extends DataTypeKey> = K extends keyof ProtocolMap
 
 interface ProtocolMap {
   'fetch-items': ProtocolWithReturn<
-    { username: string; category: ItemCategory; options?: { fetchAll?: boolean } },
+    { username: string, category: ItemCategory, options?: { fetchAll?: boolean } },
     BgState
   >
   'get-state': ProtocolWithReturn<null, BgState>
@@ -33,9 +33,8 @@ export function sendMessage<K extends DataTypeKey>(messageID: K, data?: GetDataT
 }
 
 export function onMessage<K extends DataTypeKey>(messageID: K, callback: (data: { data: GetDataType<K> }) => void) {
-  return browser.runtime.onMessage.addListener((message) => {
-    if (message.id === messageID) {
+  return browser.runtime.onMessage.addListener((message: { id: K, data: GetDataType<K> }) => {
+    if (message.id === messageID)
       callback({ data: message.data })
-    }
   })
 }

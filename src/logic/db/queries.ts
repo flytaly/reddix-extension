@@ -1,15 +1,17 @@
-import Dexie, { Collection, IndexableType, PromiseExtended } from 'dexie'
-import { ITEMS_ON_PAGE } from '~/constants'
-import { DbRedditItem, db } from '~/logic/db'
-import { RedditObjectKind } from '~/reddit/reddit-types'
+import type { Collection, IndexableType, PromiseExtended } from 'dexie'
+import Dexie from 'dexie'
 import { WrappedItem } from '../wrapped-item'
+import { ITEMS_ON_PAGE } from '~/constants'
+import type { DbRedditItem } from '~/logic/db'
+import { db } from '~/logic/db'
+import { RedditObjectKind } from '~/reddit/reddit-types'
 
-export type PaginationDetails = {
+export interface PaginationDetails {
   lastItem?: WrappedItem | null
   limit?: number
 }
 
-export type SearchQuery = {
+export interface SearchQuery {
   author: string
   hideComments?: boolean
   hidePosts?: boolean
@@ -45,9 +47,8 @@ function getCollectionAfter(q: SearchQuery, lastItem?: WrappedItem | null): Coll
   const { index, cursor } = getSortKeys(q.sortBy, lastItem)
   const isDesc = q.direction === 'desc'
 
-  if (!cursor) {
+  if (!cursor)
     return isDesc ? db.redditItems.orderBy(index).reverse() : db.redditItems.orderBy(index)
-  }
 
   const where = db.redditItems.where(index)
 
@@ -76,10 +77,10 @@ export async function getPostsFromDB(
       .limit(limit)
       .toArray()
 
-    return items.map((item) => new WrappedItem(item))
+    return items.map(item => new WrappedItem(item))
   }
   const res = await find(queryDetails, pagination)
-  return res.map((item) => new WrappedItem(item))
+  return res.map(item => new WrappedItem(item))
 }
 
 function makeFilterFn(details: SearchQuery, lastItem?: WrappedItem | null) {
@@ -90,30 +91,28 @@ function makeFilterFn(details: SearchQuery, lastItem?: WrappedItem | null) {
     const { index } = getSortKeys(details.sortBy, lastItem)
 
     isOldItem = (item: DbRedditItem) => {
-      if (item[index] !== lastItem.item[index]) {
+      if (item[index] !== lastItem.item[index])
         return false
-      }
+
       return details.direction === 'desc' ? item._id >= lastItem.dbId : item._id <= lastItem.dbId
     }
   }
 
   return (item: DbRedditItem) => {
-    if (details.hideSaved && item._category.includes('saved')) {
+    if (details.hideSaved && item._category.includes('saved'))
       return false
-    }
-    if (details.hideUpvoted && item._category.includes('upvoted')) {
-      return false
-    }
-    if (details.hidePosts && item.name.startsWith(RedditObjectKind.link)) {
-      return false
-    }
-    if (details.hideComments && item.name.startsWith(RedditObjectKind.comment)) {
-      return false
-    }
 
-    if (isOldItem(item)) {
+    if (details.hideUpvoted && item._category.includes('upvoted'))
       return false
-    }
+
+    if (details.hidePosts && item.name.startsWith(RedditObjectKind.link))
+      return false
+
+    if (details.hideComments && item.name.startsWith(RedditObjectKind.comment))
+      return false
+
+    if (isOldItem(item))
+      return false
 
     return true
   }
@@ -122,15 +121,15 @@ function makeFilterFn(details: SearchQuery, lastItem?: WrappedItem | null) {
 // if prefix ends with \, search as it's a whole word
 function havePrefix(indexes: string[], p: string) {
   const isPrefix = !p.endsWith('\\')
-  if (!isPrefix) {
+  if (!isPrefix)
     p = p.slice(0, -1)
-  }
+
   let collection = isPrefix
     ? db.redditItems.where(indexes[0]).startsWith(p)
     : db.redditItems.where(indexes[0]).equals(p)
-  for (let i = 1; i < indexes.length; i++) {
+  for (let i = 1; i < indexes.length; i++)
     collection = isPrefix ? collection.or(indexes[i]).startsWith(p) : collection.or(indexes[i]).equals(p)
-  }
+
   return collection.primaryKeys()
 }
 
@@ -140,7 +139,8 @@ function makePaginationFilter<T extends DbRedditItem>(
 ): (item: T) => boolean {
   const { index, cursor } = getSortKeys(details.sortBy, lastItem)
 
-  if (!cursor) return () => true
+  if (!cursor)
+    return () => true
 
   if (index === '_id') {
     return details.direction === 'desc' //
@@ -163,58 +163,51 @@ export function find(details: SearchQuery, { lastItem, limit = ITEMS_ON_PAGE }: 
     // Parallell search for all prefixes - just select resulting primary keys
     let dbQueries = [] as PromiseExtended<IndexableType[]>[]
 
-    dbQueries = details.words.map((p) => havePrefix(['_body_words', '_title_words'], p))
+    dbQueries = details.words.map(p => havePrefix(['_body_words', '_title_words'], p))
 
     // title
-    if (details.title.length != 0) {
-      dbQueries.push(...details.title.map((p) => havePrefix(['_title_words'], p)))
-    }
+    if (details.title.length !== 0)
+      dbQueries.push(...details.title.map(p => havePrefix(['_title_words'], p)))
 
     // body
-    if (details.body.length != 0) {
-      dbQueries.push(...details.body.map((p) => havePrefix(['_body_words'], p)))
-    }
+    if (details.body.length !== 0)
+      dbQueries.push(...details.body.map(p => havePrefix(['_body_words'], p)))
 
     // tags
-    if (details.tags.length != 0) {
-      dbQueries.push(...details.tags.map((t) => db.redditItems.where('_tags').equals(t).primaryKeys()))
-    }
+    if (details.tags.length !== 0)
+      dbQueries.push(...details.tags.map(t => db.redditItems.where('_tags').equals(t).primaryKeys()))
 
     // author
-    if (details.author) {
+    if (details.author)
       dbQueries.push(db.redditItems.where('author').startsWithIgnoreCase(details.author).primaryKeys())
-    }
 
     // subreddit
-    if (details.subreddit) {
+    if (details.subreddit)
       dbQueries.push(db.redditItems.where('subreddit').startsWithIgnoreCase(details.subreddit).primaryKeys())
-    }
 
     const results = await Dexie.Promise.all(dbQueries)
 
-    if (results.length === 0) {
+    if (results.length === 0)
       return []
-    }
 
     // Intersect result set of primary keys
     const reduced = results.reduce((a, b) => {
       const set = new Set(b)
-      return a.filter((k) => set.has(k))
+      return a.filter(k => set.has(k))
     })
 
     let collection = db.redditItems
       .where(':id')
       .anyOf(reduced)
       .filter((item) => {
-        if (!paginationFilter(item)) {
+        if (!paginationFilter(item))
           return false
-        }
+
         return filter(item)
       })
 
-    if (details.direction === 'desc') {
+    if (details.direction === 'desc')
       collection = collection.reverse()
-    }
 
     const items = await collection.sortBy(sortIndexKey)
 

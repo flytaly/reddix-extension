@@ -4,7 +4,7 @@ import { setupMessageHandlers, setupStatsStore, state } from '~/logic/stores'
 
 const toast = useToast()
 
-let subscription = setupStatsStore()
+const subscription = setupStatsStore()
 
 const visible = ref(false)
 
@@ -30,13 +30,14 @@ watch(
   () => state.isFetching,
   (newValue, oldValue) => {
     if (newValue) {
-      if (!oldValue && !visible.value) addToast()
+      if (!oldValue && !visible.value)
+        addToast()
       return
     }
 
-    if (oldValue && !visible.value) {
+    if (oldValue && !visible.value)
       addToast()
-    }
+
     setTimeout(() => {
       clear()
     }, 1500)
@@ -46,9 +47,8 @@ watch(
 watch(
   () => state.fetchError,
   (err) => {
-    if (err) {
+    if (err)
       toast.add({ severity: 'error', summary: 'Fetch Error', detail: err, life: 3000 })
-    }
   },
 )
 </script>
@@ -60,10 +60,14 @@ watch(
       <section class="grid w-full grid-cols-[auto_1fr] gap-3 rounded-xl p-3">
         <PhCloudArrowDownDuotone class="h-5 w-5" />
         <div class="flex w-full flex-col gap-3">
-          <p class="m-0 text-base font-semibold text-white">{{ message.summary }}</p>
-          <p class="text-700 m-0 text-base">{{ message.detail }}</p>
+          <p class="m-0 text-base font-semibold text-white">
+            {{ message.summary }}
+          </p>
+          <p class="text-700 m-0 text-base">
+            {{ message.detail }}
+          </p>
           <div class="flex w-full flex-col gap-2">
-            <ProgressBar v-if="state.isFetching" mode="indeterminate" class="h-1 w-full"></ProgressBar>
+            <ProgressBar v-if="state.isFetching" mode="indeterminate" class="h-1 w-full" />
             <span v-if="state.isFetching" class="ml-auto text-xs">
               <span> loaded {{ state.loaded }} items </span>
               <span v-if="state.savedNew"> ({{ state.savedNew }} new) </span>
@@ -73,11 +77,13 @@ watch(
             </span>
           </div>
           <div class="mb-3 flex gap-3">
-            <Button label="Cancel" text class="px-2 py-1" @click="closeCallback">Hide</Button>
+            <Button label="Cancel" text class="px-2 py-1" @click="closeCallback">
+              Hide
+            </Button>
           </div>
         </div>
       </section>
     </template>
   </Toast>
-  <router-view></router-view>
+  <router-view />
 </template>

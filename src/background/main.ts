@@ -1,11 +1,13 @@
+import { type BgState, state } from './bg-state'
+import devSetup from './dev-setup'
 import { optionsStorage, reqInfoStorage, setupStorage, userName } from '~/logic/browser-storage'
 import { savePosts } from '~/logic/db/mutations'
 import { waitRateLimits } from '~/logic/wait-limits'
 import { fetchRedditItems, onRateLimits } from '~/reddit'
-import { RateLimits } from '~/reddit/rate-limits'
-import { state, type BgState } from './bg-state'
-import devSetup from './dev-setup'
+import type { RateLimits } from '~/reddit/rate-limits'
 import { onMessage, sendMessage } from '~/messages'
+
+type Alarm = 'update'
 
 devSetup()
 
@@ -15,29 +17,26 @@ function setStateAndNotify(updates: Partial<BgState>) {
 }
 
 function getLastId(category: ItemCategory) {
-  if (category === 'saved') {
+  if (category === 'saved')
     return reqInfoStorage.lastSavedItemId
-  } else if (category === 'upvoted') {
+  else if (category === 'upvoted')
     return reqInfoStorage.lastUpvotedItemId
-  }
 }
 
 function setLastId(category: ItemCategory, id: string) {
-  if (category === 'saved') {
+  if (category === 'saved')
     reqInfoStorage.lastSavedItemId = id
-  } else if (category === 'upvoted') {
+  else if (category === 'upvoted')
     reqInfoStorage.lastUpvotedItemId = id
-  }
 }
 
 function setFetchDate(category: ItemCategory) {
   const ts = Date.now()
   reqInfoStorage.timestamp = ts
-  if (category === 'saved') {
+  if (category === 'saved')
     reqInfoStorage.lastSavedItemFetchTime = ts
-  } else if (category === 'upvoted') {
+  else if (category === 'upvoted')
     reqInfoStorage.lastUpvotedItemFetchTime = ts
-  }
 }
 
 async function fetchItems(username: string, category: ItemCategory, fetchAll = false) {
@@ -60,9 +59,8 @@ async function fetchItems(username: string, category: ItemCategory, fetchAll = f
       setStateAndNotify({ fetchError: errMsg })
       break
     }
-    if (!listing) {
+    if (!listing)
       break
-    }
 
     const savedNew = await savePosts(listing, category)
     setStateAndNotify({
@@ -70,15 +68,15 @@ async function fetchItems(username: string, category: ItemCategory, fetchAll = f
       savedNew: state.savedNew + (savedNew || 0),
     })
 
-    if (!after) setLastId(category, listing.data.children[0].data.name)
+    if (!after)
+      setLastId(category, listing.data.children[0].data.name)
 
     const nextAfter = listing.data.after
     end = !nextAfter || nextAfter === after || listing.data.children.length < 100
     after = nextAfter || ''
 
-    if (stopAtId && !end) {
-      end = listing.data.children.findIndex((it) => it.data.name === stopAtId) !== -1
-    }
+    if (stopAtId && !end)
+      end = listing.data.children.findIndex(it => it.data.name === stopAtId) !== -1
 
     await waitRateLimits(rateLimits, console.log)
   }
@@ -86,9 +84,9 @@ async function fetchItems(username: string, category: ItemCategory, fetchAll = f
 }
 
 async function startFetching(username: string, category: ItemCategory, fetchAll = false) {
-  if (state.isFetching) {
+  if (state.isFetching)
     return
-  }
+
   setStateAndNotify({ isFetching: true, fetchError: '', loaded: 0, savedNew: 0 })
   await fetchItems(username, category, fetchAll)
   setStateAndNotify({ isFetching: false })
@@ -113,7 +111,7 @@ async function updateAndSchedule() {
   let nextUpdate = lastUpdate + interval
 
   if (lastUpdate && Date.now() < nextUpdate) {
-    browser.alarms.create('update', { when: nextUpdate })
+    browser.alarms.create('update' as Alarm, { when: nextUpdate })
     console.log('DEBUG: too early, schedule next update', new Date(nextUpdate).toLocaleTimeString())
     return
   }
@@ -129,7 +127,7 @@ async function updateAndSchedule() {
   }
 
   nextUpdate = Date.now() + interval
-  browser.alarms.create('update', { when: nextUpdate })
+  browser.alarms.create('update' as Alarm, { when: nextUpdate })
   console.log('DEBUG: schedule next update at', new Date(nextUpdate).toLocaleString())
 }
 
@@ -139,15 +137,17 @@ setupStorage().then(() => {
     (opts) => {
       if (opts.autoUpdateSaved || opts.autoUpdateUpvoted) {
         updateAndSchedule()
-      } else {
+      }
+      else {
         console.log('DEBUG: clear update alarms')
-        browser.alarms.clear('update')
+        browser.alarms.clear('update' as Alarm)
       }
     },
     { immediate: true },
   )
 })
 
-browser.alarms.onAlarm.addListener(({ name }) => {
-  if (name === 'update') void updateAndSchedule()
+browser.alarms.onAlarm.addListener((alarmInfo: { name: Alarm }) => {
+  if (alarmInfo.name === 'update')
+    void updateAndSchedule()
 })

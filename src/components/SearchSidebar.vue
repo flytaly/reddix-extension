@@ -12,7 +12,8 @@ import { userName } from '~/logic/browser-storage'
 const visible = ref(false)
 
 async function onSync(category: ItemCategory = 'saved', fetchAll = false) {
-  if (state.isFetching) return
+  if (state.isFetching)
+    return
   if (!userName.value || state.fetchError) {
     visible.value = true
     return

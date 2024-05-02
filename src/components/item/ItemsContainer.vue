@@ -1,17 +1,18 @@
 <script setup lang="ts">
+import type { FunctionalComponent } from 'vue'
+import { useToast } from 'primevue/usetoast'
 import PhList from '~icons/ph/list'
 import PhNotePencil from '~icons/ph/note-pencil'
 import PhRows from '~icons/ph/rows'
-import type { FunctionalComponent } from 'vue'
-import { useToast } from 'primevue/usetoast'
 
 import ItemList from '~/components/item/ItemList.vue'
 import MassEditMenu from '~/components/item/MassEditMenu.vue'
 import { ITEMS_ON_PAGE } from '~/constants'
-import { WrappedItem } from '~/logic/wrapped-item'
+import type { WrappedItem } from '~/logic/wrapped-item'
 import { deleteItems, updateItem } from '~/logic/db/mutations'
 import { getItemsInfo } from '~/reddit'
-import { SearchQuery, getPostsFromDB } from '~/logic/db/queries'
+import type { SearchQuery } from '~/logic/db/queries'
+import { getPostsFromDB } from '~/logic/db/queries'
 import { search } from '~/logic/search-store'
 import { state } from '~/logic/stores'
 import { inputsStorage } from '~/logic/browser-storage'
@@ -28,10 +29,11 @@ onMounted(() => loadMore())
 const toast = useToast()
 
 async function loadMore(loadAll?: boolean) {
-  if (isEnd.value) return
+  if (isEnd.value)
+    return
   isLoading.value = true
   const current = ++lastQueryId
-  const limit = loadAll ? Infinity : ITEMS_ON_PAGE
+  const limit = loadAll ? Number.POSITIVE_INFINITY : ITEMS_ON_PAGE
   try {
     const last = lastItem.value
     const items = await getPostsFromDB(search, { lastItem: last, limit: limit + 1 })
@@ -42,7 +44,8 @@ async function loadMore(loadAll?: boolean) {
       console.log(`get ${slice.length} items from db. After id ${last?.dbId || 'none'}`)
       onNewItems(slice, Boolean(last))
     }
-  } catch (error) {
+  }
+  catch (error) {
     toast.add({ severity: 'error', summary: 'DB Error', detail: (error as any)?.message || '', life: 3000 })
     console.error(error)
   }
@@ -57,9 +60,9 @@ async function reload() {
 
 function onNewItems(incoming: WrappedItem[], append: boolean) {
   let newItems = incoming
-  if (append && items.value?.length) {
+  if (append && items.value?.length)
     newItems = [...items.value, ...incoming]
-  }
+
   items.value = newItems
   lastItem.value = items.value.at(-1) || null
 }
@@ -67,14 +70,16 @@ function onNewItems(incoming: WrappedItem[], append: boolean) {
 watch(
   () => state.isFetching,
   (isFetching) => {
-    if (!isFetching) reload()
+    if (!isFetching)
+      reload()
   },
 )
 
 watch(search, () => reload())
 
-const updateTags = (updates: Record<number, string[]>) => {
-  if (!Object.keys(updates).length) return
+function updateTags(updates: Record<number, string[]>) {
+  if (!Object.keys(updates).length)
+    return
   items.value = items.value?.map((item) => {
     if (updates[item.dbId]) {
       item.tags = updates[item.dbId]
@@ -87,10 +92,9 @@ const updateTags = (updates: Record<number, string[]>) => {
 async function onDelete(itemIds: number[]) {
   await deleteItems(itemIds)
   const set = new Set(itemIds)
-  items.value = items.value?.filter((item) => !set.has(item.dbId))
-  if (!items.value?.length) {
+  items.value = items.value?.filter(item => !set.has(item.dbId))
+  if (!items.value?.length)
     loadMore()
-  }
 }
 
 async function markUnsaved(itemId: number) {
@@ -109,11 +113,13 @@ async function onItemUpdate(item: WrappedItem) {
     toast.add({ severity: 'error', summary: 'Error', detail: err, life: 3000 })
     return
   }
-  const updated = resp?.data.children.find((u) => u.data.name == item.redditId)
-  if (!updated) return
+  const updated = resp?.data.children.find(u => u.data.name === item.redditId)
+  if (!updated)
+    return
   try {
     await updateItem(item.dbId, updated.data)
-  } catch (error) {
+  }
+  catch (error) {
     toast.add({ severity: 'error', summary: 'Error', detail: error, life: 3000 })
   }
 
@@ -128,26 +134,26 @@ async function onItemUpdate(item: WrappedItem) {
   toast.add({ severity: 'info', summary: 'Info', detail: 'Item updated', life: 1000 })
 }
 
-const viewOptions: { iconCmp: FunctionalComponent; value: ViewType; title: string }[] = [
+const viewOptions: { iconCmp: FunctionalComponent, value: ViewType, title: string }[] = [
   { iconCmp: PhRows, value: 'list', title: 'List' },
   { iconCmp: PhList, value: 'compact', title: 'Compact list' },
   { iconCmp: PhNotePencil, value: 'edit', title: 'Edit' },
 ]
 
-const viewSaved = viewOptions.find((v) => v.value === inputsStorage.currentView) || viewOptions[0]
+const viewSaved = viewOptions.find(v => v.value === inputsStorage.currentView) || viewOptions[0]
 const view = ref(viewSaved)
 
 watch(view, () => (inputsStorage.currentView = view.value.value))
 
 watch(
   () => inputsStorage.sortDirection,
-  (dir) => (search.direction = dir),
+  dir => (search.direction = dir),
   { immediate: true },
 )
 
 watch(
   () => inputsStorage.sortBy,
-  (sortBy) => (search.sortBy = sortBy),
+  sortBy => (search.sortBy = sortBy),
   { immediate: true },
 )
 
@@ -179,7 +185,7 @@ function setSortBy(sortBy: SearchQuery['sortBy']) {
         :pt-options="{ mergeProps: true }"
       >
         <template #option="slotProps">
-          <component :is="slotProps.option.iconCmp"></component>
+          <component :is="slotProps.option.iconCmp" />
         </template>
       </SelectButton>
 
@@ -203,8 +209,7 @@ function setSortBy(sortBy: SearchQuery['sortBy']) {
           :disabled="isLoading"
           @click="() => loadMore(true)"
         >
-          Load all</button
-        >]
+          Load all</button>]
       </span>
     </MassEditMenu>
 
@@ -236,11 +241,11 @@ function setSortBy(sortBy: SearchQuery['sortBy']) {
         </button>
       </li>
     </ul>
-    <hr class="mx-auto h-[1px] w-[80%] border-surface-400 dark:border-surface-500" />
+    <hr class="mx-auto h-[1px] w-[80%] border-surface-400 dark:border-surface-500">
     <ul class="flex w-full min-w-28 flex-col gap-2 py-2 text-base">
       <li>
         <button class="btn flex w-full items-center gap-1 px-2" @click="setSortBy('id')">
-          <ph-list :class="{ 'text-primary-500 dark:text-primary-400': search.sortBy === 'id' }" />
+          <PhList :class="{ 'text-primary-500 dark:text-primary-400': search.sortBy === 'id' }" />
           id
         </button>
       </li>

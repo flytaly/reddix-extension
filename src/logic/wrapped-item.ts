@@ -1,7 +1,8 @@
 import { unescape } from 'lodash-es'
-import { DbRedditItem, DbRedditPost } from '~/logic/db/index'
+import type { DbRedditItem, DbRedditPost } from '~/logic/db/index'
 import { isPostData } from '~/reddit'
-import { PostMedia, extractMedia } from '~/reddit/post-media'
+import type { PostMedia } from '~/reddit/post-media'
+import { extractMedia } from '~/reddit/post-media'
 
 export class WrappedItem {
   item: DbRedditItem
@@ -21,10 +22,10 @@ export class WrappedItem {
   }
 
   get title() {
-    if (isPostData(this.item)) {
+    if (isPostData(this.item))
       return (this.item as RedditPostData).title
-    }
-    return this.item.link_title || unescape(this.item.body).slice(0, 50) + '...'
+
+    return this.item.link_title || `${unescape(this.item.body).slice(0, 50)}...`
   }
 
   get body() {
@@ -53,7 +54,7 @@ export class WrappedItem {
   }
 
   get isLink() {
-    return (this.item as DbRedditPost).post_hint == 'link' && !this.hasBody && this.url
+    return (this.item as DbRedditPost).post_hint === 'link' && !this.hasBody && this.url
   }
 
   get url() {

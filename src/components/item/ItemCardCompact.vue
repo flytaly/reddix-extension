@@ -7,7 +7,7 @@ const props = defineProps<{
   item: WrappedItem
 }>()
 
-const emit = defineEmits<{
+defineEmits<{
   (e: 'author-click', author: string): void
   (e: 'subreddit-click', subreddit: string): void
 }>()
@@ -16,7 +16,7 @@ const bodyElemRef = ref<HTMLElement | null>(null)
 const expandable = computed(() => props.item.body || props.item.media?.source || props.item.media?.video)
 const expanded = ref(false)
 
-const toggle = () => {
+function toggle() {
   expanded.value = !expanded.value
 }
 </script>
@@ -51,9 +51,7 @@ const toggle = () => {
               item.item.subreddit_name_prefixed
             }}</a>
             <span class="dimmed-2 hidden xs:inline"> by </span>
-            <a class="dimmed-1 hidden xs:inline" href="#" @click.prevent="$emit('author-click', item.item.author)"
-              >u/{{ item.item.author }}</a
-            >
+            <a class="dimmed-1 hidden xs:inline" href="#" @click.prevent="$emit('author-click', item.item.author)">u/{{ item.item.author }}</a>
           </span>
           <a :href="item.fullLink">
             <ph-arrow-square-out />
@@ -83,7 +81,7 @@ const toggle = () => {
           class="item-body-html overflow-hidden"
           :class="{ 'max-h-24': !expanded }"
           v-html="item.body"
-        ></span>
+        />
         <button class="btn flex w-full items-center justify-center gap-1" @click="expanded = false">
           <PhArrowsOutSimple />
           collapse
@@ -91,7 +89,7 @@ const toggle = () => {
       </div>
 
       <!-- Menu Slot -->
-      <slot class="item-end" name="end"></slot>
+      <slot class="item-end" name="end" />
     </div>
   </article>
 </template>

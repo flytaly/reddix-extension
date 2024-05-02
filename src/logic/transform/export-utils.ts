@@ -1,4 +1,4 @@
-import { DbRedditItem } from '../db'
+import type { DbRedditItem } from '../db'
 
 const properties = [
   '_id', //
@@ -15,11 +15,10 @@ export function filterProperties(item: DbRedditItem): ExportedItem {
   const filtered: ExportedItem = {} as ExportedItem
   Object.keys(item).forEach((key) => {
     const keyName = key as keyof DbRedditItem
-    // @ts-ignore
-    if (!properties.includes(keyName)) {
-      // @ts-ignore
+    // @ts-expect-error
+    if (!properties.includes(keyName))
+      // @ts-expect-error
       filtered[keyName] = item[keyName]
-    }
   })
 
   return filtered

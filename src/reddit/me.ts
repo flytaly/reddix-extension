@@ -1,7 +1,7 @@
-import { baseUrl } from './index'
 import { RedditObjectKind } from './reddit-types'
+import { baseUrl } from './index'
 
-type MeResponse = {
+interface MeResponse {
   kind: RedditObjectKind.account
   data?: {
     name?: string
@@ -23,7 +23,8 @@ export async function getUserInfo(): Promise<[MeResponse, null] | [null, string]
       console.error(me)
       return [null, 'Failed to get user information. Make sure you are logged in to Reddit.']
     }
-  } catch (error) {
+  }
+  catch (error) {
     return [null, (error as any as Error).message]
   }
   return [me, null]

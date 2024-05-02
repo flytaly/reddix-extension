@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { WrappedItem } from '~/logic/wrapped-item'
+import type { WrappedItem } from '~/logic/wrapped-item'
 
 const props = defineProps<{
   item: WrappedItem
@@ -11,7 +11,8 @@ const media = computed(() => props.item.media)
 
 onMounted(() => {
   setTimeout(() => {
-    if (overlayImgLoading.value === 'initial') overlayImgLoading.value = media.value.video ? 'loaded' : 'loading'
+    if (overlayImgLoading.value === 'initial')
+      overlayImgLoading.value = media.value.video ? 'loaded' : 'loading'
   }, 200)
 })
 </script>
@@ -22,7 +23,7 @@ onMounted(() => {
       <div v-if="overlayImgLoading === 'loading'" class="flex h-32 w-32 items-center justify-center">
         <PhSpinnerGap class="m-auto h-8 w-8 animate-spin" />
       </div>
-      <img :src="media.source.url" alt="preview" class="limit aspect-auto" @load="overlayImgLoading = 'loaded'" />
+      <img :src="media.source.url" alt="preview" class="limit aspect-auto" @load="overlayImgLoading = 'loaded'">
       <a v-if="item.isGallery" :href="item.fullLink" class="link whitespace-nowrap">
         <PhImagesSquare />
         view full gallery
@@ -36,7 +37,7 @@ onMounted(() => {
       controls
       controlslist="nofullscreen"
     >
-      <source :src="media.video.url" />
+      <source :src="media.video.url">
     </video>
   </div>
 </template>

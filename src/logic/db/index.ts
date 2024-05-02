@@ -2,7 +2,7 @@
 import Dexie, { type Table } from 'dexie'
 import { RedditObjectKind } from '~/reddit/reddit-types'
 
-export type DbOnlyProperties = {
+export interface DbOnlyProperties {
   _title_words: string[]
   _body_words: string[]
   _id: number
@@ -44,18 +44,17 @@ export function isComment(data: DbRedditItem): data is DbRedditComment {
 
 // Add hooks that will index for full-text search:
 db.redditItems.hook('creating', (_primKey, obj) => {
-  if (isPost(obj) && typeof obj.title == 'string') {
+  if (isPost(obj) && typeof obj.title == 'string')
     obj._title_words = tokenize(obj.title)
-  }
-  if (isPost(obj) && typeof obj.selftext == 'string') {
+
+  if (isPost(obj) && typeof obj.selftext == 'string')
     obj._body_words = tokenize(obj.selftext)
-  }
-  if (isComment(obj) && typeof obj.body == 'string') {
+
+  if (isComment(obj) && typeof obj.body == 'string')
     obj._body_words = tokenize(obj.body)
-  }
-  if (!obj._category?.length) {
+
+  if (!obj._category?.length)
     obj._category = ['saved']
-  }
 
   obj.subreddit = obj.subreddit?.toLowerCase()
 
@@ -69,18 +68,17 @@ db.redditItems.hook('updating', (mods, _primKey, obj, _trans): Partial<DbRedditI
 
   type P = Partial<DbRedditPost>
   type C = Partial<DbRedditComment>
-  if (Object.prototype.hasOwnProperty.call(mods, 'title')) {
+  if (Object.prototype.hasOwnProperty.call(mods, 'title'))
     updated._title_words = tokenizeProp((mods as P).title)
-  }
-  if (Object.prototype.hasOwnProperty.call(mods, 'selftext')) {
+
+  if (Object.prototype.hasOwnProperty.call(mods, 'selftext'))
     updated._body_words = tokenizeProp((mods as P).selftext)
-  }
-  if (Object.prototype.hasOwnProperty.call(mods, 'body')) {
+
+  if (Object.prototype.hasOwnProperty.call(mods, 'body'))
     updated._body_words = tokenizeProp((mods as C).body)
-  }
-  if (Object.prototype.hasOwnProperty.call(mods, 'subreddit')) {
+
+  if (Object.prototype.hasOwnProperty.call(mods, 'subreddit'))
     updated.subreddit = (mods as P | C).subreddit?.toLowerCase()
-  }
 
   updated._updated_at = Math.floor(Date.now() / 1000)
 
@@ -92,9 +90,9 @@ db.redditItems.hook('updating', (mods, _primKey, obj, _trans): Partial<DbRedditI
 })
 
 function tokenizeProp(property: unknown) {
-  if (typeof property == 'string') {
+  if (typeof property == 'string')
     return tokenize(property)
-  }
+
   //  property was deleted (typeof -> 'undefined') or changed to an unknown type. Remove indexes:
   return []
 }
