@@ -2,7 +2,7 @@
 import { debounce } from 'lodash-es'
 
 import { inputsStorage } from '~/logic/browser-storage'
-import { search, setSearchQuery } from '~/logic/search-store'
+import { clearSearch, search, setSearchQuery } from '~/logic/search-store'
 import SearchHelp from '~/components/help/SearchHelp.vue'
 
 const update = debounce((e: Event) => {
@@ -41,6 +41,10 @@ function showTooltip(ev: MouseEvent) {
 }
 function hideTooltip(ev: MouseEvent) {
   tooltip.value.hide(ev)
+}
+
+function clear() {
+  clearSearch()
 }
 </script>
 
@@ -99,14 +103,20 @@ function hideTooltip(ev: MouseEvent) {
           title="toggle posts and comments"
         />
       </div>
-      <InputText
-        id="search-input"
-        :value="search.query"
-        placeholder="filter posts and comments"
-        :size="$app.context === 'popup' ? 'small' : undefined"
-        autofocus
-        @input="update"
-      />
+      <div class="w-full relative">
+        <InputText
+          id="search-input"
+          :value="search.query"
+          :size="$app.context === 'popup' ? 'small' : undefined"
+          class="w-full pr-5"
+          placeholder="filter posts and comments"
+          autofocus
+          @input="update"
+        />
+        <button v-if="search.query" class="absolute top-1/2 -translate-y-1/2 right-1" title="clear search" @click="clear">
+          <PhX class="w-5 h-5 text-surface-500 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-100" />
+        </button>
+      </div>
     </div>
   </div>
 </template>
