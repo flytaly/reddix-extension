@@ -66,6 +66,8 @@ export class WrappedItem {
   }
 
   get tags() {
+    if (this.item._tags?.length === 1 && this.item._tags[0] === '') // hide empty tag
+      return []
     return this.item._tags || []
   }
 

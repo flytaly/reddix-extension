@@ -42,6 +42,17 @@ export function isComment(data: DbRedditItem): data is DbRedditComment {
   return data.name.startsWith(RedditObjectKind.comment)
 }
 
+// add empty tag for indexing purposes
+function processTags(tags?: string[]) {
+  if (!tags?.length)
+    return ['']
+
+  if (tags.length > 1)
+    tags = tags.filter(t => t !== '')
+
+  return tags.length ? tags : ['']
+}
+
 // Add hooks that will index for full-text search:
 db.redditItems.hook('creating', (_primKey, obj) => {
   if (isPost(obj) && typeof obj.title == 'string')
@@ -58,8 +69,7 @@ db.redditItems.hook('creating', (_primKey, obj) => {
 
   obj.subreddit = obj.subreddit?.toLowerCase()
 
-  // add empty tag for indexing purposes
-  obj._tags = obj._tags?.length ? obj._tags : ['']
+  obj._tags = processTags(obj._tags)
 
   const ts = Math.floor(Date.now() / 1000)
   obj._created_at = ts
@@ -86,17 +96,12 @@ db.redditItems.hook('updating', (mods, _primKey, obj, _trans): Partial<DbRedditI
   if (Object.prototype.hasOwnProperty.call(mods, '_tags'))
     updated._tags = (mods as P | C)._tags
 
-  let tags = updated._tags || obj._tags
-  if (!tags?.length) { // ensure there is an empty tag
-    tags = ['']
-  }
-
   updated._updated_at = Math.floor(Date.now() / 1000)
 
   return {
     _body_words: updated._body_words || obj._body_words,
     _title_words: updated._title_words || obj._title_words,
-    _tags: tags,
+    _tags: processTags(updated._tags || obj._tags),
     subreddit: updated.subreddit || obj.subreddit,
   }
 })

@@ -7,9 +7,7 @@ const props = defineProps<{
 }>()
 
 async function onTagClick(e: MouseEvent) {
-  const tag = (e.currentTarget as HTMLElement).dataset.tag
-  if (!tag)
-    return
+  const tag = (e.currentTarget as HTMLElement).dataset.tag || ''
   setTag(tag)
   props.onTagSelect?.(tag)
 }
@@ -29,7 +27,7 @@ async function onTagClick(e: MouseEvent) {
           :data-tag="tag"
           @click.prevent="onTagClick"
         >
-          <span class="max-w-52 text-ellipsis">#{{ tag }}</span>
+          <span class="max-w-52 text-ellipsis">#{{ tag || '[untagged]' }}</span>
           <span>{{ count }}</span>
         </a>
       </li>

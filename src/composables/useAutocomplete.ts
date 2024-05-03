@@ -11,7 +11,7 @@ export function useTagsAutocomplete(forbidNew = false) {
     () => stats.tags,
     () => {
       parts.value = {}
-      allTags.value = getTagsArray()
+      allTags.value = getTagsArray().filter(t => t[0] !== '')
       // split tag words
       allTags.value.forEach(([tag, count]) => {
         for (let i = 0; i < tag.length; i++) {
