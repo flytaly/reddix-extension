@@ -76,6 +76,7 @@ function hideTooltip(ev: MouseEvent) {
           :options="itemCategories"
           multiple
           aria-labelledby="multiple"
+          title="toggle saved and upvoted items"
         />
         <SelectButton
           v-model="filterTypes"
@@ -95,6 +96,7 @@ function hideTooltip(ev: MouseEvent) {
           option-label="name"
           multiple
           aria-labelledby="multiple"
+          title="toggle posts and comments"
         />
       </div>
       <InputText
