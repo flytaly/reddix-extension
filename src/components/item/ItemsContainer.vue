@@ -185,11 +185,13 @@ function setSortBy(sortBy: SearchQuery['sortBy']) {
         :pt-options="{ mergeProps: true }"
       >
         <template #option="slotProps">
-          <component :is="slotProps.option.iconCmp" />
+          <span :title="slotProps.option.title">
+            <component :is="slotProps.option.iconCmp" />
+          </span>
         </template>
       </SelectButton>
 
-      <button class="btn ml-4 text-sm" @click="sortOverlay.toggle">
+      <button title="sort items" class="btn ml-4 text-sm" @click="sortOverlay.toggle">
         <ph-sort-descending v-if="search.direction === 'desc'" />
         <ph-sort-ascending v-else />
       </button>
