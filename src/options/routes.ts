@@ -16,15 +16,20 @@ export enum RoutePath {
 }
 
 export const routes = [
-  { path: RoutePath.Search, component: SearchPage },
-  { path: RoutePath.Import, component: ImportPage },
-  { path: RoutePath.Export, component: ExportPage },
-  { path: RoutePath.Settings, component: SettingsPage },
-  { path: RoutePath.Help, component: HelpPage },
-  { path: RoutePath.Support, component: DonatePage },
-]
+  { path: RoutePath.Search, component: SearchPage, meta: { title: 'Reddix | Search' } },
+  { path: RoutePath.Import, component: ImportPage, meta: { title: 'Reddix | Import' } },
+  { path: RoutePath.Export, component: ExportPage, meta: { title: 'Reddix | Export' } },
+  { path: RoutePath.Settings, component: SettingsPage, meta: { title: 'Reddix | Settings' } },
+  { path: RoutePath.Help, component: HelpPage, meta: { title: 'Reddix | Help' } },
+  { path: RoutePath.Support, component: DonatePage, meta: { title: 'Reddix | Support' } },
+] as const
 
 export const router = VueRouter.createRouter({
   routes,
   history: VueRouter.createWebHashHistory(),
+})
+
+router.beforeEach((to, from, next) => {
+  document.title = (to.meta.title as string) || 'Reddix'
+  next()
 })
