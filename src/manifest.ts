@@ -44,6 +44,13 @@ export async function getManifest() {
     },
   }
 
+  manifest.browser_specific_settings = {
+    gecko: {
+      strict_min_version: '109.0',
+      id: 'reddix@flytaly',
+    },
+  }
+
   // FIXME: not work in MV3
   if (isDev && false) {
     // for content script, as browsers will cache them for each reload,
