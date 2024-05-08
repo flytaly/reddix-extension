@@ -3,6 +3,7 @@ import MainLayout from '~/components/pages/MainLayout.vue'
 import SearchInput from '~/components/SearchInput.vue'
 import Sidebar from '~/components/SearchSidebar.vue'
 import ItemsContainer from '~/components/item/ItemsContainer.vue'
+import Permissions from '~/components/Permissions.vue'
 </script>
 
 <template>
@@ -12,6 +13,7 @@ import ItemsContainer from '~/components/item/ItemsContainer.vue'
         <Sidebar />
       </div>
       <div class="input mx-auto mt-4 flex w-full max-w-main-column flex-col items-center px-4 sm:my-0">
+        <Permissions />
         <SearchInput />
       </div>
       <div class="items mx-auto w-full">
