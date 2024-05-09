@@ -44,11 +44,13 @@ export async function getManifest() {
     },
   }
 
-  manifest.browser_specific_settings = {
-    gecko: {
-      strict_min_version: '109.0',
-      id: 'reddix@flytaly',
-    },
+  if (isFirefox) {
+    manifest.browser_specific_settings = {
+      gecko: {
+        strict_min_version: '112.0',
+        id: 'reddix@flytaly',
+      },
+    }
   }
 
   // FIXME: not work in MV3
