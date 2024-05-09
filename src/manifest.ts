@@ -33,7 +33,7 @@ export async function getManifest() {
       16: './assets/icon_16.png',
       32: './assets/icon_32.png',
       48: './assets/icon_48.png',
-      128: './assets/icon_512.png',
+      128: './assets/icon_128.png',
     },
     permissions: ['alarms', 'storage', 'unlimitedStorage'],
     host_permissions: ['https://*.reddit.com/*'],
