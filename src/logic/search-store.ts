@@ -27,7 +27,7 @@ export function clearSearch() {
 }
 
 export function setSearchQuery(query: string) {
-  const pieces = query.split(' ')
+  const pieces = query.trim().split(' ')
   clearSearch()
   for (const piece of pieces) {
     if (piece.startsWith('\\')) {

@@ -7,7 +7,7 @@ import SearchHelp from '~/components/help/SearchHelp.vue'
 
 const update = debounce((e: Event) => {
   const query = (e.target as HTMLInputElement)?.value
-  setSearchQuery(query.trim())
+  setSearchQuery(query)
 }, 200)
 
 const itemTypes: { name: string, value: ItemType }[] = [
