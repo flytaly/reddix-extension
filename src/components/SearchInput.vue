@@ -15,23 +15,23 @@ const itemTypes: { name: string, value: ItemType }[] = [
   { name: 'comments', value: 'comment' },
 ]
 
-const itemTypesSaved = itemTypes.filter(v => inputsStorage.itemTypes.includes(v.value))
+const itemTypesSaved = itemTypes.filter(v => inputsStorage.value.itemTypes.includes(v.value))
 const filterTypes = ref(itemTypesSaved)
 
 watch(filterTypes, (val) => {
   search.hidePosts = !val.find(v => v.value === 'post')
   search.hideComments = !val.find(v => v.value === 'comment')
-  inputsStorage.itemTypes = val.map(v => v.value)
+  inputsStorage.value.itemTypes = val.map(v => v.value)
 })
 
 const itemCategories: ItemCategory[] = ['saved', 'upvoted']
-const itemCategoriesSaved = itemCategories.filter(v => inputsStorage.categories.includes(v))
+const itemCategoriesSaved = itemCategories.filter(v => inputsStorage.value.categories.includes(v))
 const filterCategories = ref(itemCategoriesSaved)
 
 watch(filterCategories, (vals) => {
   search.hideSaved = !vals.includes('saved')
   search.hideUpvoted = !vals.includes('upvoted')
-  inputsStorage.categories = vals
+  inputsStorage.value.categories = vals
 })
 
 const tooltip = ref()

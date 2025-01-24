@@ -140,19 +140,19 @@ const viewOptions: { iconCmp: FunctionalComponent, value: ViewType, title: strin
   { iconCmp: PhNotePencil, value: 'edit', title: 'Edit' },
 ]
 
-const viewSaved = viewOptions.find(v => v.value === inputsStorage.currentView) || viewOptions[0]
+const viewSaved = viewOptions.find(v => v.value === inputsStorage.value.currentView) || viewOptions[0]
 const view = ref(viewSaved)
 
-watch(view, () => (inputsStorage.currentView = view.value.value))
+watch(view, () => (inputsStorage.value.currentView = view.value.value))
 
 watch(
-  () => inputsStorage.sortDirection,
+  () => inputsStorage.value.sortDirection,
   dir => (search.direction = dir),
   { immediate: true },
 )
 
 watch(
-  () => inputsStorage.sortBy,
+  () => inputsStorage.value.sortBy,
   sortBy => (search.sortBy = sortBy),
   { immediate: true },
 )
@@ -163,11 +163,11 @@ const checkedItems = defineModel<number[]>({ default: [] })
 
 function setSortDirection(dir: SearchDirection) {
   search.direction = dir
-  inputsStorage.sortDirection = dir
+  inputsStorage.value.sortDirection = dir
 }
 function setSortBy(sortBy: SearchQuery['sortBy']) {
   search.sortBy = sortBy
-  inputsStorage.sortBy = sortBy
+  inputsStorage.value.sortBy = sortBy
 }
 </script>
 

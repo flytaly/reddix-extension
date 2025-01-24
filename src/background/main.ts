@@ -18,25 +18,25 @@ function setStateAndNotify(updates: Partial<BgState>) {
 
 function getLastId(category: ItemCategory) {
   if (category === 'saved')
-    return reqInfoStorage.lastSavedItemId
+    return reqInfoStorage.value.lastSavedItemId
   else if (category === 'upvoted')
-    return reqInfoStorage.lastUpvotedItemId
+    return reqInfoStorage.value.lastUpvotedItemId
 }
 
 function setLastId(category: ItemCategory, id: string) {
   if (category === 'saved')
-    reqInfoStorage.lastSavedItemId = id
+    reqInfoStorage.value.lastSavedItemId = id
   else if (category === 'upvoted')
-    reqInfoStorage.lastUpvotedItemId = id
+    reqInfoStorage.value.lastUpvotedItemId = id
 }
 
 function setFetchDate(category: ItemCategory) {
   const ts = Date.now()
-  reqInfoStorage.timestamp = ts
+  reqInfoStorage.value.timestamp = ts
   if (category === 'saved')
-    reqInfoStorage.lastSavedItemFetchTime = ts
+    reqInfoStorage.value.lastSavedItemFetchTime = ts
   else if (category === 'upvoted')
-    reqInfoStorage.lastUpvotedItemFetchTime = ts
+    reqInfoStorage.value.lastUpvotedItemFetchTime = ts
 }
 
 async function fetchItems(username: string, category: ItemCategory, fetchAll = false) {
@@ -106,8 +106,8 @@ onMessage('clear-fetch-error', () => {
 })
 
 async function updateAndSchedule() {
-  const interval = optionsStorage.updateInterval
-  const lastUpdate = reqInfoStorage.timestamp || 0
+  const interval = optionsStorage.value.updateInterval
+  const lastUpdate = reqInfoStorage.value.timestamp || 0
   let nextUpdate = lastUpdate + interval
 
   if (lastUpdate && Date.now() < nextUpdate) {
@@ -116,12 +116,12 @@ async function updateAndSchedule() {
     return
   }
 
-  if (userName.value && optionsStorage.autoUpdateUpvoted) {
+  if (userName.value && optionsStorage.value.autoUpdateUpvoted) {
     await startFetching(userName.value, 'saved', false)
     console.log('DEBUG: saved items updated', new Date().toLocaleString())
   }
 
-  if (userName.value && optionsStorage.autoUpdateSaved) {
+  if (userName.value && optionsStorage.value.autoUpdateSaved) {
     await startFetching(userName.value, 'upvoted', false)
     console.log('DEBUG: upvoted posts updated', new Date().toLocaleTimeString())
   }

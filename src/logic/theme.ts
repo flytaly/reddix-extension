@@ -15,9 +15,9 @@ export function setClass(theme: Theme) {
 }
 
 export async function setupTheme() {
-  watch(() => optionsStorage.theme, setClass, { immediate: true })
+  watch(() => optionsStorage.value.theme, setClass, { immediate: true })
 
   matchDark().addEventListener('change', async () => {
-    setClass(optionsStorage.theme)
+    setClass(optionsStorage.value.theme)
   })
 }

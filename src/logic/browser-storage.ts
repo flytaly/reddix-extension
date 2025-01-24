@@ -1,11 +1,11 @@
-import { defaultOptions } from './extension-options'
-import { assignSerialized, useStorage } from '~/composables/useStorage'
-import type { RateLimits } from '~/reddit/rate-limits'
+import { useWebExtensionStorage } from '~/composables/useWebExtensionStorage'
 import type { SearchQuery } from '~/logic/db/queries'
+import { defaultOptions } from '~/logic/extension-options'
+import type { RateLimits } from '~/reddit/rate-limits'
 
 type StorageKey = 'inputs' | 'requestInfo' | 'options'
 
-export const optionsStorage = useStorage('options', defaultOptions)
+export const optionsStorage = useWebExtensionStorage('options' as StorageKey, defaultOptions)
 
 const memoInputsDefault = {
   username: '',
@@ -16,14 +16,14 @@ const memoInputsDefault = {
   sortBy: 'created' as SearchQuery['sortBy'],
 }
 
-export const inputsStorage = useStorage('inputs', memoInputsDefault)
+export const inputsStorage = useWebExtensionStorage('inputs' as StorageKey, memoInputsDefault)
 
 export const userName = computed({
   get() {
-    return inputsStorage.username
+    return inputsStorage.value.username
   },
   set(value) {
-    inputsStorage.username = value.trim()
+    inputsStorage.value.username = value.trim()
   },
 })
 
@@ -36,7 +36,7 @@ export interface RequestInfo {
   timestamp?: number
 }
 
-export const reqInfoStorage = useStorage<RequestInfo>('requestInfo', {
+export const reqInfoStorage = useWebExtensionStorage<RequestInfo>('requestInfo' as StorageKey, {
   rateLimits: {},
   lastSavedItemId: '',
   lastUpvotedItemId: '',
@@ -47,13 +47,7 @@ export const reqInfoStorage = useStorage<RequestInfo>('requestInfo', {
 
 export async function setupStorage() {
   try {
-    const { options, inputs, requestInfo } = (await browser.storage.local.get()) as Record<StorageKey, string>
-    if (options)
-      assignSerialized(optionsStorage, options)
-    if (inputs)
-      assignSerialized(inputsStorage, inputs)
-    if (requestInfo)
-      assignSerialized(reqInfoStorage, requestInfo)
+    await browser.storage.local.get()
   }
   catch (error) {
     console.error('Error while accessing storage.', error)

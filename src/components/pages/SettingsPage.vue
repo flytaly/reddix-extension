@@ -24,11 +24,11 @@ const badgeActions = ref<{ name: string, value: ExtensionOptions['onBadgeClick']
 ])
 
 const badgeAction = ref(
-  badgeActions.value.find(v => v.value === optionsStorage.onBadgeClick) ?? badgeActions.value[0],
+  badgeActions.value.find(v => v.value === optionsStorage.value.onBadgeClick) ?? badgeActions.value[0],
 )
 
 watch(badgeAction, () => {
-  optionsStorage.onBadgeClick = badgeAction.value.value
+  optionsStorage.value.onBadgeClick = badgeAction.value.value
 })
 
 const pt: SelectButtonPassThroughOptions = {
