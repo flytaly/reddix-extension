@@ -99,7 +99,13 @@ watch(
   <VirtualList ref="virualList" :items="items" @scroll-end="emit('scroll-end')">
     <template #item="{ item }">
       <div :data-reddit-name="item.redditId" class="mx-auto max-w-main-column">
-        <ItemCardCompact v-if="listType === 'compact'" :key="item.dbId" :item="item">
+        <ItemCardCompact
+          v-if="listType === 'compact'"
+          :key="item.dbId"
+          :item="item"
+          @subreddit-click="setSubreddit"
+          @author-click="setAuthor"
+        >
           <template #end>
             <button class="btn flex h-full items-center" title="Actions" aria-haspopup="true" @click="toggleActionMenu">
               <ph-dots-three-vertical class="h-4 w-auto xs:h-5" />
