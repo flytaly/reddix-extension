@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import ItemsContainer from '~/components/item/ItemsContainer.vue'
 import MainLayout from '~/components/pages/MainLayout.vue'
+import Permissions from '~/components/Permissions.vue'
 import SearchInput from '~/components/SearchInput.vue'
 import Sidebar from '~/components/SearchSidebar.vue'
-import ItemsContainer from '~/components/item/ItemsContainer.vue'
-import Permissions from '~/components/Permissions.vue'
 </script>
 
 <template>

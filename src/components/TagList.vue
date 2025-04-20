@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { getTagsArray } from '~/logic/stores'
 import { setTag } from '~/logic/search-store'
+import { getTagsArray } from '~/logic/stores'
 
 const props = defineProps<{
   onTagSelect?: (tag: string) => void

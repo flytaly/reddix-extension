@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import BtcQR from '~/assets/crypto/btc.svg?component'
+import DogeQR from '~/assets/crypto/doge.svg?component'
 import EthQR from '~/assets/crypto/eth.svg?component'
 import LtcQR from '~/assets/crypto/ltc.svg?component'
 import SolQR from '~/assets/crypto/sol.svg?component'
-import DogeQR from '~/assets/crypto/doge.svg?component'
 import XlmQR from '~/assets/crypto/xlm.svg?component'
 import DonateAddress from '~/components/DonateAddress.vue'
 

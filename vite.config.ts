@@ -1,18 +1,18 @@
 /// <reference types="vitest" />
 
-import { dirname, relative } from 'node:path'
 import type { UserConfig } from 'vite'
-import { defineConfig } from 'vite'
+import { dirname, relative } from 'node:path'
 import Vue from '@vitejs/plugin-vue'
-import Icons from 'unplugin-icons/vite'
-import IconsResolver from 'unplugin-icons/resolver'
-import Components from 'unplugin-vue-components/vite'
 import AutoImport from 'unplugin-auto-import/vite'
+import IconsResolver from 'unplugin-icons/resolver'
+import Icons from 'unplugin-icons/vite'
 import { PrimeVueResolver } from 'unplugin-vue-components/resolvers'
+import Components from 'unplugin-vue-components/vite'
+import { defineConfig } from 'vite'
 import svgLoader from 'vite-svg-loader'
 
-import { isDev, port, r } from './scripts/utils'
 import packageJson from './package.json'
+import { isDev, port, r } from './scripts/utils'
 
 export const sharedConfig: UserConfig = {
   root: r('src'),
@@ -77,6 +77,7 @@ export default defineConfig(({ command }) => ({
   base: command === 'serve' ? `http://localhost:${port}/` : '/dist/',
   server: {
     port,
+    cors: { origin: '*' },
     hmr: {
       host: 'localhost',
     },

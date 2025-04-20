@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import type { WrappedItem } from '~/logic/wrapped-item'
 import MediaPreview from '~/components/item/MediaPreview.vue'
 import Thumbnail from '~/components/item/Thumbnail.vue'
-import type { WrappedItem } from '~/logic/wrapped-item'
 
 const props = defineProps<{
   item: WrappedItem

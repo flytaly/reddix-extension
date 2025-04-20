@@ -1,5 +1,6 @@
+import type { Table } from 'dexie'
 // db.ts
-import Dexie, { type Table } from 'dexie'
+import Dexie from 'dexie'
 import { RedditObjectKind } from '~/reddit/reddit-types'
 
 export interface DbOnlyProperties {
@@ -115,7 +116,7 @@ function tokenizeProp(property: unknown) {
 }
 
 // https://www.regular-expressions.info/unicode.html
-export const separator = /[\p{Z}\p{S}\p{P}\p{C}$]+/u
+export const separator = /[\p{Z}\p{S}\p{P}\p{C}]+/u
 
 function tokenize(text: string): string[] {
   const allWordsIncludingDups = text.toLowerCase().split(separator)

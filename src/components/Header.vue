@@ -4,15 +4,15 @@ import PhCircleWavyQuestion from '~icons/ph/circle-wavy-question'
 import PhClockCounterClockwiseBold from '~icons/ph/clock-counter-clockwise'
 import PhDownloadBold from '~icons/ph/download-bold'
 import PhGear from '~icons/ph/gear'
+import PhHandHeart from '~icons/ph/hand-heart-duotone'
 import PhMagnifyingGlassBold from '~icons/ph/magnifying-glass'
 import PhUploadBold from '~icons/ph/upload-bold'
-import PhHandHeart from '~icons/ph/hand-heart-duotone'
 
-import TagList from '~/components/TagList.vue'
-import AccountInputBlock from '~/components/AccountInputBlock.vue'
-import { RoutePath } from '~/options/routes'
-import { useThemeToggle } from '~/composables/useThemeToggle'
 import Logo from '~/assets/logo_short.svg?component'
+import AccountInputBlock from '~/components/AccountInputBlock.vue'
+import TagList from '~/components/TagList.vue'
+import { useThemeToggle } from '~/composables/useThemeToggle'
+import { RoutePath } from '~/options/routes'
 
 const items = [
   { label: 'Search', route: RoutePath.Search, iconCmp: PhMagnifyingGlassBold },

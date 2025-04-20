@@ -1,5 +1,5 @@
-import { optionsStorage } from '~/logic/browser-storage'
 import type { Theme } from '~/logic/extension-options'
+import { optionsStorage } from '~/logic/browser-storage'
 
 const matchDark = () => window.matchMedia('(prefers-color-scheme: dark)')
 

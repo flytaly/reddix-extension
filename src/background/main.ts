@@ -1,11 +1,12 @@
-import { type BgState, state } from './bg-state'
-import devSetup from './dev-setup'
+import type { BgState } from './bg-state'
+import type { RateLimits } from '~/reddit/rate-limits'
 import { optionsStorage, reqInfoStorage, setupStorage, userName } from '~/logic/browser-storage'
 import { savePosts } from '~/logic/db/mutations'
 import { waitRateLimits } from '~/logic/wait-limits'
-import { fetchRedditItems, onRateLimits } from '~/reddit'
-import type { RateLimits } from '~/reddit/rate-limits'
 import { onMessage, sendMessage } from '~/messages'
+import { fetchRedditItems, onRateLimits } from '~/reddit'
+import { state } from './bg-state'
+import devSetup from './dev-setup'
 
 type Alarm = 'update'
 

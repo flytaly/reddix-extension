@@ -1,5 +1,5 @@
-import { tryOnScopeDispose, watchThrottled } from '@vueuse/core'
 import type { Storage } from 'webextension-polyfill'
+import { tryOnScopeDispose, watchThrottled } from '@vueuse/core'
 import { isEqual } from 'lodash-es'
 
 // Arrays should be serialized, otherwise they will be represented

@@ -1,7 +1,7 @@
-import { useWebExtensionStorage } from '~/composables/useWebExtensionStorage'
 import type { SearchQuery } from '~/logic/db/queries'
-import { defaultOptions } from '~/logic/extension-options'
 import type { RateLimits } from '~/reddit/rate-limits'
+import { useWebExtensionStorage } from '~/composables/useWebExtensionStorage'
+import { defaultOptions } from '~/logic/extension-options'
 
 type StorageKey = 'inputs' | 'requestInfo' | 'options'
 

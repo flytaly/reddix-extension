@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router'
 import { useMediaQuery } from '@vueuse/core'
+import { useRoute, useRouter } from 'vue-router'
 
 import AccountInput from '~/components/AccountInputBlock.vue'
 import FetchButton from '~/components/FetchButton.vue'
 import TagList from '~/components/TagList.vue'
-import { sendMessage } from '~/messages'
-import { state, stats } from '~/logic/stores'
 import { userName } from '~/logic/browser-storage'
+import { state, stats } from '~/logic/stores'
+import { sendMessage } from '~/messages'
 
 const visible = ref(false)
 

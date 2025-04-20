@@ -2,7 +2,7 @@ import { RedditObjectKind } from '~/reddit/reddit-types'
 
 // https://gist.github.com/Jezternz/c8e9fafc2c114e079829974e3764db75
 export function csvStringToArray(strData: string) {
-  const objPattern = new RegExp('(\\,|\\r?\\n|\\r|^)(?:"([^"]*(?:""[^"]*)*)"|([^\\,\\r\\n]*))', 'gi')
+  const objPattern = new RegExp('(,|\\r?\\n|\\r|^)(?:"([^"]*(?:""[^"]*)*)"|([^,\\r\\n]*))', 'g')
   let arrMatches = null
   const arrData = [[]] as string[][]
   // eslint-disable-next-line no-cond-assign
@@ -20,9 +20,9 @@ const re = new RegExp(
   '.*reddit\\.com\\/'
   + 'r\\/\\w+\\/' // r/subreddit_name/
   + 'comments\\/(\\w+)\\/' // comments/postid/
-  + '[^\\/]+\\/' // post_name/ or comment/ - post_name can contain unicode characters
+  + '[^/]+\\/' // post_name/ or comment/ - post_name can contain unicode characters
   + '(\\w+)?', //  commentid
-  'ui',
+  'iu',
 )
 
 type VoteDirection = 'up' | 'down' | 'none'

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import SearchHelp from '~/components/help/SearchHelp.vue'
-import ImportHelp from '~/components/help/ImportHelp.vue'
 import Logo from '~/assets/logo_long.svg?component'
+import ImportHelp from '~/components/help/ImportHelp.vue'
+import SearchHelp from '~/components/help/SearchHelp.vue'
 
 function getUrl(path: string) {
   return browser.runtime.getURL(path)

@@ -1,6 +1,6 @@
+import type { SearchQuery } from './db/queries'
 import { describe, expect, it } from 'vitest'
 import { search, setAuthor, setSearchQuery, setSubreddit, setTag } from './search-store'
-import type { SearchQuery } from './db/queries'
 
 function create(s: Partial<SearchQuery> = {}) {
   return { query: '', tags: [], words: [], author: '', hidePosts: false, hideComments: false, ...s } as SearchQuery

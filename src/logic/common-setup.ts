@@ -1,16 +1,16 @@
+import type { App } from 'vue'
 import PrimeVue from 'primevue/config'
 import ConfirmationService from 'primevue/confirmationservice'
 import Toast from 'primevue/toast'
 import ToastService from 'primevue/toastservice'
 import Tooltip from 'primevue/tooltip'
-import type { App } from 'vue'
 import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller'
-import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
-
 import pkg from '~/../package.json'
+
 import { setupTheme } from '~/logic/theme'
 import { router } from '~/options/routes'
 import PrimePreset from '~/styles/presets/wind'
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 
 export function setupApp(app: App, appContext: { context?: string } = {}) {
   setupTheme()

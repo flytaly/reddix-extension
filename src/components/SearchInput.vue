@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { debounce } from 'lodash-es'
 
+import SearchHelp from '~/components/help/SearchHelp.vue'
 import { inputsStorage } from '~/logic/browser-storage'
 import { clearSearch, search, setSearchQuery } from '~/logic/search-store'
-import SearchHelp from '~/components/help/SearchHelp.vue'
 
 const update = debounce((e: Event) => {
   const query = (e.target as HTMLInputElement)?.value

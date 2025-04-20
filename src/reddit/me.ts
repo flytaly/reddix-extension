@@ -1,5 +1,5 @@
-import { RedditObjectKind } from './reddit-types'
 import { baseUrl } from './index'
+import { RedditObjectKind } from './reddit-types'
 
 interface MeResponse {
   kind: RedditObjectKind.account

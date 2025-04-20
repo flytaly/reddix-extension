@@ -1,7 +1,7 @@
-import { unescape } from 'lodash-es'
 import type { DbRedditItem, DbRedditPost } from '~/logic/db/index'
-import { isPostData } from '~/reddit'
 import type { PostMedia } from '~/reddit/post-media'
+import { unescape } from 'lodash-es'
+import { isPostData } from '~/reddit'
 import { extractMedia } from '~/reddit/post-media'
 
 export class WrappedItem {

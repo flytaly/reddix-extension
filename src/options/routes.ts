@@ -1,10 +1,10 @@
 import * as VueRouter from 'vue-router'
+import DonatePage from '~/components/pages/DonatePage.vue'
 import ExportPage from '~/components/pages/ExportPage.vue'
+import HelpPage from '~/components/pages/HelpPage.vue'
 import ImportPage from '~/components/pages/ImportPage.vue'
 import SearchPage from '~/components/pages/SearchPage.vue'
 import SettingsPage from '~/components/pages/SettingsPage.vue'
-import HelpPage from '~/components/pages/HelpPage.vue'
-import DonatePage from '~/components/pages/DonatePage.vue'
 
 export enum RoutePath {
   Search = '/',

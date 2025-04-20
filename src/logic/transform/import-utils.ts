@@ -1,15 +1,15 @@
 import type { DbRedditItem } from '../db'
-import { isComment, isPost } from '../db'
+import type { ExportedItem } from '~/logic/transform/export-utils'
+import type { RateLimits } from '~/reddit/rate-limits'
 import { IMPORT_TAKE } from '~/constants'
 import { savePosts, upsertItems } from '~/logic/db/mutations'
 import { getItems } from '~/logic/db/queries'
 import { addMessage } from '~/logic/log-messages'
-import type { ExportedItem } from '~/logic/transform/export-utils'
 import { csvStringToArray, extractIds } from '~/logic/transform/import-csv'
 import { waitRateLimits } from '~/logic/wait-limits'
 import { onRateLimits } from '~/reddit'
 import { getItemsInfo } from '~/reddit/index'
-import type { RateLimits } from '~/reddit/rate-limits'
+import { isComment, isPost } from '../db'
 
 export async function fetchInfo(ids: string[], category: ItemCategory = 'saved') {
   if (!ids.length)
@@ -132,6 +132,6 @@ export async function importJSON(file: File) {
     addMessage(`The importing is finished (added ${imported} items)`)
   }
   catch (error) {
-    addMessage(`[${file.name}] Invalid JSON file.`, 'error')
+    addMessage(`[${file.name}] Invalid JSON file. ${error}`, 'error')
   }
 }

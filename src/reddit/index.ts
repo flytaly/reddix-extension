@@ -1,7 +1,7 @@
 import type { RateLimits } from './rate-limits'
+import { reqInfoStorage } from '~/logic/browser-storage'
 import { getRateLimits } from './rate-limits'
 import { RedditObjectKind } from './reddit-types'
-import { reqInfoStorage } from '~/logic/browser-storage'
 
 export const baseUrl = 'https://www.reddit.com'
 

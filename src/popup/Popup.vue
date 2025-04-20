@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { useToast } from 'primevue/usetoast'
-import PhGear from '~icons/ph/gear'
 import PhCloudArrowDown from '~icons/ph/cloud-arrow-down'
+import PhGear from '~icons/ph/gear'
 
-import SearchInput from '~/components/SearchInput.vue'
-import ItemsContainer from '~/components/item/ItemsContainer.vue'
-import { useThemeToggle } from '~/composables/useThemeToggle'
-import { setupMessageHandlers, setupStatsStore, state } from '~/logic/stores'
-import { userName } from '~/logic/browser-storage'
 import Logo from '~/assets/logo_short.svg?component'
+import ItemsContainer from '~/components/item/ItemsContainer.vue'
+import SearchInput from '~/components/SearchInput.vue'
+import { useThemeToggle } from '~/composables/useThemeToggle'
+import { userName } from '~/logic/browser-storage'
+import { setupMessageHandlers, setupStatsStore, state } from '~/logic/stores'
 import { sendMessage } from '~/messages'
 
 const subscription = setupStatsStore()

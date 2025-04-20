@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import MainLayout from '~/components/pages/MainLayout.vue'
 import ImportHelp from '~/components/help/ImportHelp.vue'
-import RateLimitsBlock from '~/components/RateLimitsBlock.vue'
 import LogList from '~/components/LogList.vue'
-import { fetchInfo, importJSON, parseCSV } from '~/logic/transform/import-utils'
+import MainLayout from '~/components/pages/MainLayout.vue'
+import RateLimitsBlock from '~/components/RateLimitsBlock.vue'
 import { addMessage } from '~/logic/log-messages'
+import { fetchInfo, importJSON, parseCSV } from '~/logic/transform/import-utils'
 
 const isImporting = ref(false)
 

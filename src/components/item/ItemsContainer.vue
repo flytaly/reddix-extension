@@ -1,21 +1,20 @@
 <script setup lang="ts">
 import type { FunctionalComponent } from 'vue'
+import type { SearchQuery } from '~/logic/db/queries'
+import type { WrappedItem } from '~/logic/wrapped-item'
 import { useToast } from 'primevue/usetoast'
 import PhList from '~icons/ph/list'
 import PhNotePencil from '~icons/ph/note-pencil'
 import PhRows from '~icons/ph/rows'
-
 import ItemList from '~/components/item/ItemList.vue'
 import MassEditMenu from '~/components/item/MassEditMenu.vue'
 import { ITEMS_ON_PAGE } from '~/constants'
-import type { WrappedItem } from '~/logic/wrapped-item'
+import { inputsStorage } from '~/logic/browser-storage'
 import { deleteItems, updateItem } from '~/logic/db/mutations'
-import { getItemsInfo } from '~/reddit'
-import type { SearchQuery } from '~/logic/db/queries'
 import { getPostsFromDB } from '~/logic/db/queries'
 import { search } from '~/logic/search-store'
 import { state } from '~/logic/stores'
-import { inputsStorage } from '~/logic/browser-storage'
+import { getItemsInfo } from '~/reddit'
 
 const lastItem = shallowRef<WrappedItem | null>(null)
 const isEnd = ref<boolean | null>(null)

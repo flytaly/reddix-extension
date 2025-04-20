@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import JSZip from 'jszip'
-
-import MainLayout from '~/components/pages/MainLayout.vue'
 import type { DbRedditItem } from '~/logic/db'
-import { db, isComment, isPost } from '~/logic/db'
-import { type ExportedItem, filterProperties } from '~/logic/transform/export-utils'
-import { objectsToCsv } from '~/logic/transform/export-csv'
+import type { ExportedItem } from '~/logic/transform/export-utils'
+
+import JSZip from 'jszip'
+import { ref } from 'vue'
+import MainLayout from '~/components/pages/MainLayout.vue'
 import { getFullLink } from '~/logic/convert-link'
+import { db, isComment, isPost } from '~/logic/db'
 import { stats } from '~/logic/stores'
+import { objectsToCsv } from '~/logic/transform/export-csv'
+import { filterProperties } from '~/logic/transform/export-utils'
 
 const selected = ref<'JSON' | 'CSV'>('CSV')
 

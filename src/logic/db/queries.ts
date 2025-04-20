@@ -1,10 +1,10 @@
 import type { Collection, IndexableType, PromiseExtended } from 'dexie'
-import Dexie from 'dexie'
-import { WrappedItem } from '../wrapped-item'
-import { ITEMS_ON_PAGE } from '~/constants'
 import type { DbRedditItem } from '~/logic/db'
+import Dexie from 'dexie'
+import { ITEMS_ON_PAGE } from '~/constants'
 import { db } from '~/logic/db'
 import { RedditObjectKind } from '~/reddit/reddit-types'
+import { WrappedItem } from '../wrapped-item'
 
 export interface PaginationDetails {
   lastItem?: WrappedItem | null

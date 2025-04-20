@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { DbRedditItem } from '~/logic/db'
-import { db } from '~/logic/db'
 import type { WrappedItem } from '~/logic/wrapped-item'
 import TagsInputAutocomplete from '~/components/tags/TagsInputAutocomplete.vue'
+import { db } from '~/logic/db'
 
 type TagList = [string, number][]
 

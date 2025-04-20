@@ -1,9 +1,9 @@
-import { liveQuery } from 'dexie'
-import { reactive } from 'vue'
-
-import { db } from './db/index'
 import type { BgState } from '~/background/bg-state'
+import { liveQuery } from 'dexie'
+
+import { reactive } from 'vue'
 import { onMessage, sendMessage } from '~/messages'
+import { db } from './db/index'
 
 export const state = reactive<BgState>({
   isFetching: false,

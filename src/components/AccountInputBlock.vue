@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import FetchButton from '~/components/FetchButton.vue'
-import { getUserInfo } from '~/reddit/me'
-import { sendMessage } from '~/messages'
-import { state } from '~/logic/stores'
 import { userName } from '~/logic/browser-storage'
+import { state } from '~/logic/stores'
+import { sendMessage } from '~/messages'
+import { getUserInfo } from '~/reddit/me'
 
 const props = defineProps<{ startFetching?: boolean }>()
 
