@@ -36,7 +36,7 @@ export async function fetchInfo(ids: string[], category: ItemCategory = 'saved')
       return
 
     info.data.children.forEach(item => idsSet.delete(item.data?.name))
-    const saved = (await savePosts(info, category)) || 0
+    const saved = (await savePosts(info.data.children, category)) || 0
     addMessage(`Added ${saved} items`)
     imported += saved
     batch = ids.slice(i, i + take)

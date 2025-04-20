@@ -51,6 +51,8 @@ async function fetchItems(username: string, category: ItemCategory, fetchAll = f
     return rl
   }
   let end = false
+
+  const itemsBuffer = [] as Array<RedditPostUnfiltered | RedditComment>
   while (!end) {
     end = true
     const [listing, errMsg] = await fetchRedditItems({ username, category, after }, onRateLimitsWrap)
@@ -62,11 +64,8 @@ async function fetchItems(username: string, category: ItemCategory, fetchAll = f
     if (!listing)
       break
 
-    const savedNew = await savePosts(listing, category)
-    setStateAndNotify({
-      loaded: state.loaded + listing.data.children.length,
-      savedNew: state.savedNew + (savedNew || 0),
-    })
+    itemsBuffer.push(...listing.data.children)
+    setStateAndNotify({ loaded: state.loaded + listing.data.children.length })
 
     if (!after)
       setLastId(category, listing.data.children[0].data.name)
@@ -80,6 +79,12 @@ async function fetchItems(username: string, category: ItemCategory, fetchAll = f
 
     await waitRateLimits(rateLimits, console.log)
   }
+
+  // reverse the order so the newer elements have a higher ID
+  itemsBuffer.reverse()
+  const savedNew = await savePosts(itemsBuffer, category)
+  setStateAndNotify({ loaded: state.loaded, savedNew: state.savedNew + (savedNew || 0) })
+
   setFetchDate(category)
 }
 

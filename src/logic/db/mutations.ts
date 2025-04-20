@@ -43,12 +43,12 @@ export async function upsertItems(items: RedditItemWithCategory[]) {
   return savedNew
 }
 
-export async function savePosts(listing: RedditItemResponse, category: ItemCategory = 'saved') {
-  if (!listing?.data)
+export async function savePosts(rawItems: Array<RedditPostUnfiltered | RedditComment>, category: ItemCategory = 'saved') {
+  if (!rawItems?.length)
     return
 
   try {
-    const items = listing.data.children.map((itm) => {
+    const items = rawItems.map((itm) => {
       return { ...itm.data, _category: [category] }
     }) as RedditItemWithCategory[]
     const saved = await upsertItems(items)
