@@ -13,7 +13,7 @@ const memoInputsDefault = {
   itemTypes: ['post', 'comment'] as ItemType[],
   currentView: 'list' as ViewType,
   sortDirection: 'desc' as SearchDirection,
-  sortBy: 'created' as SearchQuery['sortBy'],
+  sortBy: 'id' as SearchQuery['sortBy'],
 }
 
 export const inputsStorage = useWebExtensionStorage('inputs' as StorageKey, memoInputsDefault)
