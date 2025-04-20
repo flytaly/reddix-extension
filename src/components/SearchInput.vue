@@ -22,7 +22,7 @@ watch(filterTypes, (val) => {
   search.hidePosts = !val.find(v => v.value === 'post')
   search.hideComments = !val.find(v => v.value === 'comment')
   inputsStorage.value.itemTypes = val.map(v => v.value)
-})
+}, { immediate: true })
 
 const itemCategories: ItemCategory[] = ['saved', 'upvoted']
 const itemCategoriesSaved = itemCategories.filter(v => inputsStorage.value.categories.includes(v))
@@ -32,7 +32,7 @@ watch(filterCategories, (vals) => {
   search.hideSaved = !vals.includes('saved')
   search.hideUpvoted = !vals.includes('upvoted')
   inputsStorage.value.categories = vals
-})
+}, { immediate: true })
 
 const tooltip = ref()
 
