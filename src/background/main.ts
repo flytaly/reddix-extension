@@ -121,12 +121,12 @@ async function updateAndSchedule() {
     return
   }
 
-  if (userName.value && optionsStorage.value.autoUpdateUpvoted) {
+  if (userName.value && optionsStorage.value.autoUpdateSaved) {
     await startFetching(userName.value, 'saved', false)
     console.log('DEBUG: saved items updated', new Date().toLocaleString())
   }
 
-  if (userName.value && optionsStorage.value.autoUpdateSaved) {
+  if (userName.value && optionsStorage.value.autoUpdateUpvoted) {
     await startFetching(userName.value, 'upvoted', false)
     console.log('DEBUG: upvoted posts updated', new Date().toLocaleTimeString())
   }
