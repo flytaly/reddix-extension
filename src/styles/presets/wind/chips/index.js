@@ -29,7 +29,7 @@ export default {
             'text-surface-900 dark:text-surface-0',
             'bg-surface-0 dark:bg-surface-900',
             'placeholder:text-surface-400 dark:placeholder:text-surface-500',
-            'shadow-sm',
+            'shadow-xs',
 
             // States
             { 'ring-1 ring-inset ring-surface-300 dark:ring-surface-700 ring-offset-0': !state.focused, 'ring-2 ring-primary-500 dark:ring-primary-400': state.focused },
@@ -59,7 +59,7 @@ export default {
 
             // Shape
             'appearance-none rounded-none',
-            'border-0 outline-none',
+            'border-0 outline-hidden',
 
             // Color
             'text-surface-700 dark:text-white/80',

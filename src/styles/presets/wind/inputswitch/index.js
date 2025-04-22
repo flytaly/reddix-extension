@@ -31,8 +31,8 @@ export default {
             'before:h-4 before:w-4',
             'before:rounded-full',
             'before:duration-200 before:transition before:ease-in-out',
-            'before:bg-surface-0 before:dark:bg-surface-900',
-            'before:shadow',
+            'before:bg-surface-0 dark:before:bg-surface-900',
+            'before:shadow-sm',
             { 'before:transform before:translate-x-4': props.modelValue == props.trueValue },
 
             // Colors
@@ -72,13 +72,13 @@ export default {
             'm-0',
 
             // Shape
-            'rounded',
+            'rounded-sm',
             'border',
 
             // Shape
             'opacity-0',
             'rounded-md',
-            'outline-none',
+            'outline-hidden',
             'border-2 border-surface-300 dark:border-surface-700',
 
             // Misc

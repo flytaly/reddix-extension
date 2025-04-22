@@ -7,14 +7,14 @@ export default {
             { 'flex-1 w-[1%]': parent.instance.$name == 'InputGroup' },
 
             //Sizing
-            { '!w-16': props.showButtons && props.buttonLayout == 'vertical' },
+            { 'w-16!': props.showButtons && props.buttonLayout == 'vertical' },
 
             // Shape
             { 'first:rounded-l-md rounded-none last:rounded-r-md': parent.instance.$name == 'InputGroup' && !props.showButtons },
             { 'border-0 border-y border-l last:border-r border-surface-300 dark:border-surface-600': parent.instance.$name == 'InputGroup' && !props.showButtons },
 
             { 'ring-1 ring-surface-300 dark:ring-surface-700 ring-offset-0': parent.instance.$name !== 'InputGroup' },
-            'shadow-sm',
+            'shadow-xs',
             'rounded-md'
         ]
     }),
@@ -47,8 +47,8 @@ export default {
                 { 'border-y border-surface-300 dark:border-surface-700': parent.props.showButtons && parent.props.buttonLayout == 'vertical' },
 
                 // States
-                'outline-none focus:ring-primary-600 dark:focus:ring-primary-500',
-                'focus:outline-none focus:outline-offset-0 focus:ring-2 focus:ring-inset focus:ring-primary-600 dark:focus:ring-primary-500',
+                'outline-hidden focus:ring-primary-600 dark:focus:ring-primary-500',
+                'focus:outline-hidden focus:outline-offset-0 focus:ring-2 focus:ring-inset focus:ring-primary-600 dark:focus:ring-primary-500',
 
                 //Position
                 { 'order-2': parent.props.buttonLayout == 'horizontal' || parent.props.buttonLayout == 'vertical' }
@@ -93,7 +93,7 @@ export default {
                 { 'rounded-bl-none rounded-br-none': parent.props.showButtons && parent.props.buttonLayout == 'vertical' },
 
                 //States
-                'focus:outline-none focus:outline-offset-0 focus:ring-2 focus:ring-inset focus:ring-primary-600 focus:dark:ring-primary-500',
+                'focus:outline-hidden focus:outline-offset-0 focus:ring-2 focus:ring-inset focus:ring-primary-600 dark:focus:ring-primary-500',
                 'hover:bg-surface-50 dark:hover:bg-surface-700',
 
                 //Misc
@@ -137,7 +137,7 @@ export default {
                 { 'rounded-tr-none rounded-tl-none ': parent.props.showButtons && parent.props.buttonLayout == 'vertical' },
 
                 //States
-                'focus:outline-none focus:outline-offset-0 focus:ring-2 focus:ring-inset focus:ring-primary-600 focus:dark:ring-primary-500',
+                'focus:outline-hidden focus:outline-offset-0 focus:ring-2 focus:ring-inset focus:ring-primary-600 dark:focus:ring-primary-500',
                 'hover:bg-surface-50 dark:hover:bg-surface-700',
 
                 //Misc

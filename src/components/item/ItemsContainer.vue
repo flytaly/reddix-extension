@@ -180,7 +180,7 @@ function setSortBy(sortBy: SearchQuery['sortBy']) {
         data-key="value"
         aria-labelledby="title"
         :allow-empty="false"
-        pt:button:class="!px-2 !py-1 sm:!px-2.5 sm:!py-1.5 text-sm"
+        pt:button:class="px-2! py-1! sm:px-2.5! sm:py-1.5! text-sm"
         :pt-options="{ mergeProps: true }"
       >
         <template #option="slotProps">
@@ -228,7 +228,7 @@ function setSortBy(sortBy: SearchQuery['sortBy']) {
   <OverlayPanel
     ref="sortOverlay"
     pt:content:root="z-100"
-    pt:content:class="p-0 bg-surface-100 dark:bg-surface-800 rounded ring-1 ring-surface-400 dark:ring-surface-500"
+    pt:content:class="p-0 bg-surface-100 dark:bg-surface-800 rounded-sm ring-1 ring-surface-400 dark:ring-surface-500"
   >
     <ul class="flex min-w-28 flex-col gap-2 py-2 text-base">
       <li>

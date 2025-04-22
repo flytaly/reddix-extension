@@ -18,7 +18,7 @@ export default {
             },
 
             // Shapes
-            { 'shadow-sm': !props.raised && !props.link && !props.text, 'shadow-lg': props.raised },
+            { 'shadow-xs': !props.raised && !props.link && !props.text, 'shadow-lg': props.raised },
             { 'rounded-md': !props.rounded, 'rounded-full': props.rounded },
             { 'rounded-none first:rounded-l-md last:rounded-r-md self-center': parent.instance.$name == 'InputGroup' },
 
@@ -118,7 +118,7 @@ export default {
             { 'text-red-500 ring-1 ring-red-500 hover:bg-red-300/20': props.outlined && props.severity === 'danger' && !props.plain },
 
             // --- Severity Button States ---
-            'focus:outline-none focus:outline-offset-0 focus:ring-2 focus:ring-offset-current',
+            'focus:outline-hidden focus:outline-offset-0 focus:ring-2 focus:ring-offset-current',
             { 'focus:ring-offset-2': !props.link && !props.plain && !props.outlined && !props.text },
 
             // Link

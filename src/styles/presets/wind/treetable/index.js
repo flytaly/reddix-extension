@@ -125,7 +125,7 @@ export default {
             {
                 'hover:bg-surface-300/20 hover:text-surface-600': context.selectable && !context.selected
             },
-            'focus:outline-none focus:outline-offset-0 focus:ring-2 focus:ring-primary-500 ring-inset dark:focus:ring-primary-400',
+            'focus:outline-hidden focus:outline-offset-0 focus:ring-2 focus:ring-primary-500 ring-inset dark:focus:ring-primary-400',
 
             // Transition
             { 'transition duration-200': (props.selectionMode && !context.selected) || props.rowHover }
@@ -159,7 +159,7 @@ export default {
             'border-surface-200 dark:border-surface-700 ',
 
             // States
-            'focus-visible:outline-none focus-visible:outline-offset-0 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400',
+            'focus-visible:outline-hidden focus-visible:outline-offset-0 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400',
 
             // Transition
             { 'transition duration-200': props.sortable === '' || props.sortable },
@@ -199,7 +199,7 @@ export default {
                 'border-surface-200 dark:border-surface-700 ',
 
                 // States
-                'focus-visible:outline-none focus-visible:outline-offset-0 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400',
+                'focus-visible:outline-hidden focus-visible:outline-offset-0 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400',
 
                 // Transition
                 { 'transition duration-200': props.sortable === '' || props.sortable },
@@ -268,7 +268,7 @@ export default {
 
                 // States
                 'hover:bg-surface-50 dark:hover:bg-surface-700',
-                'focus-visible:outline-none focus-visible:outline-offset-0',
+                'focus-visible:outline-hidden focus-visible:outline-offset-0',
                 'focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400',
 
                 // Transition
@@ -354,7 +354,7 @@ export default {
                     'h-4',
 
                     // Shape
-                    'rounded',
+                    'rounded-sm',
                     'border',
 
                     // Colors
@@ -398,13 +398,13 @@ export default {
                     'm-0',
 
                     // Shape
-                    'rounded',
+                    'rounded-sm',
                     'border',
 
                     // Shape
                     'opacity-0',
                     'rounded-md',
-                    'outline-none',
+                    'outline-hidden',
                     'border-2 border-surface-300 dark:border-surface-700',
 
                     // Misc

@@ -23,7 +23,7 @@ const addresses = [
 
 <template>
   <MainLayout>
-    <div class="mx-auto flex w-full max-w-screen-md flex-col">
+    <div class="mx-auto flex w-full max-w-(--breakpoint-md) flex-col">
       <Card class="mt-2 w-full">
         <template #title>
           <h2 class="flex items-center font-sans text-base">

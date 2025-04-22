@@ -34,14 +34,14 @@ watch(badgeAction, () => {
 const pt: SelectButtonPassThroughOptions = {
   root: 'max-w-max',
   button: ({ context }) => ({
-    class: { '!bg-primary-500 dark:!bg-primary-400 text-white dark:text-black': context.active },
+    class: { 'bg-primary-500! dark:bg-primary-400! text-white dark:text-black': context.active },
   }),
 }
 </script>
 
 <template>
   <MainLayout>
-    <div class="mx-auto flex w-full max-w-screen-md flex-col">
+    <div class="mx-auto flex w-full max-w-(--breakpoint-md) flex-col">
       <Card class="mt-2 w-full">
         <template #title>
           Settings
@@ -49,7 +49,7 @@ const pt: SelectButtonPassThroughOptions = {
         <template #content>
           <article>
             <h3>General</h3>
-            <div class="grid grid-cols-[auto,1fr] gap-4">
+            <div class="grid grid-cols-[auto_1fr] gap-4">
               Badge click action
               <Dropdown v-model="badgeAction" :options="badgeActions" option-label="name" class="max-w-max" />
             </div>
@@ -57,7 +57,7 @@ const pt: SelectButtonPassThroughOptions = {
 
           <article>
             <h3>Appearance</h3>
-            <div class="grid grid-cols-[auto,1fr] gap-4">
+            <div class="grid grid-cols-[auto_1fr] gap-4">
               Theme
               <SelectButton
                 v-model="optionsStorage.theme"
@@ -70,10 +70,11 @@ const pt: SelectButtonPassThroughOptions = {
               />
             </div>
           </article>
+
           <article class="space-y-4">
             <h3>Update</h3>
             <Fieldset legend="Automatically update:">
-              <div class="grid grid-cols-[auto,1fr] gap-4">
+              <div class="grid grid-cols-[auto_1fr] gap-4">
                 <label for="auto-update-saved">Saved posts/comments</label>
                 <InputSwitch v-model="optionsStorage.autoUpdateSaved" input-id="auto-update-saved" />
                 <label for="auto-update-saved">Upvoted posts</label>
@@ -98,9 +99,12 @@ const pt: SelectButtonPassThroughOptions = {
 </template>
 
 <style lang="postcss" scoped>
+@reference "../../styles/tailwind.css";
+
 article {
   @apply mb-2 gap-4 p-2 text-sm;
 }
+
 h3 {
   @apply mb-4 mt-2 text-base font-medium;
 }

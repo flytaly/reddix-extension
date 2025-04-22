@@ -122,7 +122,7 @@ export default {
             'transition duration-200',
 
             // Focus Styles
-            'focus:outline-none focus:outline-offset-0 focus:ring focus:ring-primary-400/50 dark:focus:ring-primary-300/50',
+            'focus:outline-hidden focus:outline-offset-0 focus:ring-3 focus:ring-primary-400/50 dark:focus:ring-primary-300/50',
 
             // Color & Background
             {

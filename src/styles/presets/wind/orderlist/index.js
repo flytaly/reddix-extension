@@ -33,14 +33,14 @@ export default {
                 'w-8',
                 'm-0',
                 'px-2.5 py-1.5 min-w-[2rem]',
-                'shadow-sm',
+                'shadow-xs',
 
                 // Transitions
                 'transition duration-200 ease-in-out',
 
                 // State
                 'hover:bg-primary-600 dark:hover:bg-primary-300 hover:border-primary-600 dark:hover:border-primary-300',
-                'focus:outline-none focus:outline-offset-0 focus:ring-2',
+                'focus:outline-hidden focus:outline-offset-0 focus:ring-2',
                 'focus:ring-primary-500 dark:focus:ring-primary-400',
                 { 'cursor-default pointer-events-none opacity-60': context.disabled },
 
@@ -77,14 +77,14 @@ export default {
                 'w-8',
                 'm-0',
                 'px-2.5 py-1.5 min-w-[2rem]',
-                'shadow-sm',
+                'shadow-xs',
 
                 // Transitions
                 'transition duration-200 ease-in-out',
 
                 // State
                 'hover:bg-primary-600 dark:hover:bg-primary-300 hover:border-primary-600 dark:hover:border-primary-300',
-                'focus:outline-none focus:outline-offset-0 focus:ring-2',
+                'focus:outline-hidden focus:outline-offset-0 focus:ring-2',
                 'focus:ring-primary-500 dark:focus:ring-primary-400',
                 { 'cursor-default pointer-events-none opacity-60': context.disabled },
 
@@ -121,14 +121,14 @@ export default {
                 'w-8',
                 'm-0',
                 'px-2.5 py-1.5 min-w-[2rem]',
-                'shadow-sm',
+                'shadow-xs',
 
                 // Transitions
                 'transition duration-200 ease-in-out',
 
                 // State
                 'hover:bg-primary-600 dark:hover:bg-primary-300 hover:border-primary-600 dark:hover:border-primary-300',
-                'focus:outline-none focus:outline-offset-0 focus:ring-2',
+                'focus:outline-hidden focus:outline-offset-0 focus:ring-2',
                 'focus:ring-primary-500 dark:focus:ring-primary-400',
                 { 'cursor-default pointer-events-none opacity-60': context.disabled },
 
@@ -165,14 +165,14 @@ export default {
                 'w-8',
                 'm-0',
                 'px-2.5 py-1.5 min-w-[2rem]',
-                'shadow-sm',
+                'shadow-xs',
 
                 // Transitions
                 'transition duration-200 ease-in-out',
 
                 // State
                 'hover:bg-primary-600 dark:hover:bg-primary-300 hover:border-primary-600 dark:hover:border-primary-300',
-                'focus:outline-none focus:outline-offset-0 focus:ring-2',
+                'focus:outline-hidden focus:outline-offset-0 focus:ring-2',
                 'focus:ring-primary-500 dark:focus:ring-primary-400',
                 { 'cursor-default pointer-events-none opacity-60': context.disabled },
 
@@ -229,7 +229,7 @@ export default {
             'py-3 px-0',
 
             // Focus & Outline
-            'outline-none',
+            'outline-hidden',
 
             // Misc
             'overflow-auto'

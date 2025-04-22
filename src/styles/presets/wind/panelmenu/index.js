@@ -3,7 +3,7 @@ export default {
         class: 'mb-1'
     },
     header: {
-        class: ['rounded-md', 'outline-none', 'focus-visible:outline-none focus-visible:outline-offset-0 focus-visible:ring focus-visible:ring-primary-400/50 dark:focus-visible:ring-primary-300/50']
+        class: ['rounded-md', 'outline-hidden', 'focus-visible:outline-hidden focus-visible:outline-offset-0 focus-visible:ring-3 focus-visible:ring-primary-400/50 dark:focus-visible:ring-primary-300/50']
     },
     headercontent: ({ context, instance }) => ({
         class: [
@@ -66,7 +66,7 @@ export default {
         ]
     },
     menu: {
-        class: ['outline-none', 'm-0 p-0 list-none']
+        class: ['outline-hidden', 'm-0 p-0 list-none']
     },
     content: {
         class: [

@@ -6,27 +6,3 @@ body,
   margin: 0;
   padding: 0;
 }
-
-body {
-  @apply overflow-x-hidden bg-surface-50 text-dark dark:bg-surface-950 dark:text-light;
-}
-
-a,
-.link-like {
-  @apply text-surface-500 hover:text-primary-500 dark:text-surface-400 dark:hover:text-primary-400;
-}
-
-.btn {
-  @apply text-dark hover:text-primary-500 active:text-primary-400 dark:text-light dark:hover:text-primary-400 dark:active:text-primary-300;
-}
-
-.icon-btn {
-  @apply inline-block cursor-pointer select-none
-    opacity-75 transition duration-200 ease-in-out
-    hover:text-teal-600 hover:opacity-100;
-  font-size: 0.9em;
-}
-
-h2 {
-  @apply font-mono text-xl font-semibold text-primary-600 dark:text-primary-400;
-}

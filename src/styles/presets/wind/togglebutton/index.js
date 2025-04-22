@@ -22,7 +22,7 @@ export default {
             'text-sm',
 
             // Shapes
-            'rounded-md shadow-sm',
+            'rounded-md shadow-xs',
 
             // Colors
             'text-surface-700 dark:text-white/80',
@@ -68,7 +68,7 @@ export default {
             // Shape
             'opacity-0',
             'rounded-md',
-            'outline-none',
+            'outline-hidden',
             'border border-surface-200 dark:border-surface-700',
 
             // Misc

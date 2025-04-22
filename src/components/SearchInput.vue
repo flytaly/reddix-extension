@@ -50,7 +50,7 @@ function clear() {
 
 <template>
   <OverlayPanel ref="tooltip">
-    <div class="max-w-screen-sm text-xs xs:text-sm">
+    <div class="max-w-(--breakpoint-sm) text-xs xs:text-sm">
       <SearchHelp />
     </div>
   </OverlayPanel>
@@ -68,9 +68,9 @@ function clear() {
           :pt="{
             button: ({ context }) => ({
               class: [
-                'm-0.5 !py-0.5 !px-0.5 xs:!px-1 !rounded !text-xs text-dark/60 dark:text-light/60 bg-surface-100 border border-surface-300 dark:border-surface-700 dark:bg-surface-800',
+                'm-0.5 py-0.5! px-0.5! xs:px-1! rounded-sm! text-xs! text-dark/60 dark:text-light/60 bg-surface-100 border border-surface-300 dark:border-surface-700 dark:bg-surface-800',
                 {
-                  'text-dark/80 dark:!text-sky-500 !bg-sky-400/20 dark:!bg-transparent !border-sky-200 dark:!border-sky-600 hover:dark:!bg-sky-950':
+                  'text-dark/80 dark:text-sky-500! bg-sky-400/20! dark:bg-transparent! border-sky-200! dark:border-sky-600! dark:hover:bg-sky-950!':
                     context.active,
                 },
               ],
@@ -87,9 +87,9 @@ function clear() {
           :pt="{
             button: ({ context }) => ({
               class: [
-                'm-0.5 !py-0.5 !px-0.5 xs:!px-1 !rounded !text-xs text-dark/60 dark:text-light/60 bg-surface-100 border border-surface-300 dark:border-surface-700 dark:bg-surface-800',
+                'm-0.5 py-0.5! px-0.5! xs:px-1! rounded-sm! text-xs! text-dark/60 dark:text-light/60 bg-surface-100 border border-surface-300 dark:border-surface-700 dark:bg-surface-800',
                 {
-                  '!text-dark/80 dark:!text-amber-500 !bg-orange-200/80 dark:!bg-transparent !border-orange-200 dark:!border-amber-500 hover:dark:!bg-amber-950':
+                  'text-dark/80! dark:text-amber-500! bg-orange-200/80! dark:bg-transparent! border-orange-200! dark:border-amber-500! dark:hover:bg-amber-950!':
                     context.active,
                 },
               ],

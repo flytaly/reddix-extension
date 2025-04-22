@@ -105,6 +105,8 @@ async function updateItem() {
 </template>
 
 <style lang="postcss" scoped>
+@reference "../../styles/tailwind.css";
+
 button {
   @apply text-dark hover:text-primary-500 active:text-primary-400 dark:text-light dark:hover:text-primary-400 dark:active:text-primary-300;
 }

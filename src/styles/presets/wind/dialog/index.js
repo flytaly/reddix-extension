@@ -23,11 +23,11 @@ export default {
             {
                 'transition-none': state.maximized,
                 'transform-none': state.maximized,
-                '!w-screen': state.maximized,
-                '!h-screen': state.maximized,
-                '!max-h-full': state.maximized,
-                '!top-0': state.maximized,
-                '!left-0': state.maximized
+                'w-screen!': state.maximized,
+                'h-screen!': state.maximized,
+                'max-h-full!': state.maximized,
+                'top-0!': state.maximized,
+                'left-0!': state.maximized
             }
         ]
     }),
@@ -81,7 +81,7 @@ export default {
             // States
             'hover:text-surface-700 dark:hover:text-white/80',
             'hover:bg-surface-100 dark:hover:bg-surface-800/80',
-            'focus:outline-none focus:outline-offset-0 focus:ring-1 focus:ring-inset',
+            'focus:outline-hidden focus:outline-offset-0 focus:ring-1 focus:ring-inset',
             'focus:ring-primary-500 dark:focus:ring-primary-400',
 
             // Misc
@@ -114,7 +114,7 @@ export default {
             // States
             'hover:text-surface-700 dark:hover:text-white/80',
             'hover:bg-surface-100 dark:hover:bg-surface-800/80',
-            'focus:outline-none focus:outline-offset-0 focus:ring-1 focus:ring-inset',
+            'focus:outline-hidden focus:outline-offset-0 focus:ring-1 focus:ring-inset',
             'focus:ring-primary-500 dark:focus:ring-primary-400',
 
             // Misc
@@ -194,7 +194,7 @@ export default {
             { 'p-5': !props.position == 'full' },
 
             // Background and Effects
-            { 'has-[.mask-active]:bg-transparent dark:has-[.mask-active]:bg-transparent bg-surface-500/70 dark:bg-surface-700/70': props.modal, 'has-[.mask-active]:backdrop-blur-none backdrop-blur-sm': props.modal }
+            { 'has-[.mask-active]:bg-transparent dark:has-[.mask-active]:bg-transparent bg-surface-500/70 dark:bg-surface-700/70': props.modal, 'has-[.mask-active]:backdrop-blur-none backdrop-blur-xs': props.modal }
         ]
     }),
     transition: ({ props }) => {

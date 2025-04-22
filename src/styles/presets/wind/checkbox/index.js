@@ -28,7 +28,7 @@ export default {
             'h-4',
 
             // Shape
-            'rounded',
+            'rounded-sm',
             'border',
 
             // Colors
@@ -72,13 +72,13 @@ export default {
             'm-0',
 
             // Shape
-            'rounded',
+            'rounded-sm',
             'border',
 
             // Shape
             'opacity-0',
             'rounded-md',
-            'outline-none',
+            'outline-hidden',
             'border-2 border-surface-300 dark:border-surface-700',
 
             // Misc

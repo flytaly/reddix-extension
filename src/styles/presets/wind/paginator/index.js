@@ -41,7 +41,7 @@ export default {
             // State
             {
                 'hover:border-surface-300 dark:hover:border-surface-200/30': !context.disabled,
-                'focus-visible:outline-none focus-visible:outline-offset-0 focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400': !context.disabled
+                'focus-visible:outline-hidden focus-visible:outline-offset-0 focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400': !context.disabled
             },
 
             // Transition
@@ -74,7 +74,7 @@ export default {
             // State
             {
                 'hover:border-surface-300 dark:hover:border-surface-200/30': !context.disabled,
-                'focus-visible:outline-none focus-visible:outline-offset-0 focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400': !context.disabled
+                'focus-visible:outline-hidden focus-visible:outline-offset-0 focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400': !context.disabled
             },
 
             // Transition
@@ -107,7 +107,7 @@ export default {
             // State
             {
                 'hover:border-surface-300 dark:hover:border-surface-200/30': !context.disabled,
-                'focus-visible:outline-none focus-visible:outline-offset-0 focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400': !context.disabled
+                'focus-visible:outline-hidden focus-visible:outline-offset-0 focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400': !context.disabled
             },
 
             // Transition
@@ -140,7 +140,7 @@ export default {
             // State
             {
                 'hover:border-surface-300 dark:hover:border-surface-200/30': !context.disabled,
-                'focus-visible:outline-none focus-visible:outline-offset-0 focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400': !context.disabled
+                'focus-visible:outline-hidden focus-visible:outline-offset-0 focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400': !context.disabled
             },
 
             // Transition
@@ -176,7 +176,7 @@ export default {
             // State
             {
                 'hover:border-surface-300 dark:hover:border-surface-200/30': !context.disabled && !context.active,
-                'focus-visible:outline-none focus-visible:outline-offset-0 focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400': !context.disabled
+                'focus-visible:outline-hidden focus-visible:outline-offset-0 focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400': !context.disabled
             },
 
             // Transition
@@ -209,7 +209,7 @@ export default {
                 'duration-200',
 
                 // States
-                { 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 dark:focus-visible:ring-primary-500': !state.focused },
+                { 'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary-600 dark:focus-visible:ring-primary-500': !state.focused },
 
                 // Misc
                 'cursor-pointer',
@@ -246,12 +246,12 @@ export default {
                 'duration-200',
 
                 // States
-                'focus-visible:outline-none focus-visible:shadow-none',
+                'focus-visible:outline-hidden focus-visible:shadow-none',
 
                 // Misc
                 'relative',
                 'cursor-pointer',
-                'overflow-hidden overflow-ellipsis',
+                'overflow-hidden text-ellipsis',
                 'whitespace-nowrap',
                 'appearance-none'
             ]
@@ -379,11 +379,11 @@ export default {
 
                     // States
                     'hover:border-primary-500 dark:hover:border-primary-400',
-                    'focus-visible:outline-none focus-visible:shadow-none',
-                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-600 dark:focus-visible:ring-primary-500',
+                    'focus-visible:outline-hidden focus-visible:shadow-none',
+                    'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-600 dark:focus-visible:ring-primary-500',
                     // Misc
                     'cursor-pointer',
-                    'overflow-hidden overflow-ellipsis',
+                    'overflow-hidden text-ellipsis',
                     'whitespace-nowrap',
                     'appearance-none'
                 ]
@@ -412,7 +412,7 @@ export default {
                 'duration-200',
 
                 // States
-                { 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 dark:focus-visible:ring-primary-500': !state.focused },
+                { 'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary-600 dark:focus-visible:ring-primary-500': !state.focused },
 
                 // Misc
                 'cursor-pointer',
@@ -449,12 +449,12 @@ export default {
                 'duration-200',
 
                 // States
-                'focus-visible:outline-none focus-visible:shadow-none',
+                'focus-visible:outline-hidden focus-visible:shadow-none',
 
                 // Misc
                 'relative',
                 'cursor-pointer',
-                'overflow-hidden overflow-ellipsis',
+                'overflow-hidden text-ellipsis',
                 'whitespace-nowrap',
                 'appearance-none'
             ]

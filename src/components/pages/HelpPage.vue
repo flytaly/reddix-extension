@@ -16,13 +16,13 @@ function getUrl(path: string) {
           About
         </template>
         <template #content>
-          <article class="grid grid-cols-[auto,1fr] items-start justify-start gap-2">
+          <article class="grid grid-cols-[auto_1fr] items-start justify-start gap-2">
             <Logo class="h-28 w-auto shrink-0" />
             <div class="flex h-full flex-col gap-2 text-sm">
               <header class="text-base">
                 <b>Reddix </b><span class="text-sm">v.{{ $app.version }}</span>
               </header>
-              <div class="flex-grow">
+              <div class="grow">
                 Store your saved/upvoted posts and comments from Reddit in your browser's storage, so you can quickly
                 access them and perform a quick incremental search.
               </div>
@@ -40,7 +40,7 @@ function getUrl(path: string) {
           </article>
         </template>
       </Card>
-      <Card class="mt-2" pt:content:class="!pt-0" :pt-options="{ mergeProps: true }">
+      <Card class="mt-2" pt:content:class="pt-0!" :pt-options="{ mergeProps: true }">
         <template #title>
           Help
         </template>

@@ -63,7 +63,7 @@ export default {
 
             // States
             'hover:bg-surface-100 dark:hover:bg-surface-700',
-            'outline-none focus:ring-1 focus:ring-inset',
+            'outline-hidden focus:ring-1 focus:ring-inset',
             'focus:ring-primary-500 dark:focus:ring-primary-400',
 
             // Misc
@@ -82,6 +82,6 @@ export default {
         enterActiveClass: 'transition-opacity duration-300',
         leaveFromClass: 'max-h-40',
         leaveActiveClass: 'overflow-hidden transition-all duration-300 ease-in',
-        leaveToClass: 'max-h-0 opacity-0 !m-0'
+        leaveToClass: 'max-h-0 opacity-0 m-0!'
     }
 };

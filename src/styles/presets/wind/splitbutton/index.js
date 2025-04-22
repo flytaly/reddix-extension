@@ -130,7 +130,7 @@ export default {
                 { 'text-red-500 ring-1 ring-red-500 hover:bg-red-300/20': parent.props.outlined && parent.props.severity === 'danger' && !parent.props.plain },
 
                 // --- Severity Button States ---
-                'focus:outline-none focus:outline-offset-0 focus:ring-2 focus:ring-offset-current',
+                'focus:outline-hidden focus:outline-offset-0 focus:ring-2 focus:ring-offset-current',
                 { 'focus:ring-offset-2': !parent.props.link && !parent.props.plain && !parent.props.outlined && !parent.props.text },
 
                 // Link
@@ -318,7 +318,7 @@ export default {
                 { 'text-red-500 ring-1 ring-red-500 hover:bg-red-300/20': parent.props.outlined && parent.props.severity === 'danger' && !parent.props.plain },
 
                 // --- Severity Button States ---
-                'focus:outline-none focus:outline-offset-0 focus:ring-2 focus:ring-offset-current',
+                'focus:outline-hidden focus:outline-offset-0 focus:ring-2 focus:ring-offset-current',
                 { 'focus:ring-offset-2': !parent.props.link && !parent.props.plain && !parent.props.outlined && !parent.props.text },
 
                 // Link
@@ -403,7 +403,7 @@ export default {
                 'list-none',
                 'm-0',
                 'p-0',
-                'outline-none'
+                'outline-hidden'
             ]
         },
         menuitem: {

@@ -40,7 +40,7 @@ export default {
             // States
             'hover:text-surface-900 dark:hover:text-surface-0/80',
             'hover:bg-surface-50 dark:hover:bg-surface-800/50',
-            'focus:outline-none focus:outline-offset-0 focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-inset dark:focus-visible:ring-primary-500',
+            'focus:outline-hidden focus:outline-offset-0 focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-inset dark:focus-visible:ring-primary-500',
 
             // Transitions
             'transition duration-200 ease-in-out',

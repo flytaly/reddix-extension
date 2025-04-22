@@ -51,7 +51,7 @@ export default {
             },
 
             // States
-            'focus-visible:outline-none focus-visible:outline-offset-0 focus-visible:ring-2 focus-visible:ring-inset',
+            'focus-visible:outline-hidden focus-visible:outline-offset-0 focus-visible:ring-2 focus-visible:ring-inset',
             'focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400',
             {
                 'hover:bg-surface-0 dark:hover:bg-surface-800/80': state.d_activeIndex !== context.index,

@@ -5,7 +5,7 @@ export default {
             'inline-flex',
             'max-w-full',
             'relative',
-            'shadow-sm',
+            'shadow-xs',
             'rounded-md',
             // Misc
             { 'opacity-40 select-none pointer-events-none cursor-default': props.disabled }
@@ -40,7 +40,7 @@ export default {
             'duration-200',
 
             // States
-            'outline-none focus:ring-primary-500 dark:focus:ring-primary-400'
+            'outline-hidden focus:ring-primary-500 dark:focus:ring-primary-400'
         ]
     }),
     inputicon: {
@@ -67,7 +67,7 @@ export default {
 
                 // States
                 'hover:bg-surface-200 dark:hover:bg-surface-700',
-                'focus:outline-none focus:outline-offset-0 focus:ring-1',
+                'focus:outline-hidden focus:outline-offset-0 focus:ring-1',
                 'focus:ring-primary-500 dark:focus:ring-primary-400'
             ]
         }
@@ -274,7 +274,7 @@ export default {
             },
 
             // States
-            'focus:outline-none focus:outline-offset-0 focus:ring focus:ring-primary-400/50 dark:focus:ring-primary-300/50',
+            'focus:outline-hidden focus:outline-offset-0 focus:ring-3 focus:ring-primary-400/50 dark:focus:ring-primary-300/50',
             {
                 'hover:bg-surface-100 dark:hover:bg-surface-800/80': !context.disabled
             },
@@ -303,7 +303,7 @@ export default {
             },
 
             // States
-            'focus:outline-none focus:outline-offset-0 focus:ring-1 focus:ring-primary-500 dark:focus:ring-primary-400',
+            'focus:outline-hidden focus:outline-offset-0 focus:ring-1 focus:ring-primary-500 dark:focus:ring-primary-400',
             {
                 'hover:bg-surface-100 dark:hover:bg-surface-600/80': !context.disabled,
                 'hover:bg-surface-700 dark:hover:bg-surface-200': !context.disabled && context.date.today
@@ -342,7 +342,7 @@ export default {
             },
 
             // States
-            'focus:outline-none focus:outline-offset-0 focus:ring-1 focus:ring-primary-500 dark:focus:ring-primary-400',
+            'focus:outline-hidden focus:outline-offset-0 focus:ring-1 focus:ring-primary-500 dark:focus:ring-primary-400',
             'hover:bg-surface-100 dark:hover:bg-surface-600/80',
 
             // Misc
@@ -376,7 +376,7 @@ export default {
             },
 
             // States
-            'focus:outline-none focus:outline-offset-0 focus:ring-1 focus:ring-primary-500 dark:focus:ring-primary-400',
+            'focus:outline-hidden focus:outline-offset-0 focus:ring-1 focus:ring-primary-500 dark:focus:ring-primary-400',
             'hover:bg-surface-100 dark:hover:bg-surface-600/80',
 
             // Misc
@@ -556,7 +556,7 @@ export default {
                 'transition-colors duration-200 ease-in-out',
 
                 // States
-                'focus:outline-none focus:outline-offset-0 focus:ring-2 ring-inset',
+                'focus:outline-hidden focus:outline-offset-0 focus:ring-2 ring-inset',
                 'focus:ring-primary-500 dark:focus:ring-primary-400',
                 'hover:bg-primary-300/20',
 
@@ -585,7 +585,7 @@ export default {
                 'transition-colors duration-200 ease-in-out',
 
                 // States
-                'focus:outline-none focus:outline-offset-0 focus:ring-2 ring-inset',
+                'focus:outline-hidden focus:outline-offset-0 focus:ring-2 ring-inset',
                 'focus:ring-primary-500 dark:focus:ring-primary-400',
                 'hover:bg-primary-300/20',
 

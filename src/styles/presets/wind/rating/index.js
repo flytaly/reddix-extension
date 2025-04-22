@@ -20,7 +20,7 @@ export default {
 
             //State
             {
-                'outline-none ring-2 ring-primary-500 dark:ring-primary-400': context.focused
+                'outline-hidden ring-2 ring-primary-500 dark:ring-primary-400': context.focused
             },
 
             // Misc
@@ -43,7 +43,7 @@ export default {
 
             // State
             {
-                'outline-none ring-2 ring-primary-500 dark:ring-primary-400': context.focused
+                'outline-hidden ring-2 ring-primary-500 dark:ring-primary-400': context.focused
             },
 
             // Misc

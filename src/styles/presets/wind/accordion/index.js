@@ -34,7 +34,7 @@ export default {
                 'text-surface-900 dark:text-surface-0',
 
                 // States
-                'focus:outline-none focus:outline-offset-0 focus-visible:ring-2 focus-visible:ring-primary-600 ring-inset dark:focus-visible:ring-primary-500', // Focus
+                'focus:outline-hidden focus:outline-offset-0 focus-visible:ring-2 focus-visible:ring-primary-600 ring-inset dark:focus-visible:ring-primary-500', // Focus
 
                 // Misc
                 'cursor-pointer no-underline select-none'

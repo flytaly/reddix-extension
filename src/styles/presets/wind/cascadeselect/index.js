@@ -7,7 +7,7 @@ export default {
 
             // Shape
             'rounded-md',
-            'shadow-sm',
+            'shadow-xs',
 
             // Color and Background
             'bg-surface-0 dark:bg-surface-900',
@@ -49,12 +49,12 @@ export default {
             'duration-200',
 
             // States
-            'focus:outline-none focus:shadow-none',
+            'focus:outline-hidden focus:shadow-none',
 
             // Misc
             'relative',
             'cursor-pointer',
-            'overflow-hidden overflow-ellipsis',
+            'overflow-hidden text-ellipsis',
             'whitespace-nowrap',
             'appearance-none'
         ]

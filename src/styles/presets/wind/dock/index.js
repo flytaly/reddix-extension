@@ -27,7 +27,7 @@ export default {
 
             // Color
             'bg-surface-0/10 dark:bg-surface-900/20 border border-surface-0/20',
-            'backdrop-blur-sm',
+            'backdrop-blur-xs',
 
             // Spacing
             'p-2',
@@ -48,7 +48,7 @@ export default {
             'm-0 p-0 list-none',
 
             // Shape
-            'outline-none'
+            'outline-hidden'
         ]
     }),
     menuitem: ({ props, context, instance }) => ({

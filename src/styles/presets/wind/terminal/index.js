@@ -54,7 +54,7 @@ export default {
             'bg-transparent text-inherit',
 
             // Outline
-            'outline-none'
+            'outline-hidden'
         ]
     }
 };

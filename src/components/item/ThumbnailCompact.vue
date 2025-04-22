@@ -17,7 +17,7 @@ const href = computed(() => (props.item.isLink ? props.item.url : ''))
     :is="htmlTag"
     :title="title"
     :href="href"
-    class="flex h-full w-8 items-center justify-center rounded hover:bg-surface-100 xs:w-10 hover:dark:bg-surface-800"
+    class="flex h-full w-8 items-center justify-center rounded-sm hover:bg-surface-100 xs:w-10 dark:hover:bg-surface-800"
     v-on="clickHandler ? { click: clickHandler } : {}"
   >
     <PhChatText v-if="item.itemType === 'comment'" class="icon" />
@@ -30,6 +30,8 @@ const href = computed(() => (props.item.isLink ? props.item.url : ''))
 </template>
 
 <style scoped lang="postcss">
+@reference "../../styles/tailwind.css";
+
 .icon {
   @apply h-7 w-7 text-surface-500 dark:text-surface-500;
 }

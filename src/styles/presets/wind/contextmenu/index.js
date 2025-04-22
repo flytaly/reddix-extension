@@ -21,7 +21,7 @@ export default {
             'list-none',
             'm-0',
             'p-0',
-            'outline-none'
+            'outline-hidden'
         ]
     },
     menuitem: {

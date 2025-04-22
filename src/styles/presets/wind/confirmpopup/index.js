@@ -81,7 +81,7 @@ export default {
 
                 // States
                 'hover:bg-primary-300/20',
-                'focus:outline-none focus:outline-offset-0 focus:ring-2 focus:ring-inset',
+                'focus:outline-hidden focus:outline-offset-0 focus:ring-2 focus:ring-inset',
                 'focus:ring-primary-500 dark:focus:ring-primary-400'
             ]
         }
@@ -108,7 +108,7 @@ export default {
 
                 // States
                 'hover:bg-primary-600 dark:hover:bg-primary-300 hover:border-primary-600 dark:hover:border-primary-300',
-                'focus:outline-none focus:outline-offset-0 focus:ring-2 focus:ring-offset-current',
+                'focus:outline-hidden focus:outline-offset-0 focus:ring-2 focus:ring-offset-current',
                 'focus:ring-primary-500 dark:focus:ring-primary-400'
             ]
         }

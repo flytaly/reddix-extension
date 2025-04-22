@@ -83,7 +83,7 @@ async function confirmImport() {
           <div>
             <div class="mx-auto max-w-max">
               <label
-                class="flex rounded-sm bg-primary-500 px-2.5 py-1.5 text-sm font-semibold text-light shadow-sm hover:bg-primary-600 dark:bg-primary-400 dark:text-surface-900 dark:hover:bg-primary-300"
+                class="flex rounded-xs bg-primary-500 px-2.5 py-1.5 text-sm font-semibold text-light shadow-xs hover:bg-primary-600 dark:bg-primary-400 dark:text-surface-900 dark:hover:bg-primary-300"
               >
                 <ph-download-bold class="mr-2 h-5 w-5" />
                 <span>{{ isImporting || needConfirmCategory ? 'Importing...' : 'Choose' }}</span>

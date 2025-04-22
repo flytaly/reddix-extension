@@ -19,14 +19,14 @@ const href = computed(() => (isLink.value ? props.item.url : ''))
 </script>
 
 <template>
-  <div class="relative max-h-[4.5rem] flex-shrink-0 rounded bg-surface-100 dark:bg-surface-800">
+  <div class="relative max-h-[4.5rem] shrink-0 rounded-sm bg-surface-100 dark:bg-surface-800">
     <component
       :is="htmlTag"
       :title="clickHandler ? 'click to preview image' : ''"
       :href="href"
       v-on="clickHandler ? { click: clickHandler } : {}"
     >
-      <img v-if="media.thumbnail" class="h-16 w-20 rounded object-cover sm:h-[4.5rem] sm:w-24" :src="media.thumbnail">
+      <img v-if="media.thumbnail" class="h-16 w-20 rounded-sm object-cover sm:h-[4.5rem] sm:w-24" :src="media.thumbnail">
       <div v-else-if="media.generic" class="flex h-16 w-20 items-center justify-center sm:h-[4.5rem] sm:w-24">
         <div v-if="media.generic === 'nsfw'" class="font-bold text-surface-500 dark:text-surface-500">
           NSFW

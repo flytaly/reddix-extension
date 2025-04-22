@@ -29,7 +29,7 @@ export default {
 
             // Shape
             'border',
-            'rounded',
+            'rounded-sm',
 
             // Color
             'border-surface-200 dark:border-surface-700',
@@ -122,7 +122,7 @@ export default {
             'bg-inherit text-inherit',
 
             // Focus
-            'focus:outline-none focus:outline-offset-0 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400',
+            'focus:outline-hidden focus:outline-offset-0 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400',
 
             // Misc
             'cursor-pointer no-underline select-none'

@@ -18,11 +18,11 @@ export default {
             'placeholder:text-surface-400 dark:placeholder:text-surface-500',
             'bg-surface-0 dark:bg-surface-900',
             'ring-1 ring-inset ring-surface-300 dark:ring-surface-700 ring-offset-0',
-            'shadow-sm',
+            'shadow-xs',
 
             // States
             {
-                'outline-none focus:ring-primary-500 dark:focus:ring-primary-400': !context.disabled,
+                'outline-hidden focus:ring-primary-500 dark:focus:ring-primary-400': !context.disabled,
                 'opacity-60 select-none pointer-events-none cursor-default': context.disabled
             },
 

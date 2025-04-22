@@ -42,7 +42,7 @@ export default {
 
             // States
             {
-                'outline-none outline-offset-0': !props.disabled,
+                'outline-hidden outline-offset-0': !props.disabled,
                 'peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-surface-0 dark:focus-visible:ring-offset-surface-800 peer-focus-visible:ring-primary-500 dark:peer-focus-visible:ring-primary-400':
                     !props.disabled,
                 'opacity-60 cursor-default': props.disabled
@@ -69,7 +69,7 @@ export default {
             // Shape
             'opacity-0',
             'rounded-md',
-            'outline-none',
+            'outline-hidden',
             'border-2 border-surface-300 dark:border-surface-700',
 
             // Misc

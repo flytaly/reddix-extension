@@ -89,7 +89,7 @@ function showEdit() {
             placeholder="username"
             class="w-full pl-8 pr-8"
             :disabled="state.isFetching || fetchingUsername"
-            :class="{ error: status || state.fetchError }"
+            :class="{ 'text-error-dark dark:text-error-light': status || state.fetchError }"
             @input="isEdit = true"
           />
           <button
@@ -112,9 +112,3 @@ function showEdit() {
     </div>
   </article>
 </template>
-
-<style lang="postcss" scoped>
-.error {
-  @apply ring-red-600 dark:ring-red-300;
-}
-</style>

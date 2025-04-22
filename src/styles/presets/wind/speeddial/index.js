@@ -115,7 +115,7 @@ export default {
                 { 'text-red-500 ring-1 ring-red-500 hover:bg-red-300/20': props.outlined && props.severity === 'danger' && !props.plain },
 
                 // --- Severity Button States ---
-                'focus:outline-none focus:outline-offset-0 focus:ring-2 focus:ring-offset-current',
+                'focus:outline-hidden focus:outline-offset-0 focus:ring-2 focus:ring-offset-current',
                 { 'focus:ring-offset-2': !props.link && !props.plain && !props.outlined && !props.text },
 
                 // Link
@@ -271,7 +271,7 @@ export default {
     mask: ({ state }) => ({
         class: [
             // Base Styles
-            'absolute left-0 top-0 w-full h-full transition-opacity duration-250 ease-in-out bg-surface-900/40 backdrop-blur-sm z-0',
+            'absolute left-0 top-0 w-full h-full transition-opacity duration-250 ease-in-out bg-surface-900/40 backdrop-blur-xs z-0',
 
             // Conditional Appearance
             {

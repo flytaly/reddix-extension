@@ -84,11 +84,11 @@ const tagSidebarOn = ref(false)
         <ph-spinner-gap v-if="state.isFetching" class="icon animate-spin" />
       </button>
       <button
-        class="btn flex w-max items-center rounded px-1 py-0.5 text-sm text-surface-600 dark:text-surface-400 md:hidden"
+        class="btn flex w-max items-center rounded-sm px-1 py-0.5 text-sm text-surface-600 dark:text-surface-400 md:hidden"
         title="show tags"
         @click="tagSidebarOn = true"
       >
-        <ph-hash class="h-5 w-5 flex-shrink-0" />
+        <ph-hash class="h-5 w-5 shrink-0" />
       </button>
       <a :href="getUrl('/settings')" title="Settings">
         <PhGear class="icon" />

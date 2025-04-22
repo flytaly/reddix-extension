@@ -28,7 +28,7 @@ function toggle() {
       <div class="flex h-full w-4 flex-col xs:w-6">
         <button
           v-if="expandable"
-          class="btn h-full w-full group-hover:bg-surface-100 group-hover:hover:bg-surface-200 group-hover:dark:bg-surface-800 group-hover:hover:dark:bg-surface-700"
+          class="btn h-full w-full group-hover:bg-surface-100 hover:group-hover:bg-surface-200 dark:group-hover:bg-surface-800 dark:hover:group-hover:bg-surface-700"
           title="Expand or Collapse the item"
           @click="toggle"
         />
@@ -95,6 +95,8 @@ function toggle() {
 </template>
 
 <style lang="postcss" scoped>
+@reference "../../styles/tailwind.css";
+
 article {
   @apply max-w-full overflow-hidden text-ellipsis bg-surface-0 text-sm
          ring-1 ring-surface-200 hover:z-10

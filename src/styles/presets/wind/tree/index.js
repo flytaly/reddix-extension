@@ -28,7 +28,7 @@ export default {
         ]
     },
     node: {
-        class: ['p-[2px]', 'rounded-md', 'focus:outline-none focus:outline-offset-0 focus:ring-2 focus:ring-inset focus:ring-primary-500 dark:focus:ring-primary-400']
+        class: ['p-[2px]', 'rounded-md', 'focus:outline-hidden focus:outline-offset-0 focus:ring-2 focus:ring-inset focus:ring-primary-500 dark:focus:ring-primary-400']
     },
     content: ({ context, props }) => ({
         class: [
@@ -79,7 +79,7 @@ export default {
             // States
             'hover:text-surface-700 dark:hover:text-white/80',
             'hover:bg-surface-100 dark:hover:bg-surface-800/80',
-            'focus:outline-none focus:outline-offset-0 focus:ring-1 focus:ring-inset',
+            'focus:outline-hidden focus:outline-offset-0 focus:ring-1 focus:ring-inset',
             'focus:ring-primary-500 dark:focus:ring-primary-400',
 
             // Transition
@@ -131,7 +131,7 @@ export default {
                 'h-4',
 
                 // Shape
-                'rounded',
+                'rounded-sm',
                 'border',
 
                 // Colors
@@ -175,13 +175,13 @@ export default {
                 'm-0',
 
                 // Shape
-                'rounded',
+                'rounded-sm',
                 'border',
 
                 // Shape
                 'opacity-0',
                 'rounded-md',
-                'outline-none',
+                'outline-hidden',
                 'border-2 border-surface-300 dark:border-surface-700',
 
                 // Misc
@@ -255,7 +255,7 @@ export default {
 
             // States
             'hover:border-primary-500 dark:hover:border-primary-400',
-            'focus:outline-none focus:outline-offset-0 focus:ring-2 focus:ring-inset focus:ring-primary-500 dark:focus:ring-primary-400',
+            'focus:outline-hidden focus:outline-offset-0 focus:ring-2 focus:ring-inset focus:ring-primary-500 dark:focus:ring-primary-400',
 
             // Transition & Misc
             'appearance-none',

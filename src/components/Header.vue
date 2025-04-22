@@ -41,8 +41,8 @@ const route = useRoute()
   <header>
     <Menubar
       :model="items"
-      pt:root:class="relative !min-h-[2.5rem] bg-surface-50 dark:bg-surface-950 !px-1 sm:!px-4 !gap-4"
-      pt:menu:class="!py-0.5"
+      pt:root:class="relative min-h-[2.5rem]! bg-surface-50 dark:bg-surface-950 px-1! sm:px-4! gap-4!"
+      pt:menu:class="py-0.5!"
       :pt-options="{ mergeProps: true }"
     >
       <template #start>
@@ -53,7 +53,7 @@ const route = useRoute()
               class="absolute left-2 top-2 w-[25px] transition-transform group-hover:translate-y-1 xs:left-4 xs:top-1 xs:w-[30px]"
             >
               <Logo
-                class="h-auto w-full text-primary-600 opacity-90 group-hover:text-primary-700 dark:text-primary-500 group-hover:dark:text-primary-600"
+                class="h-auto w-full text-primary-600 opacity-90 group-hover:text-primary-700 dark:text-primary-500 dark:group-hover:text-primary-600"
               />
             </div>
           </div>
@@ -78,18 +78,18 @@ const route = useRoute()
       <template #end>
         <div class="flex gap-1">
           <button
-            class="btn flex w-max items-center rounded px-1 py-0.5 text-sm text-surface-600 dark:text-surface-400 md:hidden"
+            class="btn flex w-max items-center rounded-sm px-1 py-0.5 text-sm text-surface-600 dark:text-surface-400 md:hidden"
             title="show tags"
             @click="tagSidebarOn = true"
           >
-            <ph-hash class="h-5 w-5 flex-shrink-0" />
+            <ph-hash class="h-5 w-5 shrink-0" />
           </button>
           <button
-            class="btn flex w-max items-center rounded px-1 py-0.5 text-sm text-surface-600 dark:text-surface-400 md:hidden"
+            class="btn flex w-max items-center rounded-sm px-1 py-0.5 text-sm text-surface-600 dark:text-surface-400 md:hidden"
             title="account"
             @click="accSidebarOn = true"
           >
-            <ph-user class="h-5 w-5 flex-shrink-0" />
+            <ph-user class="h-5 w-5 shrink-0" />
           </button>
           <button class="link-like" title="Toggle theme" @click="toggleTheme">
             <ph-sun v-if="!isDark" class="h-5 w-5" />

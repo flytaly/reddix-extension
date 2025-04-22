@@ -164,7 +164,7 @@ watch(
   <OverlayPanel
     ref="actionMenuRef"
     pt:root:class="z-100"
-    pt:content:class="p-0 bg-surface-100 dark:bg-surface-800 rounded ring-1 ring-surface-400 dark:ring-surface-500"
+    pt:content:class="p-0 bg-surface-100 dark:bg-surface-800 rounded-sm ring-1 ring-surface-400 dark:ring-surface-500"
   >
     <ActionMenu
       v-if="selectedItem"
@@ -180,15 +180,3 @@ watch(
     <EditItemTags v-if="selectedItem" :item="selectedItem" @exit="onTagsUpdate" />
   </OverlayPanel>
 </template>
-
-<style lang="postcss" scoped>
-.dimmed-1 {
-  @apply text-surface-500 dark:text-surface-400;
-}
-.dimmed-2 {
-  @apply text-surface-400 dark:text-surface-500;
-}
-.wrap-anywhere {
-  overflow-wrap: anywhere;
-}
-</style>

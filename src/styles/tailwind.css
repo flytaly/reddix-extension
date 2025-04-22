@@ -1,6 +1,109 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@source '../**/*.{vue,js,ts,jsx,tsx,html}';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --breakpoint-*: initial;
+  --breakpoint-xs: 440px;
+  --breakpoint-sm: 670px;
+  --breakpoint-md: 960px;
+  --breakpoint-lg: 1440px;
+
+  --spacing-main-column: 80rem;
+
+  --color-primary-50: rgb(var(--primary-50));
+  --color-primary-100: rgb(var(--primary-100));
+  --color-primary-200: rgb(var(--primary-200));
+  --color-primary-300: rgb(var(--primary-300));
+  --color-primary-400: rgb(var(--primary-400));
+  --color-primary-500: rgb(var(--primary-500));
+  --color-primary-600: rgb(var(--primary-600));
+  --color-primary-700: rgb(var(--primary-700));
+  --color-primary-800: rgb(var(--primary-800));
+  --color-primary-900: rgb(var(--primary-900));
+  --color-primary-950: rgb(var(--primary-950));
+  --color-surface-0: rgb(var(--surface-0));
+  --color-surface-50: rgb(var(--surface-50));
+  --color-surface-100: rgb(var(--surface-100));
+  --color-surface-200: rgb(var(--surface-200));
+  --color-surface-300: rgb(var(--surface-300));
+  --color-surface-400: rgb(var(--surface-400));
+  --color-surface-500: rgb(var(--surface-500));
+  --color-surface-600: rgb(var(--surface-600));
+  --color-surface-700: rgb(var(--surface-700));
+  --color-surface-800: rgb(var(--surface-800));
+  --color-surface-900: rgb(var(--surface-900));
+  --color-surface-950: rgb(var(--surface-950));
+  --color-light: rgb(var(--text-light));
+  --color-dark: rgb(var(--text-dark));
+  --color-error-light: var(--error-light);
+  --color-error-dark: var(--error-dark);
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility tag-toggle {
+  @apply rounded-md bg-primary-500 px-1 py-0.5 font-semibold text-white dark:bg-primary-400 dark:text-black;
+
+  &:focus-within {
+    @apply ring-1 ring-primary-500 ring-offset-1 dark:ring-primary-600;
+  }
+  &:hover {
+    @apply bg-primary-300/70 text-gray-800 dark:bg-primary-300/70 dark:text-white;
+  }
+}
+
+@utility tag-toggle-off {
+  @apply bg-surface-200 text-gray-500 dark:bg-surface-700 dark:text-gray-300;
+
+  &:focus-within {
+    @apply ring-gray-400 dark:ring-gray-600;
+  }
+  &:hover {
+    @apply bg-surface-300 text-gray-800 dark:bg-surface-800 dark:text-gray-200;
+  }
+}
+
+@utility item-body-html {
+  max-width: min(100%, 100ch);
+
+  p {
+    @apply my-2 first:mt-0 last:mb-0;
+  }
+  a {
+    @apply underline;
+  }
+  blockquote {
+    @apply mt-4 border-l-2 border-surface-700 pl-2 dark:border-surface-400;
+  }
+  ol {
+    @apply my-2 list-decimal pl-4;
+  }
+  ul {
+    @apply my-2 list-disc pl-4;
+  }
+  code {
+    @apply my-2 block overflow-x-auto bg-surface-100 p-1 font-mono dark:bg-surface-800;
+  }
+}
 
 @layer base {
   :root {
@@ -32,57 +135,33 @@
     --text-light: 231 229 228; /* #e7e5e4 */
     --text-dark: 41 37 36; /* #292524 */
 
-    --error-light: theme('colors.red.400');
-    --error-dark: theme('colors.red.600');
+    --error-light: var(--color-red-400);
+    --error-dark: var(--color-red-600);
 
     --popup-width: 660px;
   }
-}
 
-@layer components {
-  .tag-toggle {
-    @apply rounded-md bg-primary-500 px-1 py-0.5 font-semibold text-white dark:bg-primary-400 dark:text-black;
-
-    &:focus-within {
-      @apply ring-1 ring-primary-500 ring-offset-1 dark:ring-primary-600;
-    }
-    &:hover {
-      @apply bg-primary-300 bg-opacity-70 text-gray-800
-             dark:bg-primary-300 dark:bg-opacity-70 dark:text-white;
-    }
+  body {
+    @apply overflow-x-hidden bg-surface-50 text-dark dark:bg-surface-950 dark:text-light;
   }
 
-  .tag-toggle-off {
-    @apply bg-surface-200 text-gray-500 dark:bg-surface-700 dark:text-gray-300;
-
-    &:focus-within {
-      @apply ring-gray-400 dark:ring-gray-600;
-    }
-    &:hover {
-      @apply bg-surface-300 text-gray-800 dark:bg-surface-800 dark:text-gray-200;
-    }
+  a,
+  .link-like {
+    @apply text-surface-500 hover:text-primary-500 dark:text-surface-400 dark:hover:text-primary-400;
   }
 
-  .item-body-html {
-    max-width: min(100%, 100ch);
+  .btn {
+    @apply text-dark hover:text-primary-500 active:text-primary-400 dark:text-light dark:hover:text-primary-400 dark:active:text-primary-300;
+  }
 
-    p {
-      @apply my-2 first:mt-0 last:mb-0;
-    }
-    a {
-      @apply underline;
-    }
-    blockquote {
-      @apply mt-4 border-l-2 border-surface-700 pl-2 dark:border-surface-400;
-    }
-    ol {
-      @apply my-2 list-decimal pl-4;
-    }
-    ul {
-      @apply my-2 list-disc pl-4;
-    }
-    code {
-      @apply my-2 block overflow-x-auto bg-surface-100 p-1 font-mono dark:bg-surface-800;
-    }
+  .icon-btn {
+    @apply inline-block cursor-pointer select-none
+    opacity-75 transition duration-200 ease-in-out
+    hover:text-teal-600 hover:opacity-100;
+    font-size: 0.9em;
+  }
+
+  h2 {
+    @apply font-mono text-xl font-semibold text-primary-600 dark:text-primary-400;
   }
 }
