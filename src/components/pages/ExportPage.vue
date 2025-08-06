@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import type { DbRedditItem } from '~/logic/db'
 import type { ExportedItem } from '~/logic/transform/export-utils'
-
 import JSZip from 'jszip'
 import { ref } from 'vue'
 import MainLayout from '~/components/pages/MainLayout.vue'
+import { Button } from '~/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
+import { Label } from '~/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '~/components/ui/radio-group'
 import { getFullLink } from '~/logic/convert-link'
 import { db, isComment, isPost } from '~/logic/db'
 import { stats } from '~/logic/stores'
@@ -148,32 +151,38 @@ async function exportItems() {
 <template>
   <MainLayout>
     <Card class="mx-auto mt-2 w-full max-w-[120ch]">
-      <template #title>
-        <h2 class="flex items-center">
-          <ph-upload-bold class="mr-2 h-5 w-5" />
-          <span>Export</span>
-        </h2>
-      </template>
-      <template #content>
+      <CardHeader>
+        <CardTitle>
+          <h2 class="flex items-center">
+            <ph-upload-bold class="mr-2 h-5 w-5" />
+            <span>Export</span>
+          </h2>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
         <main>
           <div class="mx-auto flex w-full flex-col items-center p-4">
             <div class="my-8 flex flex-col flex-wrap gap-3">
-              <div class="flex items-center">
-                <RadioButton v-model="selected" input-id="CSV" name="CSV" value="CSV" />
-                <label for="CSV" class="ml-2">as CSV (only item id and link)</label>
-              </div>
-              <div class="flex items-center">
-                <RadioButton v-model="selected" input-id="JSON" name="JSON" value="JSON" />
-                <label for="JSON" class="ml-2">as JSON (full data)</label>
-              </div>
+              <RadioGroup v-model="selected" default-value="CSV">
+                <div class="flex items-center space-x-2">
+                  <RadioGroupItem id="CSV" value="CSV" />
+                  <Label for="CSV" class="ml-2">as CSV (only item id and link)</Label>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <RadioGroupItem id="JSON" value="JSON" />
+                  <Label for="JSON" class="ml-2">as JSON (full data)</Label>
+                </div>
+              </RadioGroup>
             </div>
             <div class="space-y-1 text-center">
               <div>{{ stats.total }} items</div>
-              <Button label="Export" :disabled="!stats.total" @click="exportItems" />
+              <Button :disabled="!stats.total" @click="exportItems">
+                Export
+              </Button>
             </div>
           </div>
         </main>
-      </template>
+      </CardContent>
     </Card>
   </MainLayout>
 </template>
