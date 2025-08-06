@@ -3,6 +3,10 @@ import ImportHelp from '~/components/help/ImportHelp.vue'
 import LogList from '~/components/LogList.vue'
 import MainLayout from '~/components/pages/MainLayout.vue'
 import RateLimitsBlock from '~/components/RateLimitsBlock.vue'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '~/components/ui/accordion'
+import { Button } from '~/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select'
 import { addMessage } from '~/logic/log-messages'
 import { fetchInfo, importJSON, parseCSV } from '~/logic/transform/import-utils'
 
@@ -58,24 +62,33 @@ async function confirmImport() {
 <template>
   <MainLayout>
     <Card class="mx-auto mt-2 w-full max-w-[120ch]">
-      <template #title>
-        <h2 class="flex items-center">
-          <ph-download-bold class="mr-2 h-5 w-5" />
-          Import
-        </h2>
-      </template>
-      <template #content>
-        <Accordion pt:accordiontab:header:class="pt-0" class="mx-auto max-w-[90ch]">
-          <AccordionTab header="Importing JSON files">
-            <div>
-              JSON files that have been exported from this extension using the Export page. These files contain full
-              information about your posts and comments.
-            </div>
-          </AccordionTab>
-          <AccordionTab header="Importing Reddit CSV files">
-            <ImportHelp />
-          </AccordionTab>
+      <CardHeader>
+        <CardTitle>
+          <h2 class="flex items-center">
+            <ph-download-bold class="mr-2 h-5 w-5" />
+            Import
+          </h2>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Accordion type="multiple">
+          <AccordionItem value="item-1">
+            <AccordionTrigger>Importing JSON files</AccordionTrigger>
+            <AccordionContent>
+              <div>
+                JSON files that have been exported from this extension using the Export page. These files contain full
+                information about your posts and comments.
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-2">
+            <AccordionTrigger>Importing Reddit CSV files</AccordionTrigger>
+            <AccordionContent>
+              <ImportHelp />
+            </AccordionContent>
+          </AccordionItem>
         </Accordion>
+
         <main class="mt-8 grid grid-cols-[auto_1fr]">
           <aside class="mr-auto px-4">
             <RateLimitsBlock />
@@ -100,14 +113,20 @@ async function confirmImport() {
               <div v-if="needConfirmCategory" class="space-y-2 text-sm">
                 <div>Importing {{ nameList.length }} new items.</div>
                 <div>Please, confirm the item category:</div>
-                <Dropdown
-                  v-model="selectedCategory"
-                  :options="categories"
-                  placeholder="Select a category"
-                  class="mt-2 text-sm"
-                />
+                <Select v-model="selectedCategory">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem v-for="category in categories" :key="category" :value="category">
+                        {{ category }}
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
                 <div class="flex gap-4">
-                  <Button outlined @click="cancelImport">
+                  <Button variant="outline" @click="cancelImport">
                     Cancel
                   </Button>
                   <Button @click="confirmImport">
@@ -119,9 +138,7 @@ async function confirmImport() {
             <LogList />
           </div>
         </main>
-      </template>
+      </CardContent>
     </Card>
   </MainLayout>
 </template>
-
-<style lang="postcss"></style>
