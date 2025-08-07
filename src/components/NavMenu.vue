@@ -24,6 +24,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from '~/components/ui/navigation-menu'
+import { cn } from '~/lib/utils'
 import { RoutePath } from '~/options/routes'
 
 const items = [
@@ -48,6 +49,21 @@ function navigate(route?: RoutePath) {
     router.push(route)
   }
 }
+
+const linkClass = `flex flex-row items-center
+text-xs md:text-sm
+text-surface-500 hover:text-primary-500 dark:text-surface-400 dark:hover:text-primary-400
+hover:bg-surface-100 dark:hover:bg-surface-800
+focus:bg-transparent focus:text-accent`
+
+const navMenuTriggerClass = cn(linkClass, `data-[state=open]:bg-accent-foreground
+data-[state=open]:text-accent
+data-[state=open]:hover:bg-accent-foreground
+data-[state=open]:hover:text-accent
+data-[state=open]:focus:bg-accent-foreground
+data-[state=open]:focus:text-accent
+data-[state=open]:focus-visible:bg-accent-foreground
+data-[state=open]:focus-visible:text-accent`)
 </script>
 
 <template>
@@ -98,8 +114,10 @@ function navigate(route?: RoutePath) {
         class="font-medium"
       >
         <NavigationMenuLink
-          v-if="!item.items" :href="item.route"
-          class="flex text-xs md:text-sm items-center flex-row text-surface-500 hover:text-primary-500 dark:text-surface-400 dark:hover:text-primary-400" as-child
+          v-if="!item.items"
+          :href="item.route"
+          :class="linkClass"
+          as-child
         >
           <router-link :to="item.route">
             <component :is="item.iconCmp" class="h-4 w-4 sm:h-5 sm:w-5" />
@@ -107,17 +125,14 @@ function navigate(route?: RoutePath) {
           </router-link>
         </NavigationMenuLink>
 
-        <NavigationMenuTrigger
-          v-if="item.items"
-          class="text-xs md:text-sm text-surface-500 hover:text-primary-500 dark:text-surface-400 dark:hover:text-primary-400 px-2"
-        >
+        <NavigationMenuTrigger v-if="item.items" :class="navMenuTriggerClass">
           <component :is="item.iconCmp" class="h-4 w-4 sm:h-5 sm:w-5" />
           <span> {{ item.label }} </span>
         </NavigationMenuTrigger>
         <NavigationMenuContent v-if="item.items">
           <ul class="flex flex-col w-30">
             <li v-for="subItem in item.items" :key="subItem.label">
-              <NavigationMenuLink :href="subItem.route" class="flex flex-row items-center gap-1 text-xs md:text-sm" as-child>
+              <NavigationMenuLink :href="subItem.route" :class="linkClass" as-child>
                 <router-link :to="subItem.route">
                   <component :is="subItem.iconCmp" class="h-4 w-4 sm:h-5 sm:w-5" />
                   <span> {{ subItem.label }} </span>
