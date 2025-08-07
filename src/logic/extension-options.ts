@@ -5,7 +5,7 @@ export interface ExtensionOptions {
   autoUpdateSaved: boolean
   autoUpdateUpvoted: boolean
   updateInterval: number
-  onBadgeClick?: '' | 'openNewTab'
+  onBadgeClick?: '' | 'openNewTab' | 'openPopup'
 }
 
 export const defaultOptions: ExtensionOptions = {
@@ -13,5 +13,5 @@ export const defaultOptions: ExtensionOptions = {
   autoUpdateSaved: false,
   autoUpdateUpvoted: false,
   updateInterval: 1000 * 60 * 60 * 8,
-  onBadgeClick: '',
+  onBadgeClick: 'openPopup',
 }

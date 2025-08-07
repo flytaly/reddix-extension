@@ -1,6 +1,11 @@
 <script setup lang="ts">
-import type { SelectButtonPassThroughOptions } from 'primevue/selectbutton'
 import type { ExtensionOptions, Theme } from '~/logic/extension-options'
+import PhGearBold from '~icons/ph/gear-bold'
+import { Card } from '~/components/ui/card'
+import { Label } from '~/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select'
+import { Switch } from '~/components/ui/switch'
+import { ToggleGroup, ToggleGroupItem } from '~/components/ui/toggle-group'
 import { optionsStorage } from '~/logic/browser-storage'
 
 const themeOptions = ref<{ name: string, value: Theme }[]>([
@@ -19,80 +24,114 @@ const updateIntervalValues = ref<{ name: string, value: number }[]>([
 ])
 
 const badgeActions = ref<{ name: string, value: ExtensionOptions['onBadgeClick'] }[]>([
-  { name: 'open in the popup', value: '' },
+  { name: 'open in the popup', value: 'openPopup' },
   { name: 'open in a new tab', value: 'openNewTab' },
 ])
 
-const badgeAction = ref(
-  badgeActions.value.find(v => v.value === optionsStorage.value.onBadgeClick) ?? badgeActions.value[0],
+const badgeAction = ref<ExtensionOptions['onBadgeClick']>(
+  badgeActions.value.find(v => v.value === optionsStorage.value.onBadgeClick)
+    ? optionsStorage.value.onBadgeClick
+    : 'openPopup',
 )
 
 watch(badgeAction, () => {
-  optionsStorage.value.onBadgeClick = badgeAction.value.value
+  optionsStorage.value.onBadgeClick = badgeAction.value
 })
-
-const pt: SelectButtonPassThroughOptions = {
-  root: 'max-w-max',
-  button: ({ context }) => ({
-    class: { 'bg-primary-500! dark:bg-primary-400! text-white dark:text-black': context.active },
-  }),
-}
 </script>
 
 <template>
   <MainLayout>
     <div class="mx-auto flex w-full max-w-(--breakpoint-md) flex-col">
-      <Card class="mt-2 w-full">
-        <template #title>
-          Settings
-        </template>
-        <template #content>
+      <Card class="mx-auto mt-2 w-full max-w-[120ch]">
+        <CardHeader>
+          <CardTitle>
+            <h2 class="flex items-center">
+              <PhGearBold class="mr-2 h-5 w-5" />
+              Settings
+            </h2>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <!-- Corrected Structure -->
           <article>
             <h3>General</h3>
             <div class="grid grid-cols-[auto_1fr] gap-4">
-              Badge click action
-              <Dropdown v-model="badgeAction" :options="badgeActions" option-label="name" class="max-w-max" />
+              <Label> Badge click action </Label>
+              <Select v-model="badgeAction">
+                <SelectTrigger>
+                  <SelectValue placeholder="Select badge action click" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem v-for="action in badgeActions" :key="action.value" :value="action.value!">
+                    {{ action.name }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </article>
 
           <article>
             <h3>Appearance</h3>
             <div class="grid grid-cols-[auto_1fr] gap-4">
-              Theme
-              <SelectButton
-                v-model="optionsStorage.theme"
-                :options="themeOptions"
-                option-label="name"
-                option-value="value"
-                :pt="pt"
-                :pt-options="{ mergeProps: true }"
-                @change="optionsStorage.theme = $event.value"
-              />
+              <Label>Theme</Label>
+              <ToggleGroup
+                type="single"
+                :model-value="optionsStorage.theme"
+                variant="outline"
+                size="sm"
+                @update:model-value="(t) => {
+                  if (!t) return
+                  optionsStorage.theme = t as Theme || 'auto'
+                }"
+              >
+                <ToggleGroupItem
+                  v-for="theme in themeOptions"
+                  :key="theme.value"
+                  :value="theme.value"
+                  class="px-3"
+                >
+                  {{ theme.name }}
+                </ToggleGroupItem>
+              </ToggleGroup>
             </div>
           </article>
 
           <article class="space-y-4">
             <h3>Update</h3>
-            <Fieldset legend="Automatically update:">
+            <fieldset class="px-5 md:px-6 py-5 rounded-md bg-surface-0 dark:bg-surface-900 text-surface-700 dark:text-surface-0/80 ring-1 ring-inset ring-surface-300 dark:ring-surface-700 ring-offset-0">
+              <legend class="px-3 py-1.5 font-medium leading-none text-surface-700 dark:text-surface-0/80 bg-surface-0 dark:bg-surface-900">
+                Automatically update:
+              </legend>
+
               <div class="grid grid-cols-[auto_1fr] gap-4">
-                <label for="auto-update-saved">Saved posts/comments</label>
-                <InputSwitch v-model="optionsStorage.autoUpdateSaved" input-id="auto-update-saved" />
-                <label for="auto-update-saved">Upvoted posts</label>
-                <InputSwitch v-model="optionsStorage.autoUpdateUpvoted" input-id="auto-update-upvoted" />
-                Update interval
-                <SelectButton
-                  v-model="optionsStorage.updateInterval"
-                  :options="updateIntervalValues"
-                  option-label="name"
-                  option-value="value"
-                  :pt="pt"
-                  :pt-options="{ mergeProps: true }"
-                  @change="optionsStorage.updateInterval = $event.value"
-                />
+                <Label for="auto-update-saved">Saved posts/comments</Label>
+                <Switch id="auto-update-saved" v-model="optionsStorage.autoUpdateSaved" />
+                <Label for="auto-update-upvoted">Upvoted posts</Label>
+                <Switch id="auto-update-upvoted" v-model="optionsStorage.autoUpdateUpvoted" />
+                <Label>Update interval</Label>
+                <ToggleGroup
+                  :model-value="optionsStorage.updateInterval"
+                  type="single"
+                  variant="outline"
+                  size="sm"
+                  @update:model-value="(v) => {
+                    if (typeof v !== 'number') return
+                    optionsStorage.updateInterval = v
+                  }"
+                >
+                  <ToggleGroupItem
+                    v-for="interval in updateIntervalValues"
+                    :key="interval.value"
+                    :value="interval.value"
+                    class="px-2"
+                  >
+                    {{ interval.name }}
+                  </ToggleGroupItem>
+                </ToggleGroup>
               </div>
-            </Fieldset>
+            </fieldset>
           </article>
-        </template>
+        </CardContent>
       </Card>
     </div>
   </MainLayout>
