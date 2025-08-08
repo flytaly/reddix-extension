@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import FetchButton from '~/components/FetchButton.vue'
+import { Input } from '~/components/ui/input'
 import { userName } from '~/logic/browser-storage'
 import { state } from '~/logic/stores'
 import { sendMessage } from '~/messages'
@@ -82,7 +83,7 @@ function showEdit() {
           <PhRedditLogoFill
             class="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-surface-400 dark:text-surface-400"
           />
-          <InputText
+          <Input
             v-model="userName"
             type="text"
             size="small"

@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { debounce } from 'lodash-es'
-
 import SearchHelp from '~/components/help/SearchHelp.vue'
+import { Input } from '~/components/ui/input'
 import { inputsStorage } from '~/logic/browser-storage'
 import { clearSearch, search, setSearchQuery } from '~/logic/search-store'
+
+const inputQuery = ref(search.query)
+
+watch(search, query => (inputQuery.value = query.query))
 
 const update = debounce((e: Event) => {
   const query = (e.target as HTMLInputElement)?.value
@@ -104,11 +108,11 @@ function clear() {
         />
       </div>
       <div class="w-full relative">
-        <InputText
+        <Input
           id="search-input"
-          :value="search.query"
-          :size="$app.context === 'popup' ? 'small' : undefined"
-          class="w-full pr-5"
+          v-model="inputQuery"
+          class="w-full pr-5 focus-visible:ring-0"
+          :class="{ 'h-7': $app.context === 'popup' }"
           placeholder="filter posts and comments"
           autofocus
           @input="update"
