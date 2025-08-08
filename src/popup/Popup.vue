@@ -2,10 +2,10 @@
 import { useToast } from 'primevue/usetoast'
 import PhCloudArrowDown from '~icons/ph/cloud-arrow-down'
 import PhGear from '~icons/ph/gear'
-
 import Logo from '~/assets/logo_short.svg?component'
 import ItemsContainer from '~/components/item/ItemsContainer.vue'
 import SearchInput from '~/components/SearchInput.vue'
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '~/components/ui/sheet'
 import { useThemeToggle } from '~/composables/useThemeToggle'
 import { userName } from '~/logic/browser-storage'
 import { setupMessageHandlers, setupStatsStore, state } from '~/logic/stores'
@@ -105,9 +105,17 @@ const tagSidebarOn = ref(false)
       <ItemsContainer />
     </main>
   </div>
-  <Sidebar v-model:visible="tagSidebarOn" header="Tags">
-    <TagList @tag-select="() => (tagSidebarOn = false)" />
-  </Sidebar>
+  <Sheet v-model:open="tagSidebarOn">
+    <SheetContent side="left">
+      <SheetHeader>
+        <SheetTitle class="flex flex-row gap-2 text-accent">
+          <ph-hash />
+          Tags
+        </SheetTitle>
+      </SheetHeader>
+      <TagList @tag-select="() => (tagSidebarOn = false)" />
+    </SheetContent>
+  </Sheet>
 </template>
 
 <style lang="postcss" scoped>

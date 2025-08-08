@@ -67,7 +67,7 @@ function showEdit() {
 </script>
 
 <template>
-  <article class="min-w-48 max-w-60">
+  <article class="min-w-48 max-w-60 mx-auto">
     <div v-if="!showEdit()" class="flex w-full items-center gap-2 text-surface-400">
       <PhRedditLogoDuotone class="h-4 w-4 text-surface-400 dark:text-surface-400" />
       <span>{{ userName }}</span>

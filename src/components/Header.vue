@@ -3,6 +3,7 @@ import { useRoute } from 'vue-router'
 import Logo from '~/assets/logo_short.svg?component'
 import AccountInputBlock from '~/components/AccountInputBlock.vue'
 import TagList from '~/components/TagList.vue'
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '~/components/ui/sheet'
 import { useThemeToggle } from '~/composables/useThemeToggle'
 import { RoutePath } from '~/options/routes'
 
@@ -42,31 +43,46 @@ const route = useRoute()
 
     <!-- Right -->
     <div class="flex gap-1 ml-auto">
-      <button
-        class="btn flex w-max items-center rounded-sm px-1 py-0.5 text-sm text-surface-600 dark:text-surface-400 md:hidden"
-        title="show tags"
-        @click="tagSidebarOn = true"
-      >
-        <ph-hash class="h-5 w-5 shrink-0" />
-      </button>
-      <button
-        class="btn flex w-max items-center rounded-sm px-1 py-0.5 text-sm text-surface-600 dark:text-surface-400 md:hidden"
-        title="account"
-        @click="accSidebarOn = true"
-      >
-        <ph-user class="h-5 w-5 shrink-0" />
-      </button>
+      <Sheet v-model:open="tagSidebarOn">
+        <SheetTrigger
+          class="btn flex w-max items-center rounded-sm px-1 py-0.5 text-sm text-surface-600 dark:text-surface-400 md:hidden"
+          title="show tags"
+        >
+          <ph-hash class="h-5 w-5 shrink-0" />
+        </SheetTrigger>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle class="flex flex-row gap-2 text-accent">
+              <ph-hash />
+              Tags
+            </SheetTitle>
+          </SheetHeader>
+          <TagList @tag-select="() => (tagSidebarOn = false)" />
+        </SheetContent>
+      </Sheet>
+      <Sheet v-model:open="accSidebarOn">
+        <SheetTrigger
+          class="btn flex w-max items-center rounded-sm px-1 py-0.5 text-sm text-surface-600 dark:text-surface-400 md:hidden"
+          title="account"
+        >
+          <ph-user class="h-5 w-5 shrink-0" />
+        </SheetTrigger>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle class="flex flex-row gap-2 text-accent">
+              <ph-user />
+              Account
+            </SheetTitle>
+          </SheetHeader>
+          <div class="p-2">
+            <AccountInputBlock />
+          </div>
+        </SheetContent>
+      </Sheet>
       <button class="link-like" title="Toggle theme" @click="toggleTheme">
         <ph-sun v-if="!isDark" class="h-5 w-5" />
         <ph-moon v-else class="h-5 w-5" />
       </button>
     </div>
-
-    <Sidebar v-model:visible="tagSidebarOn" header="Tags">
-      <TagList @tag-select="() => (tagSidebarOn = false)" />
-    </Sidebar>
-    <Sidebar v-model:visible="accSidebarOn" header="Account">
-      <AccountInputBlock />
-    </Sidebar>
   </header>
 </template>

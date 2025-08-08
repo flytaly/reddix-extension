@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { useMediaQuery } from '@vueuse/core'
 import { useRoute, useRouter } from 'vue-router'
-
 import AccountInput from '~/components/AccountInputBlock.vue'
 import FetchButton from '~/components/FetchButton.vue'
 import TagList from '~/components/TagList.vue'
+import { Sheet, SheetContent, SheetHeader } from '~/components/ui/sheet'
 import { userName } from '~/logic/browser-storage'
 import { state, stats } from '~/logic/stores'
 import { sendMessage } from '~/messages'
@@ -62,8 +62,16 @@ onMounted(() => {
   </div>
   <div v-if="!isLargeScreen" class="flex w-full justify-end px-6">
     <FetchButton :is-fetching="state.isFetching" @fetch-items="onSync" />
-    <Sidebar v-model:visible="visible">
-      <AccountInput :start-fetching="fetchOnStart" />
-    </Sidebar>
+    <Sheet v-model:open="visible">
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle class="flex flex-row gap-2 text-accent">
+            <ph-user />
+            Account
+          </SheetTitle>
+        </SheetHeader>
+        <AccountInput :start-fetching="fetchOnStart" />
+      </SheetContent>
+    </Sheet>
   </div>
 </template>

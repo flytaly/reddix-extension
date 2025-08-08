@@ -15,10 +15,6 @@ async function onTagClick(e: MouseEvent) {
 
 <template>
   <article class="scrollbar max-h-full max-w-full flex-col gap-1 px-2 pb-2 text-sm sm:flex">
-    <h2 class="flex gap-1 font-bold">
-      <ph-hash />
-      Tags
-    </h2>
     <ul>
       <li v-for="[tag, count] in getTagsArray()" :key="tag">
         <a
