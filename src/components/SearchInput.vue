@@ -2,7 +2,9 @@
 import { debounce } from 'lodash-es'
 import SearchHelp from '~/components/help/SearchHelp.vue'
 import { Input } from '~/components/ui/input'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '~/components/ui/tooltip'
 import { inputsStorage } from '~/logic/browser-storage'
+
 import { clearSearch, search, setSearchQuery } from '~/logic/search-store'
 
 const inputQuery = ref(search.query)
@@ -38,34 +40,30 @@ watch(filterCategories, (vals) => {
   inputsStorage.value.categories = vals
 }, { immediate: true })
 
-const tooltip = ref()
-
-function showTooltip(ev: MouseEvent) {
-  tooltip.value.toggle(ev)
-}
-function hideTooltip(ev: MouseEvent) {
-  tooltip.value.hide(ev)
-}
-
 function clear() {
   clearSearch()
 }
 </script>
 
 <template>
-  <OverlayPanel ref="tooltip">
-    <div class="max-w-(--breakpoint-sm) text-xs xs:text-sm">
-      <SearchHelp />
-    </div>
-  </OverlayPanel>
   <div class="w-full max-w-main-column">
     <div class="flex flex-col">
       <div class="mt-2 flex items-center gap-2 xs:gap-8">
         <label for="search-input" class="mr-0.5 flex items-center gap-1 xs:mr-2">
           <h2 class="font-mono text-xl font-semibold text-primary-600 dark:text-primary-400">Search</h2>
-          <div @mouseenter="showTooltip" @mouseleave="hideTooltip">
-            <ph-info class="h-5 w-5 text-surface-500" />
-          </div>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <ph-info class="h-5 w-5 text-surface-500" />
+              </TooltipTrigger>
+              <TooltipContent
+                :side="$app.context === 'popup' ? 'bottom' : 'right'"
+                class="max-w-[min(90vw,650px)] text-xs xs:text-sm bg-popover text-popover-foreground shadow"
+              >
+                <SearchHelp />
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </label>
         <SelectButton
           v-model="filterCategories"
