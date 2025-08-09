@@ -16,33 +16,34 @@ const update = debounce((e: Event) => {
   setSearchQuery(query)
 }, 200)
 
-const itemTypes: { name: string, value: ItemType }[] = [
-  { name: 'posts', value: 'post' },
-  { name: 'comments', value: 'comment' },
-]
-
-const itemTypesSaved = itemTypes.filter(v => inputsStorage.value.itemTypes.includes(v.value))
-const filterTypes = ref(itemTypesSaved)
-
-watch(filterTypes, (val) => {
-  search.hidePosts = !val.find(v => v.value === 'post')
-  search.hideComments = !val.find(v => v.value === 'comment')
-  inputsStorage.value.itemTypes = val.map(v => v.value)
-}, { immediate: true })
-
+const itemTypes = ['post', 'comment'] as ItemType[]
+const filterItemType = ref(itemTypes.filter(v => inputsStorage.value.itemTypes.includes(v)))
 const itemCategories: ItemCategory[] = ['saved', 'upvoted']
-const itemCategoriesSaved = itemCategories.filter(v => inputsStorage.value.categories.includes(v))
-const filterCategories = ref(itemCategoriesSaved)
+const filterCategories = ref(itemCategories.filter(v => inputsStorage.value.categories.includes(v)))
+
+watch(filterItemType, (vals) => {
+  search.hidePosts = !vals.includes('post')
+  search.hideComments = !vals.includes('comment')
+  inputsStorage.value.itemTypes = [...vals]
+}, { immediate: true })
 
 watch(filterCategories, (vals) => {
   search.hideSaved = !vals.includes('saved')
   search.hideUpvoted = !vals.includes('upvoted')
-  inputsStorage.value.categories = vals
+  inputsStorage.value.categories = [...vals]
 }, { immediate: true })
 
 function clear() {
   clearSearch()
 }
+
+const badgeClasses = {
+  base: 'h-auto min-w-min m-0.5 py-0.5! px-0.5! xs:px-1! rounded-sm! text-xs! text-dark/60 dark:text-light/60 bg-surface-100 border! border-surface-300 dark:border-surface-700 dark:bg-surface-800',
+  activeCategory: 'text-dark/80! dark:text-sky-500! bg-sky-400/20! dark:bg-transparent border-sky-200! dark:border-sky-600! dark:hover:bg-sky-950!',
+  activeItemType: 'text-dark/80! dark:text-amber-500! bg-orange-200/80! dark:bg-transparent! border-orange-200! dark:border-amber-500! dark:hover:bg-amber-950!',
+} as const
+
+const badgeLabels = { saved: 'saved', upvoted: 'upvoted', post: 'posts', comment: 'comments' }
 </script>
 
 <template>
@@ -65,45 +66,32 @@ function clear() {
             </Tooltip>
           </TooltipProvider>
         </label>
-        <SelectButton
-          v-model="filterCategories"
-          :pt="{
-            button: ({ context }) => ({
-              class: [
-                'm-0.5 py-0.5! px-0.5! xs:px-1! rounded-sm! text-xs! text-dark/60 dark:text-light/60 bg-surface-100 border border-surface-300 dark:border-surface-700 dark:bg-surface-800',
-                {
-                  'text-dark/80 dark:text-sky-500! bg-sky-400/20! dark:bg-transparent! border-sky-200! dark:border-sky-600! dark:hover:bg-sky-950!':
-                    context.active,
-                },
-              ],
-            }),
-          }"
-          :pt-options="{ mergeProps: true }"
-          :options="itemCategories"
-          multiple
-          aria-labelledby="multiple"
-          title="toggle saved and upvoted items"
-        />
-        <SelectButton
-          v-model="filterTypes"
-          :pt="{
-            button: ({ context }) => ({
-              class: [
-                'm-0.5 py-0.5! px-0.5! xs:px-1! rounded-sm! text-xs! text-dark/60 dark:text-light/60 bg-surface-100 border border-surface-300 dark:border-surface-700 dark:bg-surface-800',
-                {
-                  'text-dark/80! dark:text-amber-500! bg-orange-200/80! dark:bg-transparent! border-orange-200! dark:border-amber-500! dark:hover:bg-amber-950!':
-                    context.active,
-                },
-              ],
-            }),
-          }"
-          :pt-options="{ mergeProps: true }"
-          :options="itemTypes"
-          option-label="name"
-          multiple
-          aria-labelledby="multiple"
-          title="toggle posts and comments"
-        />
+        <ToggleGroup v-model="filterCategories" type="multiple">
+          <ToggleGroupItem
+            v-for="value in itemCategories"
+            :key="value"
+            :value="value"
+            :class="[
+              badgeClasses.base,
+              filterCategories.includes(value) && badgeClasses.activeCategory,
+            ]"
+          >
+            {{ badgeLabels[value] }}
+          </ToggleGroupItem>
+        </ToggleGroup>
+        <ToggleGroup v-model="filterItemType" type="multiple">
+          <ToggleGroupItem
+            v-for="value in itemTypes"
+            :key="value"
+            :value="value"
+            :class="[
+              badgeClasses.base,
+              filterItemType.includes(value) && badgeClasses.activeItemType,
+            ]"
+          >
+            {{ badgeLabels[value] }}
+          </ToggleGroupItem>
+        </ToggleGroup>
       </div>
       <div class="w-full relative">
         <Input
