@@ -48,12 +48,16 @@ function listener(ev: KeyboardEvent) {
 }
 
 onMounted(() => {
-  document.body.style.overflowY = 'hidden'
+  const app = document.querySelector('#app') as HTMLElement
+  if (app)
+    app.style.overflowY = 'hidden'
   document.body.addEventListener('keydown', listener)
 })
 
 onUnmounted(() => {
-  document.body.style.overflowY = ''
+  const app = document.querySelector('#app') as HTMLElement
+  if (app)
+    app.style.overflowY = ''
   document.body.removeEventListener('keydown', listener)
 })
 </script>
@@ -88,6 +92,8 @@ onUnmounted(() => {
 </template>
 
 <style lang="postcss">
+@reference "../../styles/tailwind.css";
+
 .vue-recycle-scroller {
   scrollbar-color: theme('colors.surface-400') theme('colors.surface-200');
   &:hover {
