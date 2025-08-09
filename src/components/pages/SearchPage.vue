@@ -8,7 +8,7 @@ import Sidebar from '~/components/SearchSidebar.vue'
 
 <template>
   <MainLayout>
-    <main class="md:grid mt-4 grow bg-surface-50 text-dark dark:bg-surface-950 dark:text-light">
+    <main class="md:grid pt-4 grow bg-surface-50 text-dark dark:bg-surface-950 dark:text-light">
       <div class="sidebar">
         <Sidebar />
       </div>
