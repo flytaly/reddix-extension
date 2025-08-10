@@ -86,7 +86,6 @@ function showEdit() {
           <Input
             v-model="userName"
             type="text"
-            size="small"
             placeholder="username"
             class="w-full pl-8 pr-8"
             :disabled="state.isFetching || fetchingUsername"
