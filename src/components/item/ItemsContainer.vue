@@ -8,6 +8,7 @@ import PhRows from '~icons/ph/rows'
 import ItemList from '~/components/item/ItemList.vue'
 import MassEditMenu from '~/components/item/MassEditMenu.vue'
 import SortMenu from '~/components/item/SortMenu.vue'
+import { Button } from '~/components/ui/button'
 import { ITEMS_ON_PAGE } from '~/constants'
 import { inputsStorage } from '~/logic/browser-storage'
 import { deleteItems, updateItem } from '~/logic/db/mutations'
@@ -186,12 +187,15 @@ const checkedItems = defineModel<number[]>({ default: [] })
       @tags-update="updateTags"
     >
       <span v-if="isEnd === false" class="whitespace-nowrap">
-        [<button
-          class="btn underline decoration-dashed underline-offset-2"
+        [<Button
+          variant="ghost"
+          size="sm"
+          class="px-1"
+          title="Load all items from the database"
           :disabled="isLoading"
           @click="() => loadMore(true)"
         >
-          Load all</button>]
+          Load all</Button>]
       </span>
     </MassEditMenu>
 

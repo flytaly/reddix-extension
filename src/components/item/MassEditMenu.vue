@@ -2,6 +2,7 @@
 import type { WrappedItem } from '~/logic/wrapped-item'
 import AddTagsToItems from '~/components/tags/AddTagsToItems.vue'
 import RemoveTagsToItems from '~/components/tags/RemoveTagsToItems.vue'
+import { Button } from '~/components/ui/button'
 
 const props = defineProps<{
   items: WrappedItem[]
@@ -63,8 +64,8 @@ function toggleRemoveTags(event: Event) {
     <slot />
     <Button
       v-if="!confirmDeletion"
-      text
-      class="flex min-w-max gap-0 px-2 underline decoration-dashed underline-offset-2 disabled:text-surface-500"
+      variant="ghost"
+      size="sm"
       :disabled="!checked?.length"
       @click="confirmDeletion = true"
     >
@@ -72,25 +73,33 @@ function toggleRemoveTags(event: Event) {
     </Button>
     <div v-else class="mr-2 flex items-center">
       Delete selected items?
-      <Button text @click="deleteItems">
+      <Button
+        variant="ghost"
+        size="sm"
+        text @click="deleteItems"
+      >
         Yes
       </Button>
       <span> / </span>
-      <Button text @click="confirmDeletion = false">
+      <Button
+        variant="ghost"
+        size="sm"
+        @click="confirmDeletion = false"
+      >
         No
       </Button>
     </div>
     <Button
-      text
-      class="flex min-w-max gap-0 px-2 underline decoration-dashed underline-offset-2 disabled:text-surface-500"
+      variant="ghost"
+      size="sm"
       :disabled="!checked?.length"
       @click="toggleAddTags"
     >
       + Add tags
     </Button>
     <Button
-      text
-      class="flex min-w-max gap-0 px-2 underline decoration-dashed underline-offset-2 disabled:text-surface-500"
+      variant="ghost"
+      size="sm"
       :disabled="!checked?.length"
       @click="toggleRemoveTags"
     >
@@ -106,5 +115,3 @@ function toggleRemoveTags(event: Event) {
     />
   </OverlayPanel>
 </template>
-
-<style lang="postss" scoped></style>
