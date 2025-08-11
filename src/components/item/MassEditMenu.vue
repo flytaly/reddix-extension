@@ -3,6 +3,7 @@ import type { WrappedItem } from '~/logic/wrapped-item'
 import AddTagsToItems from '~/components/tags/AddTagsToItems.vue'
 import RemoveTagsToItems from '~/components/tags/RemoveTagsToItems.vue'
 import { Button } from '~/components/ui/button'
+import { Checkbox } from '~/components/ui/checkbox'
 
 const props = defineProps<{
   items: WrappedItem[]
@@ -11,33 +12,23 @@ const props = defineProps<{
   onTagsUpdate: (updated: Record<number, string[]>) => void
 }>()
 
-const checked = defineModel<number[]>()
+const checkedIds = defineModel<number[]>()
+const checkedAll = ref<boolean | 'indeterminate'>(false)
 
-const selectAll = ref<true | false | null>(null)
+function checkAllHandler() {
+  checkedAll.value = !checkedAll.value
+  checkedIds.value = checkedAll.value ? props.items.map(it => it.dbId) : []
+}
 
-watch(selectAll, (val) => {
-  const len = checked.value?.length || 0
-  if ((val === null && len) || (val === false && len === props.items.length))
-    checked.value = []
-  else if (val && len !== props.items.length)
-    checked.value = props.items.map(it => it.dbId)
-})
-
-watch(checked, (val) => {
-  const len = val?.length || 0
-  if (len === 0 && selectAll.value !== null)
-    selectAll.value = null
-  else if (len === props.items.length && !selectAll.value)
-    selectAll.value = true
-  else if (len > 0 && len < props.items.length && selectAll.value !== false)
-    selectAll.value = false
+watch(checkedIds, (ids) => {
+  checkedAll.value = !ids?.length ? false : ids.length === props.items.length ? true : 'indeterminate'
 })
 
 const confirmDeletion = ref(false)
 
 async function deleteItems() {
-  await props.onDelete(checked.value || [])
-  checked.value = []
+  await props.onDelete(checkedIds.value || [])
+  checkedIds.value = []
   confirmDeletion.value = false
 }
 
@@ -46,12 +37,12 @@ const tagsAction = ref<'add' | 'remove'>('add')
 
 const selectedItems = shallowRef<WrappedItem[]>([])
 function toggleAddTags(event: Event) {
-  selectedItems.value = props.items.filter(it => checked.value?.includes(it.dbId))
+  selectedItems.value = props.items.filter(it => checkedIds.value?.includes(it.dbId))
   tagsAction.value = 'add'
   tagsOverlayRef.value.toggle(event)
 }
 function toggleRemoveTags(event: Event) {
-  selectedItems.value = props.items.filter(it => checked.value?.includes(it.dbId))
+  selectedItems.value = props.items.filter(it => checkedIds.value?.includes(it.dbId))
   tagsAction.value = 'remove'
   tagsOverlayRef.value.toggle(event)
 }
@@ -59,14 +50,18 @@ function toggleRemoveTags(event: Event) {
 
 <template>
   <div class="mx-auto mb-2 mr-auto flex w-full max-w-main-column flex-wrap items-center gap-x-2 px-2 pl-2">
-    <TriStateCheckbox v-model="selectAll" title="select all" aria-label="select all" />
-    <span class="ml-2"> selected {{ checked?.length || 0 }} / {{ items?.length }}</span>
+    <Checkbox
+      v-model="checkedAll"
+      title="select all"
+      @click="checkAllHandler"
+    />
+    <span class="ml-2"> selected {{ checkedIds?.length || 0 }} / {{ items?.length }}</span>
     <slot />
     <Button
       v-if="!confirmDeletion"
       variant="ghost"
       size="sm"
-      :disabled="!checked?.length"
+      :disabled="!checkedIds?.length"
       @click="confirmDeletion = true"
     >
       Delete
@@ -92,7 +87,7 @@ function toggleRemoveTags(event: Event) {
     <Button
       variant="ghost"
       size="sm"
-      :disabled="!checked?.length"
+      :disabled="!checkedIds?.length"
       @click="toggleAddTags"
     >
       + Add tags
@@ -100,7 +95,7 @@ function toggleRemoveTags(event: Event) {
     <Button
       variant="ghost"
       size="sm"
-      :disabled="!checked?.length"
+      :disabled="!checkedIds?.length"
       @click="toggleRemoveTags"
     >
       - Remove tags
