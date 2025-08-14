@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { WrappedItem } from '~/logic/wrapped-item'
+import Checkbox from 'primevue/checkbox'
 import { useToast } from 'primevue/usetoast'
 import ActionMenu from '~/components/item/ActionMenu.vue'
 import ItemCard from '~/components/item/ItemCard.vue'
@@ -87,7 +88,7 @@ watch(
 )
 
 watch(
-  () => props.items,
+  () => props.items.length,
   () => {
     checked.value = []
   },
