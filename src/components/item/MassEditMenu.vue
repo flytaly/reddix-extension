@@ -103,7 +103,11 @@ async function deleteItems() {
       <PopoverContent
         class="min-w-min min-h-min p-0"
       >
-        TODO
+        <Remove
+          :ids="checkedIds || []"
+          :items="items"
+          @update="onTagsUpdate"
+        />
       </PopoverContent>
     </Popover>
   </div>

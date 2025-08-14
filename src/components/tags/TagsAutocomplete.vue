@@ -4,23 +4,19 @@ import { computed, ref } from 'vue'
 import { Combobox, ComboboxAnchor, ComboboxEmpty, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxList } from '~/components/ui/combobox'
 import { TagsInput, TagsInputInput, TagsInputItem, TagsInputItemDelete, TagsInputItemText } from '~/components/ui/tags-input'
 
-const { onSelect, tagList = [] } = defineProps<{
-  onSelect?: (update: string[]) => void
+const { tagList = [] } = defineProps<{
   tagList?: TagList
 }>()
 
 type TagList = Array<[string, number]>
-const modelValue = ref<string[]>([])
 const inputTerm = ref('')
 
-watch(modelValue.value, (update) => {
-  onSelect?.(update)
-})
+const model = defineModel<string[]>({ default: [] })
 
 const { contains } = useFilter({ sensitivity: 'base' })
 
 const filtered = computed(() => {
-  let cmp = tagList.filter(i => !modelValue.value.includes(i[0]))
+  let cmp = tagList.filter(i => !model.value.includes(i[0]))
 
   if (!inputTerm.value) {
     return cmp
@@ -37,15 +33,15 @@ const filtered = computed(() => {
 
 <template>
   <Combobox
-    v-model="modelValue"
+    v-model="model"
     :ignore-filter="true"
     open-on-focus
   >
     <ComboboxAnchor as-child>
-      <TagsInput v-model="modelValue" class="px-2 gap-2 w-80">
+      <TagsInput v-model="model" class="px-2 gap-2 w-80">
         <div class="flex gap-2 flex-wrap items-center">
           <TagsInputItem
-            v-for="item in modelValue"
+            v-for="item in model"
             :key="item"
             :value="item"
           >
@@ -78,7 +74,7 @@ const filtered = computed(() => {
           @select.prevent="(ev) => {
             if (typeof ev.detail.value === 'string') {
               inputTerm = ''
-              modelValue.push(ev.detail.value)
+              model.push(ev.detail.value)
             }
           }"
         >

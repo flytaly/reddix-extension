@@ -34,11 +34,17 @@ async function commit(tags: string[]) {
 watch(() => stats.tags, () => {
   allTags.value = getTagsArray().filter(t => t[0] !== '')
 }, { immediate: true })
+
+const tagInput = ref<string[]>([])
+
+watch(tagInput, (val) => {
+  commit(val)
+}, { deep: true })
 </script>
 
 <template>
   <TagsAutocomplete
+    v-model="tagInput"
     :tag-list="allTags"
-    @select="commit"
   />
 </template>
