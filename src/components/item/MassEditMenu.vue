@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { WrappedItem } from '~/logic/wrapped-item'
-import AddTagsToItems from '~/components/tags/AddTagsToItems.vue'
-import RemoveTagsToItems from '~/components/tags/RemoveTagsToItems.vue'
+import Add from '~/components/tags/Add.vue'
 import { Button } from '~/components/ui/button'
 import { Checkbox } from '~/components/ui/checkbox'
+import { Popover, PopoverContent, PopoverTrigger } from '~/components/ui/popover'
 
 const props = defineProps<{
   items: WrappedItem[]
@@ -30,21 +30,6 @@ async function deleteItems() {
   await props.onDelete(checkedIds.value || [])
   checkedIds.value = []
   confirmDeletion.value = false
-}
-
-const tagsOverlayRef = ref()
-const tagsAction = ref<'add' | 'remove'>('add')
-
-const selectedItems = shallowRef<WrappedItem[]>([])
-function toggleAddTags(event: Event) {
-  selectedItems.value = props.items.filter(it => checkedIds.value?.includes(it.dbId))
-  tagsAction.value = 'add'
-  tagsOverlayRef.value.toggle(event)
-}
-function toggleRemoveTags(event: Event) {
-  selectedItems.value = props.items.filter(it => checkedIds.value?.includes(it.dbId))
-  tagsAction.value = 'remove'
-  tagsOverlayRef.value.toggle(event)
 }
 </script>
 
@@ -84,29 +69,42 @@ function toggleRemoveTags(event: Event) {
         No
       </Button>
     </div>
-    <Button
-      variant="ghost"
-      size="sm"
-      :disabled="!checkedIds?.length"
-      @click="toggleAddTags"
-    >
-      + Add tags
-    </Button>
-    <Button
-      variant="ghost"
-      size="sm"
-      :disabled="!checkedIds?.length"
-      @click="toggleRemoveTags"
-    >
-      - Remove tags
-    </Button>
+
+    <Popover>
+      <PopoverTrigger as-child>
+        <Button
+          variant="ghost"
+          size="sm"
+          :disabled="!checkedIds?.length"
+        >
+          + Add tags
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        class="min-w-min min-h-min p-0"
+      >
+        <Add
+          :ids="checkedIds || []"
+          @update="onTagsUpdate"
+        />
+      </PopoverContent>
+    </Popover>
+
+    <Popover>
+      <PopoverTrigger as-child>
+        <Button
+          variant="ghost"
+          size="sm"
+          :disabled="!checkedIds?.length"
+        >
+          - Remove tags
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        class="min-w-min min-h-min p-0"
+      >
+        TODO
+      </PopoverContent>
+    </Popover>
   </div>
-  <OverlayPanel ref="tagsOverlayRef" class="px-0 py-0" pt:content:class="p-2">
-    <AddTagsToItems v-if="tagsAction === 'add' && selectedItems" :items="selectedItems" @exit="onTagsUpdate" />
-    <RemoveTagsToItems
-      v-else-if="tagsAction === 'remove' && selectedItems"
-      :items="selectedItems"
-      @exit="onTagsUpdate"
-    />
-  </OverlayPanel>
 </template>
