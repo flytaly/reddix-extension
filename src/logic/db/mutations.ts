@@ -121,13 +121,13 @@ export async function editTags(
       .where('_id')
       .equals(id)
       .modify((item) => {
-        item._tags = newTags
-        upd[item._id] = newTags
+        item._tags = [...newTags]
+        upd[item._id] = item._tags
       })
 
     onUpdate?.(upd)
   }
   catch (error) {
-    console.error('Replace tags', error)
+    console.error('Edit tags', error)
   }
 }
