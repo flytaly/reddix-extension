@@ -3,7 +3,7 @@ import type { AcceptableInputValue } from 'reka-ui'
 import type { WrappedItem } from '~/logic/wrapped-item'
 import { ref } from 'vue'
 import { TagsInput, TagsInputItem, TagsInputItemDelete, TagsInputItemText } from '~/components/ui/tags-input'
-import { db } from '~/logic/db'
+import { removeTag } from '~/logic/db/mutations'
 
 const { items, onUpdate, ids } = defineProps<{
   ids: WrappedItem['dbId'][]
@@ -28,25 +28,8 @@ function extractTags(items: WrappedItem[]) {
 const tags = ref(extractTags(items))
 
 async function commit(removedTag: AcceptableInputValue) {
-  if (typeof removedTag !== 'string') {
-    return
-  }
-  try {
-    const upd: Record<number, string[]> = {}
-
-    await db.redditItems
-      .where('_id')
-      .anyOf(ids)
-      .modify((item) => {
-        const prevTags = item._tags || []
-        item._tags = prevTags.filter(tag => tag !== removedTag)
-        upd[item._id] = item._tags
-      })
-
-    onUpdate?.(upd)
-  }
-  catch (error) {
-    console.error('Update tags', error)
+  if (typeof removedTag === 'string') {
+    removeTag(ids, removedTag, onUpdate)
   }
 }
 </script>
