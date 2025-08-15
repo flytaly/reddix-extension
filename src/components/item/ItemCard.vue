@@ -2,16 +2,12 @@
 import type { WrappedItem } from '~/logic/wrapped-item'
 import MediaPreview from '~/components/item/MediaPreview.vue'
 import Thumbnail from '~/components/item/Thumbnail.vue'
-import Edit from '~/components/tags/Edit.vue'
-import { Popover, PopoverContent, PopoverTrigger } from '~/components/ui/popover'
 
 const props = defineProps<{
   item: WrappedItem
-  onTagsUpdate: (updated: Record<number, string[]>) => void
 }>()
 
 defineEmits<{
-  (e: 'tag-click', tag: string): void
   (e: 'author-click', author: string): void
   (e: 'subreddit-click', subreddit: string): void
 }>()
@@ -125,28 +121,8 @@ function expandPostOrPreview(event: Event) {
       </div>
 
       <!-- Footer -->
-      <footer class="item-footer dimmed-1 flex items-center gap-2 pt-0.5 text-xs">
-        <ul class="mr-auto flex flex-wrap gap-1">
-          <Popover>
-            <PopoverTrigger as-child>
-              <button class="btn mr-1 h-3 w-3 shrink-0" title="Edit tags">
-                <PhTagDuotone />
-              </button>
-            </PopoverTrigger>
-            <PopoverContent class="w-max p-1">
-              <Edit
-                :item="item"
-                :on-tags-update="onTagsUpdate"
-              />
-            </PopoverContent>
-          </Popover>
-          <li v-for="tag in item.tags" :key="tag">
-            <a href="#" class="dimmed-2 break-all" :data-tag="tag" @click.prevent="$emit('tag-click', tag)">
-              #{{ tag }}
-            </a>
-          </li>
-        </ul>
-
+      <footer class="item-footer flex items-center gap-2 pt-0.5 text-xs">
+        <slot name="footer-start" />
         <slot name="footer-end" />
       </footer>
     </div>

@@ -5,6 +5,7 @@ import Checkbox from 'primevue/checkbox'
 import { useToast } from 'primevue/usetoast'
 import ItemCard from '~/components/item/ItemCard.vue'
 import ItemCardCompact from '~/components/item/ItemCardCompact.vue'
+import ItemTags from '~/components/item/ItemTags.vue'
 import VirtualList from '~/components/item/VirtualList.vue'
 import { Popover, PopoverContent } from '~/components/ui/popover'
 import { updateItem } from '~/logic/db/mutations'
@@ -135,6 +136,15 @@ watch(
               />
             </div>
           </template>
+          <template #footer-start>
+            <div class="ml-1">
+              <ItemTags
+                :item="item"
+                @tags-update="onTagsUpdate"
+                @tag-click="setTag"
+              />
+            </div>
+          </template>
           <template #end>
             <button class="btn flex h-full items-center" title="Actions" aria-haspopup="true" @click="toggleActionMenu">
               <ph-dots-three-vertical class="h-4 w-auto xs:h-5" />
@@ -145,11 +155,16 @@ watch(
         <ItemCard
           v-else
           :item="item"
-          @tag-click="setTag"
-          @tags-update="onTagsUpdate"
           @subreddit-click="setSubreddit"
           @author-click="setAuthor"
         >
+          <template #footer-start>
+            <ItemTags
+              :item="item"
+              @tags-update="onTagsUpdate"
+              @tag-click="setTag"
+            />
+          </template>
           <template #footer-end>
             <button class="btn ml-2" title="Actions" aria-haspopup="true" @click="toggleActionMenu">
               <ph-dots-three-vertical class="h-4 w-auto" />

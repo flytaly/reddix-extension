@@ -88,6 +88,12 @@ function toggle() {
         </button>
       </div>
 
+      <!-- Footer -->
+      <footer class="item-footer flex items-center gap-2 pt-0.5 text-xs">
+        <slot name="footer-start" />
+        <slot name="footer-end" />
+      </footer>
+
       <!-- Menu Slot -->
       <slot class="item-end" name="end" />
     </div>
@@ -116,13 +122,16 @@ article {
   justify-content: start;
   grid-template-columns: auto 1fr auto;
   gap: 0.125rem 0.5rem;
-  grid-template-areas: 'thumbnail header end';
+  grid-template-areas:
+    'thumbnail header end'
+    'footer footer end';
 }
 
 .item__with-body {
   grid-template-areas:
     'thumbnail header end'
-    'body      body   end';
+    'body      body   end'
+    'footer footer end';
 }
 
 .item-thumbnail {
@@ -135,6 +144,10 @@ article {
 
 .item-body {
   grid-area: body;
+}
+
+.item-footer {
+  grid-area: footer;
 }
 
 .item-end {
