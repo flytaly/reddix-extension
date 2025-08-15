@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import type { WrappedItem } from '~/logic/wrapped-item'
+import { Popover, PopoverContent, PopoverTrigger } from '~/components/ui/popover'
 
 const props = defineProps<{
   item: WrappedItem
   onUpdate: (item: WrappedItem) => Promise<void>
-  onAddTags?: ((e: MouseEvent) => void) | null | false
+  onTagsUpdate?: (updated: Record<number, string[]>) => void
 }>()
 
 const emit = defineEmits<{
@@ -37,11 +38,21 @@ async function updateItem() {
 
 <template>
   <ul class="flex flex-col gap-4 p-3 text-sm" :data-reddit-name="item.redditId">
-    <li v-if="onAddTags">
-      <button class="flex w-full gap-1 whitespace-nowrap" title="Edit tags" @click="onAddTags">
-        <PhTagDuotone class="shrink-0" />
-        Edit tags
-      </button>
+    <li>
+      <Popover>
+        <PopoverTrigger as-child>
+          <button class="flex w-full gap-1 whitespace-nowrap" title="Edit tags">
+            <PhTagDuotone class="shrink-0" />
+            Edit tags
+          </button>
+        </PopoverTrigger>
+        <PopoverContent class="w-max">
+          <Edit
+            :item="item"
+            :on-tags-update="onTagsUpdate"
+          />
+        </PopoverContent>
+      </Popover>
     </li>
 
     <li>

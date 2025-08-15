@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import type { ReferenceElement } from 'reka-ui'
 import type { WrappedItem } from '~/logic/wrapped-item'
 import Checkbox from 'primevue/checkbox'
 import { useToast } from 'primevue/usetoast'
-import ActionMenu from '~/components/item/ActionMenu.vue'
 import ItemCard from '~/components/item/ItemCard.vue'
 import ItemCardCompact from '~/components/item/ItemCardCompact.vue'
 import VirtualList from '~/components/item/VirtualList.vue'
-import EditItemTags from '~/components/tags/EditItemTags.vue'
+import { Popover, PopoverContent } from '~/components/ui/popover'
 import { updateItem } from '~/logic/db/mutations'
 import { setAuthor, setSubreddit, setTag } from '~/logic/search-store'
 import { getUserInfo } from '~/reddit/me'
@@ -64,11 +64,16 @@ const selectedItem = computed(() => {
   return props.items.find(item => item.redditId === redditId.value)
 })
 
-const actionMenuRef = ref()
+const actionMenuRef = ref<ReferenceElement>()
+const actionMenuOpened = ref(false)
+
 function toggleActionMenu(event: Event) {
   const li = (event.currentTarget as HTMLElement).closest('[data-reddit-name]') as HTMLElement | null
   redditId.value = li?.dataset.redditName || ''
-  actionMenuRef.value.toggle(event)
+  actionMenuOpened.value = !actionMenuOpened.value
+  if (actionMenuOpened.value) {
+    actionMenuRef.value = event.currentTarget as HTMLElement
+  }
 }
 
 const tagMenuRef = ref()
@@ -162,22 +167,24 @@ watch(
     </template>
   </VirtualList>
 
-  <OverlayPanel
-    ref="actionMenuRef"
-    pt:root:class="z-100"
-    pt:content:class="p-0 bg-surface-100 dark:bg-surface-800 rounded-sm ring-1 ring-surface-400 dark:ring-surface-500"
+  <Popover
+    :open="actionMenuOpened"
+    @update:open="(isOpen) => actionMenuOpened = isOpen"
   >
-    <ActionMenu
-      v-if="selectedItem"
-      :item="selectedItem"
-      @add-tags="toggleTagMenu"
-      @update="onUpdate"
-      @delete="() => deleteItem(selectedItem?.dbId)"
-      @unsave="() => unsaveOnReddit(selectedItem?.redditId)"
+    <PopoverAnchor
+      :reference="actionMenuRef"
     />
-  </OverlayPanel>
-
-  <OverlayPanel ref="tagMenuRef" class="px-0 py-0" :pt="{ content: 'p-2' }">
-    <EditItemTags v-if="selectedItem" :item="selectedItem" @exit="onTagsUpdate" />
-  </OverlayPanel>
+    <PopoverContent
+      class="p-0 w-max bg-popover rounded-sm ring-1 ring-surface-400 dark:ring-surface-500"
+    >
+      <ActionMenu
+        v-if="selectedItem"
+        :item="selectedItem"
+        @tags-update="onTagsUpdate"
+        @update="onUpdate"
+        @delete="() => deleteItem(selectedItem?.dbId)"
+        @unsave="() => unsaveOnReddit(selectedItem?.redditId)"
+      />
+    </PopoverContent>
+  </Popover>
 </template>
