@@ -76,13 +76,6 @@ function toggleActionMenu(event: Event) {
   }
 }
 
-const tagMenuRef = ref()
-function toggleTagMenu(event: Event) {
-  const li = (event.currentTarget as HTMLElement).closest('[data-reddit-name]') as HTMLElement | null
-  redditId.value = li?.dataset.redditName || ''
-  tagMenuRef.value.toggle(event)
-}
-
 const virualList = ref<InstanceType<typeof VirtualList>>()
 
 watch(
@@ -152,8 +145,8 @@ watch(
         <ItemCard
           v-else
           :item="item"
-          @add-tags="toggleTagMenu"
           @tag-click="setTag"
+          @tags-update="onTagsUpdate"
           @subreddit-click="setSubreddit"
           @author-click="setAuthor"
         >

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { WrappedItem } from '~/logic/wrapped-item'
+import Edit from '~/components/tags/Edit.vue'
 import { Popover, PopoverContent, PopoverTrigger } from '~/components/ui/popover'
 
 const props = defineProps<{
