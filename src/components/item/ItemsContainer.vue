@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FunctionalComponent } from 'vue'
 import type { WrappedItem } from '~/logic/wrapped-item'
-import { useToast } from 'primevue/usetoast'
+import { toast } from 'vue-sonner'
 import PhList from '~icons/ph/list'
 import PhNotePencil from '~icons/ph/note-pencil'
 import PhRows from '~icons/ph/rows'
@@ -26,8 +26,6 @@ let lastQueryId = 0
 
 onMounted(() => loadMore())
 
-const toast = useToast()
-
 async function loadMore(loadAll?: boolean) {
   if (isEnd.value)
     return
@@ -46,7 +44,7 @@ async function loadMore(loadAll?: boolean) {
     }
   }
   catch (error) {
-    toast.add({ severity: 'error', summary: 'DB Error', detail: (error as any)?.message || '', life: 3000 })
+    toast.error('DB Error', { description: (error as any)?.message || '' })
     console.error(error)
   }
   isLoading.value = false
@@ -110,7 +108,7 @@ async function markUnsaved(itemId: number) {
 async function onItemUpdate(item: WrappedItem) {
   const [resp, err] = await getItemsInfo([item.redditId])
   if (err) {
-    toast.add({ severity: 'error', summary: 'Error', detail: err, life: 3000 })
+    toast.error('Error', { description: err || '' })
     return
   }
   const updated = resp?.data.children.find(u => u.data.name === item.redditId)
@@ -120,7 +118,7 @@ async function onItemUpdate(item: WrappedItem) {
     await updateItem(item.dbId, updated.data)
   }
   catch (error) {
-    toast.add({ severity: 'error', summary: 'Error', detail: error, life: 3000 })
+    toast.error('Error', { description: error || '' })
   }
 
   items.value = items.value?.map((oldItem) => {
@@ -131,7 +129,7 @@ async function onItemUpdate(item: WrappedItem) {
     return oldItem
   })
 
-  toast.add({ severity: 'info', summary: 'Info', detail: 'Item updated', life: 1000 })
+  toast.info('Item updated')
 }
 
 const viewOptions: { iconCmp: FunctionalComponent, view: ViewType, title: string }[] = [

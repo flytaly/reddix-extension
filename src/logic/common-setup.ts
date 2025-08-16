@@ -10,6 +10,7 @@ import pkg from '~/../package.json'
 import { setupTheme } from '~/logic/theme'
 import { router } from '~/options/routes'
 import PrimePreset from '~/styles/presets/wind'
+import 'vue-sonner/style.css'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 
 export function setupApp(app: App, appContext: { context?: string } = {}) {

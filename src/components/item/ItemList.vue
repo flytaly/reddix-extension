@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ReferenceElement } from 'reka-ui'
 import type { WrappedItem } from '~/logic/wrapped-item'
-import { useToast } from 'primevue/usetoast'
+import { toast } from 'vue-sonner'
 import ItemCard from '~/components/item/ItemCard.vue'
 import ItemCardCompact from '~/components/item/ItemCardCompact.vue'
 import ItemTags from '~/components/item/ItemTags.vue'
@@ -34,20 +34,18 @@ function deleteItem(id?: number) {
   props.onDelete([id])
 }
 
-const toast = useToast()
-
 async function unsaveOnReddit(name?: string) {
   if (!name)
     return
   const [userInfo, err] = await getUserInfo()
   const modhash = userInfo?.data?.modhash
   if (err || !modhash) {
-    toast.add({ severity: 'error', summary: 'Error', detail: err, life: 3000 })
+    toast.error('Error', { description: err || '' })
     return
   }
   const unsaveError = await unsave(name, modhash)
   if (unsaveError) {
-    toast.add({ severity: 'error', summary: 'Error', detail: unsaveError, life: 3000 })
+    toast.error('Error', { description: unsaveError })
     return
   }
   const item = props.items.find(item => item.redditId === name)
@@ -55,7 +53,7 @@ async function unsaveOnReddit(name?: string) {
     return
   await updateItem(item.dbId, { saved: false })
   await props.onUnsave(item.dbId)
-  toast.add({ severity: 'info', summary: 'Info', detail: 'Unsaved the item', life: 1000 })
+  toast.info('Unsaved the item')
 }
 
 const redditId = ref('')

@@ -109,6 +109,9 @@ function showEdit() {
 
     <div class="mt-2">
       <FetchButton :is-fetching="state.isFetching" @fetch-items="fetchPosts" />
+      <div v-if="state.isFetching && state.loaded > 0" class="text-right text-accent">
+        Loaded {{ state.loaded }} items ({{ state.savedNew }} new)
+      </div>
     </div>
   </article>
 </template>
