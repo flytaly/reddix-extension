@@ -26,9 +26,6 @@ importers:
       lucide-vue-next:
         specifier: ^0.539.0
         version: 0.539.0(vue@3.5.13(typescript@5.8.3))
-      primevue:
-        specifier: ^3.52.0
-        version: 3.52.0(vue@3.5.13(typescript@5.8.3))
       reka-ui:
         specifier: ^2.4.1
         version: 2.4.1(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3))
@@ -6015,11 +6012,6 @@ packages:
   pretty-bytes@6.1.1:
     resolution: {integrity: sha512-mQUvGU6aUFQ+rNvTIAcZuWGRT9a6f6Yrg9bHs4ImKF+HZCEK+plBvnAZYSIQztknZF2qnzNtr6F8s0+IuptdlQ==}
     engines: {node: ^14.13.1 || >=16.0.0}
-
-  primevue@3.52.0:
-    resolution: {integrity: sha512-HLOVP5YI0ArFKUhIyfZsWmTNMaBYNCBWC/3DYvdd/Po4LY5/WXf7yIYvArE2q/3OuwSXJXvjlR8UNQeJYRSQog==}
-    peerDependencies:
-      vue: ^3.0.0
 
   process-nextick-args@2.0.1:
     resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}
@@ -14351,10 +14343,6 @@ snapshots:
   prelude-ls@1.2.1: {}
 
   pretty-bytes@6.1.1: {}
-
-  primevue@3.52.0(vue@3.5.13(typescript@5.8.3)):
-    dependencies:
-      vue: 3.5.13(typescript@5.8.3)
 
   process-nextick-args@2.0.1: {}
 
