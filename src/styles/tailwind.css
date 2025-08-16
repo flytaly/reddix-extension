@@ -288,8 +288,8 @@
   --muted-foreground: oklch(0.709 0.01 56.259);
   --accent: var(--color-primary-400);
   --accent-foreground: var(--color-surface-950);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --destructive: oklch(70.6% 0.1441 25.7);
+  --destructive-foreground: oklch(36% 0.1285 25.3);
   --border: oklch(0.268 0.007 34.298);
   --input: var(--color-surface-600);
   --ring: var(--color-primary-400);
