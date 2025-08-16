@@ -38,6 +38,7 @@ async function deleteItems() {
     <Checkbox
       v-model="checkedAll"
       title="select all"
+      class="rounded"
       @click="checkAllHandler"
     />
     <span class="ml-2"> selected {{ checkedIds?.length || 0 }} / {{ items?.length }}</span>

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import type { ReferenceElement } from 'reka-ui'
 import type { WrappedItem } from '~/logic/wrapped-item'
-import Checkbox from 'primevue/checkbox'
 import { useToast } from 'primevue/usetoast'
 import ItemCard from '~/components/item/ItemCard.vue'
 import ItemCardCompact from '~/components/item/ItemCardCompact.vue'
 import ItemTags from '~/components/item/ItemTags.vue'
 import VirtualList from '~/components/item/VirtualList.vue'
+import { Checkbox } from '~/components/ui/checkbox'
 import { Popover, PopoverContent } from '~/components/ui/popover'
 import { updateItem } from '~/logic/db/mutations'
 import { setAuthor, setSubreddit, setTag } from '~/logic/search-store'
@@ -26,7 +26,7 @@ const emit = defineEmits<{
   (e: 'scroll-end'): void
 }>()
 
-const checked = defineModel<number[]>('checked')
+const checked = defineModel<number[]>('checked', { default: [] })
 
 function deleteItem(id?: number) {
   if (!id)
@@ -92,6 +92,14 @@ watch(
     checked.value = []
   },
 )
+
+function handleCheck(dbId: number, state: boolean | 'indeterminate') {
+  if (state) {
+    checked.value = [...checked.value, dbId]
+    return
+  }
+  checked.value = checked.value.filter(id => id !== dbId)
+}
 </script>
 
 <template>
@@ -119,20 +127,12 @@ watch(
           @author-click="setAuthor"
         >
           <template #start>
-            <div class="relative flex h-full items-center">
+            <div class="flex h-full items-center justify-center px-2">
               <Checkbox
-                v-model="checked"
-                :pt="{
-                  root: ({ context }) => ({
-                    class:
-                      `pl-2 pr-2 flex h-full items-center justify-end ${
-                        context.checked
-                          ? 'bg-primary-100 dark:bg-primary-800 hover:bg-primary-300 dark:hover:bg-primary-600'
-                          : 'hover:bg-primary-100 dark:hover:bg-primary-700'}`,
-                  }),
-                }"
-                name="item"
-                :value="item.dbId"
+                class="rounded"
+                :model-value="checked.includes(item.dbId)"
+                :name="item.dbId.toString()"
+                @update:model-value="handleCheck(item.dbId, $event)"
               />
             </div>
           </template>
