@@ -2,6 +2,7 @@
 import type { WrappedItem } from '~/logic/wrapped-item'
 import MediaPreview from '~/components/item/MediaPreview.vue'
 import Thumbnail from '~/components/item/Thumbnail.vue'
+import { Popover, PopoverContent } from '~/components/ui/popover'
 
 const props = defineProps<{
   item: WrappedItem
@@ -26,23 +27,23 @@ function isOverflowen(element: HTMLElement) {
   return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth
 }
 
-const overlayRef = ref()
+const popoverOpened = ref<boolean>(false)
 
-const togglePreview = computed(() => {
+const openPopover = computed(() => {
   if (!props.item.media.video && !props.item.media.source)
     return null
 
-  return (event: Event) => {
-    overlayRef.value.toggle(event)
+  return () => {
+    popoverOpened.value = true
   }
 })
 
-function expandPostOrPreview(event: Event) {
+function expandPostOrPreview() {
   if (overflowen.value || expanded.value) {
     expanded.value = !expanded.value
     return
   }
-  togglePreview.value?.(event)
+  popoverOpened.value = true
 }
 </script>
 
@@ -51,7 +52,7 @@ function expandPostOrPreview(event: Event) {
     <!-- Toggle Bar -->
     <div class="flex h-full w-4 flex-col xs:w-6">
       <button
-        v-if="togglePreview || overflowen || expanded"
+        v-if="openPopover || overflowen || expanded"
         class="btn h-full w-full group-hover:bg-surface-100 hover:group-hover:bg-surface-200 dark:group-hover:bg-surface-800 dark:hover:group-hover:bg-surface-700"
         title="Expand or Collapse the item"
         @click="expandPostOrPreview"
@@ -59,41 +60,50 @@ function expandPostOrPreview(event: Event) {
     </div>
 
     <div class="item w-full py-2 pl-1 pr-0.5 xs:pr-2" :class="{ 'item__with-body': item.body }">
-      <!-- Thumbnail  --->
-      <Thumbnail class="item-thumbnail" :media="item.media" :item="item" @click="togglePreview" />
+      <Popover
+        :open="popoverOpened"
+        modal
+        @update:open="(isOpen) => popoverOpened = isOpen"
+      >
+        <!-- Thumbnail  --->
+        <PopoverAnchor>
+          <Thumbnail class="item-thumbnail" :media="item.media" :item="item" @click="openPopover" />
+        </PopoverAnchor>
 
-      <!-- Header  --->
-      <header class="item-header">
-        <div class="inline-flex justify-between gap-2 text-xs">
-          <span>
-            <span class="dimmed-2">{{ item.itemType }}</span>
-            <span class="dimmed-2"> in </span>
-            <a class="dimmed-1" href="#" @click.prevent="$emit('subreddit-click', item.item.subreddit)">{{
-              item.item.subreddit_name_prefixed
-            }}</a>
-            <span class="dimmed-2 hidden xs:inline"> by </span>
-            <a class="dimmed-1 hidden xs:inline" href="#" @click.prevent="$emit('author-click', item.item.author)">u/{{ item.item.author }}</a>
-          </span>
-          <a :href="item.fullLink">
-            <ph-arrow-square-out />
-          </a>
-          <span class="dimmed-2 ml-auto">[{{ new Date(item.item.created * 1000).toLocaleDateString() }}]</span>
-        </div>
+        <!-- Header  --->
+        <header class="item-header">
+          <div class="inline-flex justify-between gap-2 text-xs">
+            <span>
+              <span class="dimmed-2">{{ item.itemType }}</span>
+              <span class="dimmed-2"> in </span>
+              <a class="dimmed-1" href="#" @click.prevent="$emit('subreddit-click', item.item.subreddit)">{{
+                item.item.subreddit_name_prefixed
+              }}</a>
+              <span class="dimmed-2 hidden xs:inline"> by </span>
+              <a class="dimmed-1 hidden xs:inline" href="#" @click.prevent="$emit('author-click', item.item.author)">u/{{ item.item.author }}</a>
+            </span>
+            <a :href="item.fullLink">
+              <ph-arrow-square-out />
+            </a>
+            <span class="dimmed-2 ml-auto">[{{ new Date(item.item.created * 1000).toLocaleDateString() }}]</span>
+          </div>
 
-        <h4 class="wrap-anywhere">
-          <a
-            class="line-clamp-1 gap-2 text-sm font-medium text-dark dark:text-light sm:line-clamp-none sm:text-base"
-            :href="item.fullLink"
-            :title="item.title"
-          >
-            {{ item.title }}
-          </a>
-        </h4>
-
-        <OverlayPanel ref="overlayRef" pt:content:class="p-0">
-          <MediaPreview :item="item" />
-        </OverlayPanel>
-      </header>
+          <h4 class="wrap-anywhere">
+            <a
+              class="line-clamp-1 gap-2 text-sm font-medium text-dark dark:text-light sm:line-clamp-none sm:text-base"
+              :href="item.fullLink"
+              :title="item.title"
+            >
+              {{ item.title }}
+            </a>
+          </h4>
+        </header>
+        <PopoverContent>
+          <div class="bg-popover w-min">
+            <MediaPreview :item="item" />
+          </div>
+        </PopoverContent>
+      </Popover>
 
       <!-- Body -->
       <div
