@@ -89,7 +89,7 @@ function toggle() {
       </div>
 
       <!-- Footer -->
-      <footer class="item-footer flex items-center gap-2 pt-0.5 text-xs">
+      <footer class="item-footer flex items-center gap-2 text-xs">
         <slot name="footer-start" />
         <slot name="footer-end" />
       </footer>

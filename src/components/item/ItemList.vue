@@ -136,7 +136,10 @@ watch(
               />
             </div>
           </template>
-          <template #footer-start>
+          <template
+            v-if="item.tags?.length"
+            #footer-start
+          >
             <div class="ml-1">
               <ItemTags
                 :item="item"
