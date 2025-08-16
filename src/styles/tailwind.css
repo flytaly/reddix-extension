@@ -10,7 +10,8 @@
   --breakpoint-xs: 440px;
   --breakpoint-sm: 670px;
   --breakpoint-md: 960px;
-  --breakpoint-lg: 1440px;
+  --breakpoint-lg: 1340px;
+  --breakpoint-xl: 1550px; /* after this bp there should be enough space for main-column + sidebar with tags  */
 
   --spacing-main-column: 80rem;
 

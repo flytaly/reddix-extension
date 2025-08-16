@@ -34,7 +34,7 @@ async function deleteItems() {
 </script>
 
 <template>
-  <div class="mx-auto mb-2 mr-auto flex w-full max-w-main-column flex-wrap items-center gap-x-2 px-2 pl-2">
+  <div class="mx-auto mb-2 mr-auto flex w-full max-w-main-column flex-wrap items-center gap-x-2 px-2 pl-2 xl:pl-0">
     <Checkbox
       v-model="checkedAll"
       title="select all"
