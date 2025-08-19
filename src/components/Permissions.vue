@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { Alert } from '~/components/ui/alert'
+import { Button } from '~/components/ui/button'
+
 const redditOrigin = 'https://*.reddit.com/*'
 
 const permissionsGranted = ref(true)
@@ -26,11 +29,13 @@ async function askPermissions() {
 
 <template>
   <div v-if="!permissionsGranted" class="flex gap-2 w-full justify-end items-center ml-auto">
-    <Message severity="warn">
-      <div class="flex items-center gap-4 pr-2">
-        The extension doesn't have permission to access Reddit.
-        <Button label="Grant permissions" severity="warning" size="small" @click="askPermissions" />
-      </div>
-    </Message>
+    <Alert class="ring ring-destructive">
+      <AlertTitle>The extension doesn't have permission to access Reddit</AlertTitle>
+      <AlertDescription>
+        <Button size="sm" severity="warning" @click="askPermissions">
+          Grant permissions
+        </Button>
+      </AlertDescription>
+    </Alert>
   </div>
 </template>

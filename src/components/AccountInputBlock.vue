@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import FetchButton from '~/components/FetchButton.vue'
+import { Input } from '~/components/ui/input'
 import { userName } from '~/logic/browser-storage'
 import { state } from '~/logic/stores'
 import { sendMessage } from '~/messages'
@@ -67,7 +68,7 @@ function showEdit() {
 </script>
 
 <template>
-  <article class="min-w-48 max-w-60">
+  <article class="min-w-48 max-w-60 mx-auto">
     <div v-if="!showEdit()" class="flex w-full items-center gap-2 text-surface-400">
       <PhRedditLogoDuotone class="h-4 w-4 text-surface-400 dark:text-surface-400" />
       <span>{{ userName }}</span>
@@ -82,14 +83,13 @@ function showEdit() {
           <PhRedditLogoFill
             class="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-surface-400 dark:text-surface-400"
           />
-          <InputText
+          <Input
             v-model="userName"
             type="text"
-            size="small"
             placeholder="username"
             class="w-full pl-8 pr-8"
             :disabled="state.isFetching || fetchingUsername"
-            :class="{ error: status || state.fetchError }"
+            :class="{ 'text-error-dark dark:text-error-light': status || state.fetchError }"
             @input="isEdit = true"
           />
           <button
@@ -109,12 +109,9 @@ function showEdit() {
 
     <div class="mt-2">
       <FetchButton :is-fetching="state.isFetching" @fetch-items="fetchPosts" />
+      <div v-if="state.isFetching && state.loaded > 0" class="text-right text-accent">
+        Loaded {{ state.loaded }} items ({{ state.savedNew }} new)
+      </div>
     </div>
   </article>
 </template>
-
-<style lang="postcss" scoped>
-.error {
-  @apply ring-red-600 dark:ring-red-300;
-}
-</style>

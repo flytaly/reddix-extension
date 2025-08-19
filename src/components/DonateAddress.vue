@@ -13,10 +13,10 @@ const showQR = ref(false)
 
 <template>
   <b class="mb-1 text-sm">{{ name }}</b>
-  <div class="rounded-sm border border-surface-400 px-1 py-1 text-sm dark:border-surface-600">
+  <div class="rounded-xs border border-surface-400 px-1 py-1 text-sm dark:border-surface-600">
     <div class="flex items-center">
       <span class="mr-4 break-all">{{ address }}</span>
-      <button class="btn ml-auto flex-shrink-0" title="copy the address" @click="copy(address)">
+      <button class="btn ml-auto shrink-0" title="copy the address" @click="copy(address)">
         <ph-copy-simple-light v-if="!copied" class="h-5 w-5" />
         <ph-check-fat-duotone v-else class="h-5 w-5 text-green-700 dark:text-green-300" />
       </button>

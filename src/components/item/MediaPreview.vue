@@ -24,7 +24,10 @@ onMounted(() => {
         <PhSpinnerGap class="m-auto h-8 w-8 animate-spin" />
       </div>
       <img :src="media.source.url" alt="preview" class="limit aspect-auto" @load="overlayImgLoading = 'loaded'">
-      <a v-if="item.isGallery" :href="item.fullLink" class="link whitespace-nowrap">
+      <a
+        v-if="item.isGallery" :href="item.fullLink"
+        class="absolute bottom-0 right-0 flex items-center gap-1 rounded-tl bg-surface-50/95 px-2 text-center text-base text-dark hover:text-primary-400 dark:bg-surface-900/95 dark:text-light whitespace-nowrap"
+      >
         <PhImagesSquare />
         view full gallery
       </a>
@@ -46,11 +49,5 @@ onMounted(() => {
 .limit {
   max-width: 50vw;
   max-height: 50vh;
-}
-
-.link {
-  @apply absolute bottom-0 right-0 flex items-center gap-1 rounded-tl
-         bg-surface-50 bg-opacity-95 px-2 text-center
-         text-base text-dark hover:text-primary-400 dark:bg-surface-900 dark:bg-opacity-95 dark:text-light;
 }
 </style>

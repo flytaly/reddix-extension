@@ -13,6 +13,7 @@ export default antfu({
     'public',
     '**/public/**',
     'src/styles/presets/**',
+    'src/components/ui/',
   ],
 }, {
   rules: {

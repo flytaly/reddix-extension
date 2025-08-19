@@ -28,7 +28,7 @@ function toggle() {
       <div class="flex h-full w-4 flex-col xs:w-6">
         <button
           v-if="expandable"
-          class="btn h-full w-full group-hover:bg-surface-100 group-hover:hover:bg-surface-200 group-hover:dark:bg-surface-800 group-hover:hover:dark:bg-surface-700"
+          class="btn h-full w-full group-hover:bg-surface-100 hover:group-hover:bg-surface-200 dark:group-hover:bg-surface-800 dark:hover:group-hover:bg-surface-700"
           title="Expand or Collapse the item"
           @click="toggle"
         />
@@ -88,6 +88,12 @@ function toggle() {
         </button>
       </div>
 
+      <!-- Footer -->
+      <footer class="item-footer flex items-center gap-2 text-xs">
+        <slot name="footer-start" />
+        <slot name="footer-end" />
+      </footer>
+
       <!-- Menu Slot -->
       <slot class="item-end" name="end" />
     </div>
@@ -95,6 +101,8 @@ function toggle() {
 </template>
 
 <style lang="postcss" scoped>
+@reference "../../styles/tailwind.css";
+
 article {
   @apply max-w-full overflow-hidden text-ellipsis bg-surface-0 text-sm
          ring-1 ring-surface-200 hover:z-10
@@ -114,13 +122,16 @@ article {
   justify-content: start;
   grid-template-columns: auto 1fr auto;
   gap: 0.125rem 0.5rem;
-  grid-template-areas: 'thumbnail header end';
+  grid-template-areas:
+    'thumbnail header end'
+    'footer footer end';
 }
 
 .item__with-body {
   grid-template-areas:
     'thumbnail header end'
-    'body      body   end';
+    'body      body   end'
+    'footer footer end';
 }
 
 .item-thumbnail {
@@ -133,6 +144,10 @@ article {
 
 .item-body {
   grid-area: body;
+}
+
+.item-footer {
+  grid-area: footer;
 }
 
 .item-end {

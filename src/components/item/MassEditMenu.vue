@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type { WrappedItem } from '~/logic/wrapped-item'
-import AddTagsToItems from '~/components/tags/AddTagsToItems.vue'
-import RemoveTagsToItems from '~/components/tags/RemoveTagsToItems.vue'
+import Add from '~/components/tags/Add.vue'
+import { Button } from '~/components/ui/button'
+import { Checkbox } from '~/components/ui/checkbox'
+import { Popover, PopoverContent, PopoverTrigger } from '~/components/ui/popover'
 
 const props = defineProps<{
   items: WrappedItem[]
@@ -10,101 +12,104 @@ const props = defineProps<{
   onTagsUpdate: (updated: Record<number, string[]>) => void
 }>()
 
-const checked = defineModel<number[]>()
+const checkedIds = defineModel<number[]>()
+const checkedAll = ref<boolean | 'indeterminate'>(false)
 
-const selectAll = ref<true | false | null>(null)
+function checkAllHandler() {
+  checkedAll.value = !checkedAll.value
+  checkedIds.value = checkedAll.value ? props.items.map(it => it.dbId) : []
+}
 
-watch(selectAll, (val) => {
-  const len = checked.value?.length || 0
-  if ((val === null && len) || (val === false && len === props.items.length))
-    checked.value = []
-  else if (val && len !== props.items.length)
-    checked.value = props.items.map(it => it.dbId)
-})
-
-watch(checked, (val) => {
-  const len = val?.length || 0
-  if (len === 0 && selectAll.value !== null)
-    selectAll.value = null
-  else if (len === props.items.length && !selectAll.value)
-    selectAll.value = true
-  else if (len > 0 && len < props.items.length && selectAll.value !== false)
-    selectAll.value = false
+watch(checkedIds, (ids) => {
+  checkedAll.value = !ids?.length ? false : ids.length === props.items.length ? true : 'indeterminate'
 })
 
 const confirmDeletion = ref(false)
 
 async function deleteItems() {
-  await props.onDelete(checked.value || [])
-  checked.value = []
+  await props.onDelete(checkedIds.value || [])
+  checkedIds.value = []
   confirmDeletion.value = false
-}
-
-const tagsOverlayRef = ref()
-const tagsAction = ref<'add' | 'remove'>('add')
-
-const selectedItems = shallowRef<WrappedItem[]>([])
-function toggleAddTags(event: Event) {
-  selectedItems.value = props.items.filter(it => checked.value?.includes(it.dbId))
-  tagsAction.value = 'add'
-  tagsOverlayRef.value.toggle(event)
-}
-function toggleRemoveTags(event: Event) {
-  selectedItems.value = props.items.filter(it => checked.value?.includes(it.dbId))
-  tagsAction.value = 'remove'
-  tagsOverlayRef.value.toggle(event)
 }
 </script>
 
 <template>
-  <div class="mx-auto mb-2 mr-auto flex w-full max-w-main-column flex-wrap items-center gap-x-2 px-2 pl-2">
-    <TriStateCheckbox v-model="selectAll" title="select all" aria-label="select all" />
-    <span class="ml-2"> selected {{ checked?.length || 0 }} / {{ items?.length }}</span>
+  <div class="mx-auto mb-2 mr-auto flex w-full max-w-main-column flex-wrap items-center gap-x-2 px-2 pl-2 xl:pl-0">
+    <Checkbox
+      v-model="checkedAll"
+      title="select all"
+      class="rounded"
+      @click="checkAllHandler"
+    />
+    <span class="ml-2"> selected {{ checkedIds?.length || 0 }} / {{ items?.length }}</span>
     <slot />
     <Button
       v-if="!confirmDeletion"
-      text
-      class="flex min-w-max gap-0 px-2 underline decoration-dashed underline-offset-2 disabled:text-surface-500"
-      :disabled="!checked?.length"
+      variant="ghost"
+      size="sm"
+      :disabled="!checkedIds?.length"
       @click="confirmDeletion = true"
     >
       Delete
     </Button>
     <div v-else class="mr-2 flex items-center">
       Delete selected items?
-      <Button text @click="deleteItems">
+      <Button
+        variant="ghost"
+        size="sm"
+        text @click="deleteItems"
+      >
         Yes
       </Button>
       <span> / </span>
-      <Button text @click="confirmDeletion = false">
+      <Button
+        variant="ghost"
+        size="sm"
+        @click="confirmDeletion = false"
+      >
         No
       </Button>
     </div>
-    <Button
-      text
-      class="flex min-w-max gap-0 px-2 underline decoration-dashed underline-offset-2 disabled:text-surface-500"
-      :disabled="!checked?.length"
-      @click="toggleAddTags"
-    >
-      + Add tags
-    </Button>
-    <Button
-      text
-      class="flex min-w-max gap-0 px-2 underline decoration-dashed underline-offset-2 disabled:text-surface-500"
-      :disabled="!checked?.length"
-      @click="toggleRemoveTags"
-    >
-      - Remove tags
-    </Button>
-  </div>
-  <OverlayPanel ref="tagsOverlayRef" class="px-0 py-0" pt:content:class="p-2">
-    <AddTagsToItems v-if="tagsAction === 'add' && selectedItems" :items="selectedItems" @exit="onTagsUpdate" />
-    <RemoveTagsToItems
-      v-else-if="tagsAction === 'remove' && selectedItems"
-      :items="selectedItems"
-      @exit="onTagsUpdate"
-    />
-  </OverlayPanel>
-</template>
 
-<style lang="postss" scoped></style>
+    <Popover>
+      <PopoverTrigger as-child>
+        <Button
+          variant="ghost"
+          size="sm"
+          :disabled="!checkedIds?.length"
+        >
+          + Add tags
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        class="min-w-min min-h-min p-0"
+      >
+        <Add
+          :ids="checkedIds || []"
+          @update="onTagsUpdate"
+        />
+      </PopoverContent>
+    </Popover>
+
+    <Popover>
+      <PopoverTrigger as-child>
+        <Button
+          variant="ghost"
+          size="sm"
+          :disabled="!checkedIds?.length"
+        >
+          - Remove tags
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        class="min-w-min min-h-min p-0"
+      >
+        <Remove
+          :ids="checkedIds || []"
+          :items="items"
+          @update="onTagsUpdate"
+        />
+      </PopoverContent>
+    </Popover>
+  </div>
+</template>

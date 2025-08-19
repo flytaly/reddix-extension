@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import type { FunctionalComponent } from 'vue'
-import type { SearchQuery } from '~/logic/db/queries'
 import type { WrappedItem } from '~/logic/wrapped-item'
-import { useToast } from 'primevue/usetoast'
+import { toast } from 'vue-sonner'
 import PhList from '~icons/ph/list'
 import PhNotePencil from '~icons/ph/note-pencil'
 import PhRows from '~icons/ph/rows'
 import ItemList from '~/components/item/ItemList.vue'
 import MassEditMenu from '~/components/item/MassEditMenu.vue'
+import SortMenu from '~/components/item/SortMenu.vue'
+import { Button } from '~/components/ui/button'
 import { ITEMS_ON_PAGE } from '~/constants'
 import { inputsStorage } from '~/logic/browser-storage'
 import { deleteItems, updateItem } from '~/logic/db/mutations'
@@ -24,8 +25,6 @@ const isLoading = ref(false)
 let lastQueryId = 0
 
 onMounted(() => loadMore())
-
-const toast = useToast()
 
 async function loadMore(loadAll?: boolean) {
   if (isEnd.value)
@@ -45,7 +44,7 @@ async function loadMore(loadAll?: boolean) {
     }
   }
   catch (error) {
-    toast.add({ severity: 'error', summary: 'DB Error', detail: (error as any)?.message || '', life: 3000 })
+    toast.error('DB Error', { description: (error as any)?.message || '' })
     console.error(error)
   }
   isLoading.value = false
@@ -109,7 +108,7 @@ async function markUnsaved(itemId: number) {
 async function onItemUpdate(item: WrappedItem) {
   const [resp, err] = await getItemsInfo([item.redditId])
   if (err) {
-    toast.add({ severity: 'error', summary: 'Error', detail: err, life: 3000 })
+    toast.error('Error', { description: err || '' })
     return
   }
   const updated = resp?.data.children.find(u => u.data.name === item.redditId)
@@ -119,7 +118,7 @@ async function onItemUpdate(item: WrappedItem) {
     await updateItem(item.dbId, updated.data)
   }
   catch (error) {
-    toast.add({ severity: 'error', summary: 'Error', detail: error, life: 3000 })
+    toast.error('Error', { description: error || '' })
   }
 
   items.value = items.value?.map((oldItem) => {
@@ -130,19 +129,19 @@ async function onItemUpdate(item: WrappedItem) {
     return oldItem
   })
 
-  toast.add({ severity: 'info', summary: 'Info', detail: 'Item updated', life: 1000 })
+  toast.info('Item updated')
 }
 
-const viewOptions: { iconCmp: FunctionalComponent, value: ViewType, title: string }[] = [
-  { iconCmp: PhRows, value: 'list', title: 'List' },
-  { iconCmp: PhList, value: 'compact', title: 'Compact list' },
-  { iconCmp: PhNotePencil, value: 'edit', title: 'Edit' },
+const viewOptions: { iconCmp: FunctionalComponent, view: ViewType, title: string }[] = [
+  { iconCmp: PhRows, view: 'list', title: 'List view' },
+  { iconCmp: PhList, view: 'compact', title: 'Compact list view' },
+  { iconCmp: PhNotePencil, view: 'edit', title: 'Edit view' },
 ]
 
-const viewSaved = viewOptions.find(v => v.value === inputsStorage.value.currentView) || viewOptions[0]
-const view = ref(viewSaved)
-
-watch(view, () => (inputsStorage.value.currentView = view.value.value))
+const view = ref<ViewType | undefined>(inputsStorage.value.currentView || 'list')
+watch(view, () => {
+  inputsStorage.value.currentView = view.value || 'list'
+})
 
 watch(
   () => inputsStorage.value.sortDirection,
@@ -156,48 +155,29 @@ watch(
   { immediate: true },
 )
 
-const sortOverlay = ref()
-
 const checkedItems = defineModel<number[]>({ default: [] })
-
-function setSortDirection(dir: SearchDirection) {
-  search.direction = dir
-  inputsStorage.value.sortDirection = dir
-}
-function setSortBy(sortBy: SearchQuery['sortBy']) {
-  search.sortBy = sortBy
-  inputsStorage.value.sortBy = sortBy
-}
 </script>
 
 <template>
   <div class="flex flex-col items-center justify-center">
     <div class="mx-auto my-1 flex w-full max-w-main-column items-center justify-end gap-2 pr-4 sm:my-2">
-      <SelectButton
-        v-model="view"
-        :options="viewOptions"
-        option-label="value"
-        data-key="value"
-        aria-labelledby="title"
-        :allow-empty="false"
-        pt:button:class="!px-2 !py-1 sm:!px-2.5 sm:!py-1.5 text-sm"
-        :pt-options="{ mergeProps: true }"
-      >
-        <template #option="slotProps">
-          <span :title="slotProps.option.title">
-            <component :is="slotProps.option.iconCmp" />
-          </span>
-        </template>
-      </SelectButton>
-
-      <button title="sort items" class="btn ml-4 text-sm" @click="sortOverlay.toggle">
-        <ph-sort-descending v-if="search.direction === 'desc'" />
-        <ph-sort-ascending v-else />
-      </button>
+      <ToggleGroup v-model="view" type="single" variant="outline">
+        <ToggleGroupItem
+          v-for="v in viewOptions"
+          :key="v.view"
+          :value="v.view"
+          :title="v.title"
+          class="w-min h-auto py-1 px-2.5 bg-transparent dark:bg-transparent text-foreground dark:text-foreground
+           data-[state=on]:text-foreground! data-[state=on]:bg-surface-400/20! hover:bg-surface-400/20! hover:text-primary!"
+        >
+          <component :is="v.iconCmp" />
+        </ToggleGroupItem>
+      </ToggleGroup>
+      <SortMenu />
     </div>
 
     <MassEditMenu
-      v-if="view.value === 'edit'"
+      v-if="view === 'edit'"
       v-model="checkedItems"
       :items="items || []"
       @load-all="() => loadMore(true)"
@@ -205,19 +185,22 @@ function setSortBy(sortBy: SearchQuery['sortBy']) {
       @tags-update="updateTags"
     >
       <span v-if="isEnd === false" class="whitespace-nowrap">
-        [<button
-          class="btn underline decoration-dashed underline-offset-2"
+        [<Button
+          variant="ghost"
+          size="sm"
+          class="px-1"
+          title="Load all items from the database"
           :disabled="isLoading"
           @click="() => loadMore(true)"
         >
-          Load all</button>]
+          Load all</Button>]
       </span>
     </MassEditMenu>
 
     <ItemList
       v-model:checked="checkedItems"
       :items="items || []"
-      :list-type="view.value"
+      :list-type="view || 'list'"
       @tags-update="updateTags"
       @unsave="markUnsaved"
       @delete="onDelete"
@@ -225,49 +208,4 @@ function setSortBy(sortBy: SearchQuery['sortBy']) {
       @scroll-end="async () => (isLoading ? undefined : loadMore())"
     />
   </div>
-  <OverlayPanel
-    ref="sortOverlay"
-    pt:content:root="z-100"
-    pt:content:class="p-0 bg-surface-100 dark:bg-surface-800 rounded ring-1 ring-surface-400 dark:ring-surface-500"
-  >
-    <ul class="flex min-w-28 flex-col gap-2 py-2 text-base">
-      <li>
-        <button class="btn flex w-full items-center gap-1 px-2" @click="setSortDirection('asc')">
-          <ph-sort-ascending :class="{ 'text-primary-500 dark:text-primary-400': search.direction === 'asc' }" />asc
-        </button>
-      </li>
-      <li>
-        <button class="btn flex w-full items-center gap-1 px-2" @click="setSortDirection('desc')">
-          <ph-sort-descending :class="{ 'text-primary-500 dark:text-primary-400': search.direction === 'desc' }" />desc
-        </button>
-      </li>
-    </ul>
-    <hr class="mx-auto h-[1px] w-[80%] border-surface-400 dark:border-surface-500">
-    <ul class="flex w-full min-w-28 flex-col gap-2 py-2 text-base">
-      <li>
-        <button class="btn flex w-full items-center gap-1 px-2" @click="setSortBy('id')">
-          <PhList :class="{ 'text-primary-500 dark:text-primary-400': search.sortBy === 'id' }" />
-          id
-        </button>
-      </li>
-      <li>
-        <button class="btn flex w-full items-center gap-1 px-2" @click="setSortBy('created')">
-          <ph-calendar :class="{ 'text-primary-500 dark:text-primary-400': search.sortBy === 'created' }" />
-          creation date
-        </button>
-      </li>
-      <li>
-        <button class="btn flex w-full items-center gap-1 px-2" @click="setSortBy('subreddit')">
-          <div
-            :class="{
-              'text-mono min-w-5 font-bold text-primary-500 dark:text-primary-400': search.sortBy === 'subreddit',
-            }"
-          >
-            r/
-          </div>
-          subreddit
-        </button>
-      </li>
-    </ul>
-  </OverlayPanel>
 </template>

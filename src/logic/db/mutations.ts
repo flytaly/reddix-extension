@@ -1,4 +1,6 @@
 import type { DbRedditItem } from '~/logic/db'
+import type { WrappedItem } from '~/logic/wrapped-item'
+
 import { db } from '~/logic/db'
 
 export type RedditItemWithCategory = RedditItem & { _category?: ItemCategory[] }
@@ -56,5 +58,76 @@ export async function savePosts(rawItems: Array<RedditPostUnfiltered | RedditCom
   }
   catch (error) {
     console.error(error)
+  }
+}
+
+export async function addTags(
+  ids: WrappedItem['dbId'][],
+  newTags: string[],
+  onUpdate?: (updates: Record<number, string[]>) => void,
+) {
+  const set = new Set(newTags)
+  const updates: Record<number, string[]> = {}
+  try {
+    await db.redditItems
+      .where('_id')
+      .anyOf(ids)
+      .modify((item) => {
+        const prevTags = item._tags || []
+        const union = new Set([...prevTags, ...set])
+        item._tags = Array.from(union)
+        updates[item._id] = Array.from(union)
+      })
+    onUpdate?.(updates)
+  }
+  catch (error) {
+    console.error('Update tags', error)
+  }
+}
+
+export async function removeTag(
+  ids: WrappedItem['dbId'][],
+  removedTag: string,
+  onUpdate?: (updates: Record<number, string[]>) => void,
+) {
+  try {
+    const upd: Record<number, string[]> = {}
+
+    await db.redditItems
+      .where('_id')
+      .anyOf(ids)
+      .modify((item) => {
+        const prevTags = item._tags || []
+        item._tags = prevTags.filter(tag => tag !== removedTag)
+        upd[item._id] = item._tags
+      })
+
+    onUpdate?.(upd)
+  }
+  catch (error) {
+    console.error('Update tags', error)
+  }
+}
+
+export async function editTags(
+  id: WrappedItem['dbId'],
+  newTags: string[],
+  onUpdate?: (updates: Record<number, string[]>) => void,
+) {
+  try {
+    const upd: Record<number, string[]> = {}
+
+    await db.redditItems
+      .where('_id')
+      .equals(id)
+      .modify((item) => {
+        item._tags = [...newTags]
+        upd[item._id] = item._tags
+      })
+
+    onUpdate?.(upd)
+  }
+  catch (error) {
+    console.error('Edit tags', error)
   }
 }

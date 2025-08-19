@@ -14,7 +14,7 @@ import { RoutePath } from '~/options/routes'
   </router-link> page.
   <br>
   The extension supports following files:
-  <div class="ml-4 grid grid-cols-[auto,1fr] gap-x-4">
+  <div class="ml-4 grid grid-cols-[auto_1fr] gap-x-4">
     <b>saved_comments.csv</b>
     <span>should contain <i>id</i> and <i>permalink</i> columns</span>
     <b>saved_posts.csv</b>

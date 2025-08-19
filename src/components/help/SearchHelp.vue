@@ -8,7 +8,7 @@ const eg = h('span', { class: 'font-mono text-primary-700 dark:text-primary-500'
       Keywords
     </div>
     <p>Use the following prefixes to filter search results:</p>
-    <div class="grid grid-cols-[auto,1fr] gap-x-4">
+    <div class="grid grid-cols-[auto_1fr] gap-x-4">
       <div><eg>author:</eg> or <eg>u/</eg></div>
       <div>post or comment author (e.g. <eg>u/reddituser</eg> or <eg>author:reddituser</eg>)</div>
       <div><eg>title:</eg> or <eg>t:</eg></div>

@@ -1,6 +1,111 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@source '../**/*.{vue,js,ts,jsx,tsx,html}';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --breakpoint-*: initial;
+  --breakpoint-xs: 440px;
+  --breakpoint-sm: 670px;
+  --breakpoint-md: 960px;
+  --breakpoint-lg: 1340px;
+  --breakpoint-xl: 1550px; /* after this bp there should be enough space for main-column + sidebar with tags  */
+
+  --spacing-main-column: 80rem;
+
+  --color-primary-50: rgb(var(--primary-50));
+  --color-primary-100: rgb(var(--primary-100));
+  --color-primary-200: rgb(var(--primary-200));
+  --color-primary-300: rgb(var(--primary-300));
+  --color-primary-400: rgb(var(--primary-400));
+  --color-primary-500: rgb(var(--primary-500));
+  --color-primary-600: rgb(var(--primary-600));
+  --color-primary-700: rgb(var(--primary-700));
+  --color-primary-800: rgb(var(--primary-800));
+  --color-primary-900: rgb(var(--primary-900));
+  --color-primary-950: rgb(var(--primary-950));
+  --color-surface-0: rgb(var(--surface-0));
+  --color-surface-50: rgb(var(--surface-50));
+  --color-surface-100: rgb(var(--surface-100));
+  --color-surface-200: rgb(var(--surface-200));
+  --color-surface-300: rgb(var(--surface-300));
+  --color-surface-400: rgb(var(--surface-400));
+  --color-surface-500: rgb(var(--surface-500));
+  --color-surface-600: rgb(var(--surface-600));
+  --color-surface-700: rgb(var(--surface-700));
+  --color-surface-800: rgb(var(--surface-800));
+  --color-surface-900: rgb(var(--surface-900));
+  --color-surface-950: rgb(var(--surface-950));
+  --color-light: rgb(var(--text-light));
+  --color-dark: rgb(var(--text-dark));
+  --color-error-light: var(--error-light);
+  --color-error-dark: var(--error-dark);
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility tag-toggle {
+  @apply rounded-md bg-primary-500 px-1 py-0.5 font-semibold text-white dark:bg-primary-400 dark:text-black;
+
+  &:focus-within {
+    @apply ring-1 ring-primary-500 ring-offset-1 dark:ring-primary-600;
+  }
+  &:hover {
+    @apply bg-primary-300/70 text-gray-800 dark:bg-primary-300/70 dark:text-white;
+  }
+}
+
+@utility tag-toggle-off {
+  @apply bg-surface-200 text-gray-500 dark:bg-surface-700 dark:text-gray-300;
+
+  &:focus-within {
+    @apply ring-gray-400 dark:ring-gray-600;
+  }
+  &:hover {
+    @apply bg-surface-300 text-gray-800 dark:bg-surface-800 dark:text-gray-200;
+  }
+}
+
+@utility item-body-html {
+  max-width: min(100%, 100ch);
+
+  p {
+    @apply my-2 first:mt-0 last:mb-0;
+  }
+  a {
+    @apply underline;
+  }
+  blockquote {
+    @apply mt-4 border-l-2 border-surface-700 pl-2 dark:border-surface-400;
+  }
+  ol {
+    @apply my-2 list-decimal pl-4;
+  }
+  ul {
+    @apply my-2 list-disc pl-4;
+  }
+  code {
+    @apply my-2 block overflow-x-auto bg-surface-100 p-1 font-mono dark:bg-surface-800;
+  }
+}
 
 @layer base {
   :root {
@@ -32,57 +137,186 @@
     --text-light: 231 229 228; /* #e7e5e4 */
     --text-dark: 41 37 36; /* #292524 */
 
-    --error-light: theme('colors.red.400');
-    --error-dark: theme('colors.red.600');
+    --error-light: var(--color-red-400);
+    --error-dark: var(--color-red-600);
 
     --popup-width: 660px;
   }
+
+  body {
+    @apply overflow-x-hidden bg-surface-50 text-dark dark:bg-surface-950 dark:text-light;
+  }
+
+  a,
+  .link-like {
+    @apply text-surface-500 hover:text-primary-500 dark:text-surface-400 dark:hover:text-primary-400;
+  }
+
+  .btn {
+    @apply text-dark hover:text-primary-500 active:text-primary-400 dark:text-light dark:hover:text-primary-400 dark:active:text-primary-300;
+  }
+
+  .icon-btn {
+    @apply inline-block cursor-pointer select-none
+    opacity-75 transition duration-200 ease-in-out
+    hover:text-teal-600 hover:opacity-100;
+    font-size: 0.9em;
+  }
+
+  h2 {
+    @apply font-mono text-xl font-semibold text-primary-600 dark:text-primary-400;
+  }
 }
 
-@layer components {
-  .tag-toggle {
-    @apply rounded-md bg-primary-500 px-1 py-0.5 font-semibold text-white dark:bg-primary-400 dark:text-black;
+/*
+  ---break---
+*/
 
-    &:focus-within {
-      @apply ring-1 ring-primary-500 ring-offset-1 dark:ring-primary-600;
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  @keyframes accordion-down {
+    from {
+      height: 0;
     }
-    &:hover {
-      @apply bg-primary-300 bg-opacity-70 text-gray-800
-             dark:bg-primary-300 dark:bg-opacity-70 dark:text-white;
+    to {
+      height: var(--reka-accordion-content-height);
     }
   }
-
-  .tag-toggle-off {
-    @apply bg-surface-200 text-gray-500 dark:bg-surface-700 dark:text-gray-300;
-
-    &:focus-within {
-      @apply ring-gray-400 dark:ring-gray-600;
+  @keyframes accordion-up {
+    from {
+      height: var(--reka-accordion-content-height);
     }
-    &:hover {
-      @apply bg-surface-300 text-gray-800 dark:bg-surface-800 dark:text-gray-200;
+    to {
+      height: 0;
     }
   }
+}
 
-  .item-body-html {
-    max-width: min(100%, 100ch);
+/*
+  ---break---
+*/
 
-    p {
-      @apply my-2 first:mt-0 last:mb-0;
-    }
-    a {
-      @apply underline;
-    }
-    blockquote {
-      @apply mt-4 border-l-2 border-surface-700 pl-2 dark:border-surface-400;
-    }
-    ol {
-      @apply my-2 list-decimal pl-4;
-    }
-    ul {
-      @apply my-2 list-disc pl-4;
-    }
-    code {
-      @apply my-2 block overflow-x-auto bg-surface-100 p-1 font-mono dark:bg-surface-800;
-    }
+:root {
+  --background: oklch(1 0 0);
+  --foreground: var(--text-dark);
+  --card: var(--color-surface-0);
+  --card-foreground: var(--color-surface-700);
+  --popover: var(--color-surface-100);
+  --popover-foreground: oklch(0.147 0.004 49.25);
+  --primary: var(--color-primary-500);
+  --primary-foreground: var(--color-surface-50);
+  --secondary: oklch(0.97 0.001 106.424);
+  --secondary-foreground: oklch(0.216 0.006 56.043);
+  --muted: oklch(0.97 0.001 106.424);
+  --muted-foreground: oklch(0.553 0.013 58.071);
+  --accent: var(--color-primary-500);
+  --accent-foreground: var(--color-surface-50);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.577 0.245 27.325);
+  --border: oklch(0.923 0.003 48.717);
+  --input: var(--color-surface-400);
+  --ring: var(--color-primary-600);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0.001 106.423);
+  --sidebar-foreground: oklch(0.147 0.004 49.25);
+  --sidebar-primary: oklch(0.216 0.006 56.043);
+  --sidebar-primary-foreground: oklch(0.985 0.001 106.423);
+  --sidebar-accent: oklch(0.97 0.001 106.424);
+  --sidebar-accent-foreground: oklch(0.216 0.006 56.043);
+  --sidebar-border: oklch(0.923 0.003 48.717);
+  --sidebar-ring: oklch(0.709 0.01 56.259);
+}
+
+/*
+  ---break---
+*/
+
+.dark {
+  --background: var(--color-surface-950);
+  --foreground: var(--text-light);
+  --card: var(--color-surface-900);
+  --card-foreground: var(--color-surface-200);
+  --popover: var(--color-surface-900);
+  --popover-foreground: oklch(0.985 0.001 106.423);
+  --primary: var(--color-primary-400);
+  --primary-foreground: var(--color-surface-950);
+  --secondary: oklch(0.268 0.007 34.298);
+  --secondary-foreground: oklch(0.985 0.001 106.423);
+  --muted: oklch(0.268 0.007 34.298);
+  --muted-foreground: oklch(0.709 0.01 56.259);
+  --accent: var(--color-primary-400);
+  --accent-foreground: var(--color-surface-950);
+  --destructive: oklch(70.6% 0.1441 25.7);
+  --destructive-foreground: oklch(36% 0.1285 25.3);
+  --border: oklch(0.268 0.007 34.298);
+  --input: var(--color-surface-600);
+  --ring: var(--color-primary-400);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.216 0.006 56.043);
+  --sidebar-foreground: oklch(0.985 0.001 106.423);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0.001 106.423);
+  --sidebar-accent: oklch(0.268 0.007 34.298);
+  --sidebar-accent-foreground: oklch(0.985 0.001 106.423);
+  --sidebar-border: oklch(0.268 0.007 34.298);
+  --sidebar-ring: oklch(0.553 0.013 58.071);
+}
+
+/*
+  ---break---
+*/
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }

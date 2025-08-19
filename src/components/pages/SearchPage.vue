@@ -8,7 +8,7 @@ import Sidebar from '~/components/SearchSidebar.vue'
 
 <template>
   <MainLayout>
-    <main class="mt-4 flex-grow bg-surface-50 text-dark dark:bg-surface-950 dark:text-light">
+    <main class="md:grid pt-4 grow bg-surface-50 text-dark dark:bg-surface-950 dark:text-light">
       <div class="sidebar">
         <Sidebar />
       </div>
@@ -25,7 +25,6 @@ import Sidebar from '~/components/SearchSidebar.vue'
 
 <style lang="postcss" scoped>
 main {
-  @apply md:grid;
   grid-template-columns: auto 1fr;
   grid-template-rows: auto 1fr;
   grid-template-areas:

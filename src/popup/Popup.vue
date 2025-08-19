@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { useToast } from 'primevue/usetoast'
+import { toast } from 'vue-sonner'
 import PhCloudArrowDown from '~icons/ph/cloud-arrow-down'
 import PhGear from '~icons/ph/gear'
-
 import Logo from '~/assets/logo_short.svg?component'
 import ItemsContainer from '~/components/item/ItemsContainer.vue'
 import SearchInput from '~/components/SearchInput.vue'
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '~/components/ui/sheet'
+import { Toaster } from '~/components/ui/sonner'
 import { useThemeToggle } from '~/composables/useThemeToggle'
 import { userName } from '~/logic/browser-storage'
 import { setupMessageHandlers, setupStatsStore, state } from '~/logic/stores'
@@ -21,23 +22,27 @@ onUnmounted(async () => {
   ;(await subscription).unsubscribe()
 })
 
-const toast = useToast()
-
 watch(
   () => state.isFetching,
-  (newValue, oldValue) => {
-    if (newValue && !oldValue)
-      toast.add({ severity: 'info', summary: 'Info', detail: 'The fetching has started', life: 2000 })
+  (newValue) => {
+    if (newValue) {
+      return toast.info('Synchronization started')
+    }
+    if (!state.fetchError) {
+      toast.info('Synchronization is completed', {
+        description: `Loaded ${state.loaded} items (${state.savedNew} new)`,
+      })
+    }
   },
 )
 
 watch(
   () => state.fetchError,
-  (newValue) => {
-    if (newValue)
-      toast.add({ severity: 'error', summary: 'Error', detail: newValue, life: 4000 })
+  (err) => {
+    if (err)
+      toast.error(`Fetch Error`, { description: err })
 
-    browser.tabs.create({ url: getUrl('/') })
+    setTimeout(() => browser.tabs.create({ url: getUrl('/') }), 1000)
   },
 )
 
@@ -59,7 +64,10 @@ const tagSidebarOn = ref(false)
 </script>
 
 <template>
-  <Toast />
+  <Toaster
+    close-button
+    position="top-right"
+  />
   <div class="h-[550px] w-[var(--popup-width)] bg-surface-50 text-dark dark:bg-surface-950 dark:text-light">
     <header class="flex items-center gap-4 border-b border-surface-300 px-2 py-1 font-medium dark:border-surface-600">
       <a
@@ -84,11 +92,11 @@ const tagSidebarOn = ref(false)
         <ph-spinner-gap v-if="state.isFetching" class="icon animate-spin" />
       </button>
       <button
-        class="btn flex w-max items-center rounded px-1 py-0.5 text-sm text-surface-600 dark:text-surface-400 md:hidden"
+        class="btn flex w-max items-center rounded-sm px-1 py-0.5 text-sm text-surface-600 dark:text-surface-400 md:hidden"
         title="show tags"
         @click="tagSidebarOn = true"
       >
-        <ph-hash class="h-5 w-5 flex-shrink-0" />
+        <ph-hash class="h-5 w-5 shrink-0" />
       </button>
       <a :href="getUrl('/settings')" title="Settings">
         <PhGear class="icon" />
@@ -105,9 +113,17 @@ const tagSidebarOn = ref(false)
       <ItemsContainer />
     </main>
   </div>
-  <Sidebar v-model:visible="tagSidebarOn" header="Tags">
-    <TagList @tag-select="() => (tagSidebarOn = false)" />
-  </Sidebar>
+  <Sheet v-model:open="tagSidebarOn">
+    <SheetContent side="left">
+      <SheetHeader>
+        <SheetTitle class="flex flex-row gap-2 text-accent">
+          <ph-hash />
+          Tags
+        </SheetTitle>
+      </SheetHeader>
+      <TagList @tag-select="() => (tagSidebarOn = false)" />
+    </SheetContent>
+  </Sheet>
 </template>
 
 <style lang="postcss" scoped>

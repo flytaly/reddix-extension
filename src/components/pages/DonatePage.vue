@@ -6,6 +6,7 @@ import LtcQR from '~/assets/crypto/ltc.svg?component'
 import SolQR from '~/assets/crypto/sol.svg?component'
 import XlmQR from '~/assets/crypto/xlm.svg?component'
 import DonateAddress from '~/components/DonateAddress.vue'
+import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 
 const addresses = [
   { name: 'Bitcoin (BTC)', address: 'bc1q6w68rerfyy7ex45fjwhwfe36zs5qjvwwl3xgz5', QRCode: BtcQR },
@@ -23,17 +24,19 @@ const addresses = [
 
 <template>
   <MainLayout>
-    <div class="mx-auto flex w-full max-w-screen-md flex-col">
-      <Card class="mt-2 w-full">
-        <template #title>
-          <h2 class="flex items-center font-sans text-base">
-            <div class="flex items-center justify-center gap-2">
-              <ph-hand-heart-duotone class="h-7 w-7 text-red-700 dark:text-red-400" />
-              <span>Support the development and maintenance of the extension</span>
-            </div>
-          </h2>
-        </template>
-        <template #content>
+    <div class="mx-auto flex w-full max-w-(--breakpoint-md) flex-col">
+      <Card class="mx-auto mt-2 w-full max-w-[120ch]">
+        <CardHeader>
+          <CardTitle>
+            <h2 class="flex items-center font-sans text-base">
+              <div class="flex items-center justify-center gap-2">
+                <ph-hand-heart-duotone class="h-7 w-7 text-red-700 dark:text-red-400" />
+                <span>Support the development and maintenance of the extension</span>
+              </div>
+            </h2>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
           <main>
             <section>
               <h2 class="mb-4 text-lg font-bold">
@@ -73,7 +76,7 @@ const addresses = [
               </div>
             </section>
           </main>
-        </template>
+        </CardContent>
       </Card>
     </div>
   </MainLayout>
