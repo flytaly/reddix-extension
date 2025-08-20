@@ -22,6 +22,7 @@ const props = defineProps<ToasterProps>()
         closeButton: 'p-0.25 absolute ring bg-popover hover:text-popover-foreground rounded-full -right-2.5 -top-2.5 [&_svg]:w-4 [&_svg]:h-4',
         info: 'text-blue-800! bg-blue-50! dark:text-blue-200! dark:bg-popover!',
         error: 'text-red-700! bg-red-50! dark:text-red-300! dark:bg-popover!',
+        success: 'text-green-700! bg-green-50! dark:text-green-300! dark:bg-popover!',
       },
     }"
   />
