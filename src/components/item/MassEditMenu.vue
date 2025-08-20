@@ -111,5 +111,25 @@ async function deleteItems() {
         />
       </PopoverContent>
     </Popover>
+
+    <Popover>
+      <PopoverTrigger as-child>
+        <Button
+          variant="ghost"
+          size="sm"
+          :disabled="!checkedIds?.length"
+          title="Change the selected items' categories"
+        >
+          Category
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        class="min-w-min min-h-min p-2 ring ring-accent/40"
+      >
+        <UpdateCategory
+          :ids="checkedIds || []"
+        />
+      </PopoverContent>
+    </Popover>
   </div>
 </template>

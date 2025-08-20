@@ -135,12 +135,12 @@ export async function editTags(
 export async function setCategories(
   ids: WrappedItem['dbId'][],
   categories: ItemCategory[],
-) {
+): Promise<[boolean, Error | null]> {
   if (!categories.length)
-    return
+    return [false, new Error('No categories provided')]
 
   if (!categories.every(cat => cat === 'saved' || cat === 'upvoted'))
-    return new Error('Wrong category')
+    return [false, new Error('Wrong category')]
 
   try {
     await db.redditItems
@@ -152,5 +152,8 @@ export async function setCategories(
   }
   catch (error) {
     console.error('[DB] Change category', error)
+    return [false, error as Error]
   }
+
+  return [true, null]
 }
