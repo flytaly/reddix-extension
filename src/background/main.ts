@@ -137,23 +137,29 @@ async function updateAndSchedule() {
   console.log('DEBUG: schedule next update at', new Date(nextUpdate).toLocaleString())
 }
 
-setupStorage().then(() => {
-  watch(
-    optionsStorage,
-    (opts) => {
-      if (opts.autoUpdateSaved || opts.autoUpdateUpvoted) {
-        updateAndSchedule()
-      }
-      else {
-        console.log('DEBUG: clear update alarms')
-        browser.alarms.clear('update' as Alarm)
-      }
-    },
-    { immediate: true },
-  )
-})
-
 browser.alarms.onAlarm.addListener((alarmInfo: { name: Alarm }) => {
   if (alarmInfo.name === 'update')
     void updateAndSchedule()
 })
+
+function setup() {
+  setupStorage().then(() => {
+    watch(
+      optionsStorage,
+      (opts) => {
+        if (opts.autoUpdateSaved || opts.autoUpdateUpvoted) {
+          updateAndSchedule()
+        }
+        else {
+          console.log('DEBUG: clear update alarms')
+          browser.alarms.clear('update' as Alarm)
+        }
+      },
+      { immediate: true },
+    )
+  })
+}
+
+setup()
+
+browser.runtime.onStartup.addListener(() => void setup())
