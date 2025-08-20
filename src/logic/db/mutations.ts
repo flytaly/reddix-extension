@@ -81,7 +81,7 @@ export async function addTags(
     onUpdate?.(updates)
   }
   catch (error) {
-    console.error('Update tags', error)
+    console.error('[DB] Update tags', error)
   }
 }
 
@@ -105,7 +105,7 @@ export async function removeTag(
     onUpdate?.(upd)
   }
   catch (error) {
-    console.error('Update tags', error)
+    console.error('[DB] Update tags', error)
   }
 }
 
@@ -128,6 +128,29 @@ export async function editTags(
     onUpdate?.(upd)
   }
   catch (error) {
-    console.error('Edit tags', error)
+    console.error('[DB] Edit tags', error)
+  }
+}
+
+export async function setCategories(
+  ids: WrappedItem['dbId'][],
+  categories: ItemCategory[],
+) {
+  if (!categories.length)
+    return
+
+  if (!categories.every(cat => cat === 'saved' || cat === 'upvoted'))
+    return new Error('Wrong category')
+
+  try {
+    await db.redditItems
+      .where('_id')
+      .anyOf(ids)
+      .modify((item) => {
+        item._category = [...categories]
+      })
+  }
+  catch (error) {
+    console.error('[DB] Change category', error)
   }
 }
