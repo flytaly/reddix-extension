@@ -82,19 +82,19 @@ db.redditItems.hook('updating', (mods, _primKey, obj, _trans): Partial<DbRedditI
 
   type P = Partial<DbRedditPost>
   type C = Partial<DbRedditComment>
-  if (Object.prototype.hasOwnProperty.call(mods, 'title'))
+  if (Object.hasOwn(mods, 'title'))
     updated._title_words = tokenizeProp((mods as P).title)
 
-  if (Object.prototype.hasOwnProperty.call(mods, 'selftext'))
+  if (Object.hasOwn(mods, 'selftext'))
     updated._body_words = tokenizeProp((mods as P).selftext)
 
-  if (Object.prototype.hasOwnProperty.call(mods, 'body'))
+  if (Object.hasOwn(mods, 'body'))
     updated._body_words = tokenizeProp((mods as C).body)
 
-  if (Object.prototype.hasOwnProperty.call(mods, 'subreddit'))
+  if (Object.hasOwn(mods, 'subreddit'))
     updated.subreddit = (mods as P | C).subreddit?.toLowerCase()
 
-  if (Object.prototype.hasOwnProperty.call(mods, '_tags'))
+  if (Object.hasOwn(mods, '_tags'))
     updated._tags = (mods as P | C)._tags
 
   updated._updated_at = Math.floor(Date.now() / 1000)
