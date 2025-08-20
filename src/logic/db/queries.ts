@@ -99,11 +99,15 @@ function makeFilterFn(details: SearchQuery, lastItem?: WrappedItem | null) {
   }
 
   return (item: DbRedditItem) => {
-    if (details.hideSaved && item._category.includes('saved'))
+    if (item._category.every((cat) => {
+      if (cat === 'saved')
+        return details.hideSaved
+      if (cat === 'upvoted')
+        return details.hideUpvoted
       return false
-
-    if (details.hideUpvoted && item._category.includes('upvoted'))
+    })) {
       return false
+    }
 
     if (details.hidePosts && item.name.startsWith(RedditObjectKind.link))
       return false
