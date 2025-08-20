@@ -2,7 +2,7 @@
   "name": "reddix",
   "displayName": "Reddix - Reddit bookmarks",
   "type": "module",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "private": true,
   "packageManager": "pnpm@10.15.0",
   "description": "A browser extension that helps you organize and search your saved and upvoted Reddit items",
